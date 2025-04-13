@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { projects } from '../data/projects';
 import { ExternalLink, Code, Cloud, Globe, Image, Headphones } from 'lucide-react';
@@ -21,16 +20,14 @@ const categoryTitles = {
 
 const Projects = () => {
   const [visibleProjects, setVisibleProjects] = useState<string[]>([]);
-  const [activeCategory, setActiveCategory] = useState<string>('all');
+  const [activeCategory, setActiveCategory] = useState<string>('cloud');
   const projectsRef = useRef<HTMLDivElement>(null);
 
   // Get unique categories from projects
-  const categories = ['all', ...new Set(projects.map(project => project.category))];
+  const categories = [...new Set(projects.map(project => project.category))];
 
   // Filter projects based on active category
-  const filteredProjects = activeCategory === 'all'
-    ? projects
-    : projects.filter(project => project.category === activeCategory);
+  const filteredProjects = projects.filter(project => project.category === activeCategory);
 
   // Handle intersection observer for animation
   useEffect(() => {
@@ -78,8 +75,8 @@ const Projects = () => {
                     : 'bg-secondary hover:bg-secondary/80 text-muted-foreground'
                 }`}
               >
-                {category !== 'all' && categoryIcons[category as keyof typeof categoryIcons]}
-                {category === 'all' ? 'All Projects' : categoryTitles[category as keyof typeof categoryTitles]}
+                {categoryIcons[category as keyof typeof categoryIcons]}
+                {categoryTitles[category as keyof typeof categoryTitles]}
               </button>
             ))}
           </div>
