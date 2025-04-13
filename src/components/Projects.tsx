@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { projects } from '../data/projects';
 import { ExternalLink, Code, Cloud, Globe, Image, Headphones } from 'lucide-react';
