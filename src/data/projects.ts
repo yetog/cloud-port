@@ -316,7 +316,7 @@ export const projects: Project[] = [
   {
     id: 'arinze-stanley-deconstruct',
     title: 'Arinze Stanley: Deconstruct',
-    description: 'Curated a hyperrealism exhibition featuring Arinze Stanley's pencil works examining social constructs.',
+    description: 'Curated a hyperrealism exhibition featuring Arinze Stanley\'s pencil works examining social constructs.',
     image: 'https://source.unsplash.com/photo-1493397212122-2b85dda8106b',
     tags: ['Hyperrealism', 'Drawing', 'Social Themes'],
     category: 'artcurating',
@@ -343,7 +343,7 @@ export const projects: Project[] = [
   {
     id: 'jason-andrew-turner',
     title: 'Jason Andrew Turner',
-    description: 'Produced a retrospective exhibition spanning two decades of Jason Andrew Turner's evolving artistic practice.',
+    description: 'Produced a retrospective exhibition spanning two decades of Jason Andrew Turner\'s evolving artistic practice.',
     image: 'https://source.unsplash.com/photo-1488590528505-98d2b5aba04b',
     tags: ['Retrospective', 'Mixed Media', 'Contemporary'],
     category: 'artcurating',
@@ -352,7 +352,7 @@ export const projects: Project[] = [
   {
     id: 'taher-jaoui',
     title: 'Taher Jaoui',
-    description: 'Curated an exhibition featuring Taher Jaoui's abstract expressions influenced by mathematics and science.',
+    description: 'Curated an exhibition featuring Taher Jaoui\'s abstract expressions influenced by mathematics and science.',
     image: 'https://source.unsplash.com/photo-1506744038136-46273834b3fb',
     tags: ['Abstract', 'Mathematics', 'Contemporary'],
     category: 'artcurating',
@@ -370,7 +370,7 @@ export const projects: Project[] = [
   {
     id: 'philadelphia-featured',
     title: 'Philadelphia Featured',
-    description: 'Curated a showcase of Philadelphia's emerging artistic talent across various disciplines and mediums.',
+    description: 'Curated a showcase of Philadelphia\'s emerging artistic talent across various disciplines and mediums.',
     image: 'https://source.unsplash.com/photo-1493397212122-2b85dda8106b',
     tags: ['Local Artists', 'Multi-disciplinary', 'Emerging Talent'],
     category: 'artcurating',
