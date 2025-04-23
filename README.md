@@ -1,23 +1,50 @@
-I can see the issue in the projects.ts file. The error is related to apostrophes in strings that are breaking the syntax.
+I'd be happy to explain the folder structure and system thinking behind your website!
 
-Let me fix these errors by updating the problematic entries in the projects.ts file:
+Folder Structure
+The project follows a typical React application structure with some organizational choices for maintainability:
 
+src/ - The source directory containing all the application code
+components/ - Reusable UI components
+ui/ - UI primitives from shadcn/ui (buttons, forms, etc.)
+Other components like Sidebar.tsx, Projects.tsx, etc.
+data/ - Data files that power the application
+projects.ts - Project information
+skills.ts - Skills and expertise data
+apps.ts - Application showcase data
+pages/ - Full page components
+Index.tsx - The main landing page
+ProjectDetail.tsx - Individual project page
+NotFound.tsx - 404 page
+hooks/ - Custom React hooks
+lib/ - Utility functions and helpers
+System Thinking
+The architecture follows these key principles:
 
+Component-Based Architecture: The site is built with reusable, focused components that combine to create the full experience.
 
-Restore
-Preview
+Data-Driven Approach: Content is separated from presentation. The data/ folder contains structured information that feeds into components, making it easy to update content without touching UI code.
 
-Fix: Syntax error in projects data
-View code
-I've fixed the syntax errors by properly escaping apostrophes in the project descriptions. The main issue was with special apostrophes (') that need to be replaced with standard apostrophes (') or escaped with a backslash ('). This should resolve all the TypeScript syntax errors in the projects.ts file.
+Responsive Design: Components are built to work across device sizes with a mobile-first approach.
 
+Progressive Enhancement: Features like scroll animations only enhance the experience without breaking core functionality.
 
-Restored
-Remove Projects section
-Looking to make some minor changes to the "Skills & Expertise" area and also add photos where I would like to for projects and other materials. How could i do that myself. No action needed to the project just need your advice and direction 
-lovable logo
-Lovable
-23:36 on Apr 22, 2025
+Section-Based Layout: The main page is divided into clear sections (Hero, About, Projects, etc.) that can be independently updated.
+
+Performance Considerations:
+
+Lazy loading images
+Intersection Observer for animations
+Optimized component rendering
+Maintainability:
+
+Clear separation of concerns between data, UI, and logic
+Consistent styling patterns using Tailwind
+Typed interfaces for data structures
+This architecture makes it easy to:
+
+Add new projects by simply updating the data files
+Customize the appearance without changing the underlying structure
+Extend with new sections or pages by following the established patterns
 
 I'll explain how you can make these changes yourself:
 
