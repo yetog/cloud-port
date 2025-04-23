@@ -71,84 +71,88 @@ const Projects = () => {
           <Carousel
             opts={{
               align: "start",
-              slidesToScroll: 2,
-              containScroll: "trimSnaps",
-              skipSnaps: true,
-              dragFree: true,
+              loop: true,
+              skipSnaps: false,
+              dragFree: false,
             }}
-            className="relative"
+            className="w-full"
           >
-            <CarouselContent className="md:!grid md:!grid-cols-2">
+            <CarouselContent>
               {filteredProjects.map((project, index) => (
-                <CarouselItem
-                  key={project.id}
-                  className={`glass-panel p-6 transition-all duration-700 ${loaded
-                    ? 'opacity-100 transform-none'
-                    : 'opacity-0 translate-y-8'
-                  }`}
+                <CarouselItem 
+                  key={project.id} 
+                  className="basis-full md:basis-1/2 p-2"
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
-                  <div className="aspect-video w-full bg-muted mb-4 rounded overflow-hidden">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 mb-2">
-                    {categoryIcons[project.category as keyof typeof categoryIcons]}
-                    <span className="text-sm text-muted-foreground">
-                      {categoryTitles[project.category as keyof typeof categoryTitles]}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                  <p className="text-muted-foreground mb-4">{project.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {project.tags.map(tag => (
-                      <span
-                        key={tag}
-                        className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary-foreground"
-                      >
-                        {tag}
+                  <div 
+                    className={`glass-panel p-6 h-full transition-all duration-700 ${
+                      loaded ? 'opacity-100 transform-none' : 'opacity-0 translate-y-8'
+                    }`}
+                  >
+                    <div className="aspect-video w-full bg-muted mb-4 rounded overflow-hidden">
+                      <img
+                        src={project.image}
+                        alt={project.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      {categoryIcons[project.category as keyof typeof categoryIcons]}
+                      <span className="text-sm text-muted-foreground">
+                        {categoryTitles[project.category as keyof typeof categoryTitles]}
                       </span>
-                    ))}
-                  </div>
-                  <div className="flex gap-4 mt-4">
-                    <Link
-                      to={`/projects/${project.id}`}
-                      className="flex items-center text-sm text-primary hover:underline"
-                    >
-                      <ExternalLink size={16} className="mr-1" />
-                      View Details
-                    </Link>
-                    {project.demoUrl && (
-                      <a
-                        href={project.demoUrl}
+                    </div>
+                    <h3 className="text-xl font-bold mb-2">{project.title}</h3>
+                    <p className="text-muted-foreground mb-4">{project.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {project.tags.map(tag => (
+                        <span
+                          key={tag}
+                          className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary-foreground"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex gap-4 mt-4">
+                      <Link
+                        to={`/projects/${project.id}`}
                         className="flex items-center text-sm text-primary hover:underline"
-                        target="_blank"
-                        rel="noopener noreferrer"
                       >
                         <ExternalLink size={16} className="mr-1" />
-                        View Demo
-                      </a>
-                    )}
-                    {project.codeUrl && (
-                      <a
-                        href={project.codeUrl}
-                        className="flex items-center text-sm text-primary hover:underline"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Code size={16} className="mr-1" />
-                        View Code
-                      </a>
-                    )}
+                        View Details
+                      </Link>
+                      {project.demoUrl && (
+                        <a
+                          href={project.demoUrl}
+                          className="flex items-center text-sm text-primary hover:underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <ExternalLink size={16} className="mr-1" />
+                          View Demo
+                        </a>
+                      )}
+                      {project.codeUrl && (
+                        <a
+                          href={project.codeUrl}
+                          className="flex items-center text-sm text-primary hover:underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Code size={16} className="mr-1" />
+                          View Code
+                        </a>
+                      )}
+                    </div>
                   </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
+            <div className="flex justify-center mt-6">
+              <CarouselPrevious className="static translate-y-0 mr-4" />
+              <CarouselNext className="static translate-y-0" />
+            </div>
           </Carousel>
         </div>
       </div>
