@@ -10,8 +10,6 @@ export const skills: Skill[] = [
   { name: 'Cloud Architecture', level: 95, category: 'technical' },
   { name: 'Network Infrastructure', level: 90, category: 'technical' },
   { name: 'Linux', level: 85, category: 'technical' },
-  { name: 'CI/CD Pipelines', level: 85, category: 'technical' },
-  { name: 'Containerization', level: 80, category: 'technical' },
   { name: 'Web Development', level: 75, category: 'technical' },
   
   // Cloud Platforms
@@ -22,7 +20,6 @@ export const skills: Skill[] = [
   
   // Soft Skills
   { name: 'Solution Design', level: 95, category: 'soft' },
-  { name: 'Data Analaytics', level: 90, category: 'soft' },
   { name: 'Data Analaytics', level: 90, category: 'soft' },
   { name: 'Project Management', level: 85, category: 'soft' },
 ];
