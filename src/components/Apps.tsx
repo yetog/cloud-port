@@ -31,7 +31,7 @@ const Apps = () => {
               {apps.map((app, index) => (
                 <CarouselItem
                   key={app.id}
-                  className="basis-full md:basis-1/2 p-2"
+                  className="basis-full md:basis-1/4 p-2"
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
                   <div

@@ -41,5 +41,13 @@ export const apps: App[] = [
     image: '/placeholder.svg',
     tags: ['DevOps', 'Monitoring', 'React'],
     appUrl: '#',
+  },
+  {
+    id: 'ai-agent-ashley',
+    title: 'AI Agent Ashley',
+    description: 'Your personal AI agent for productivity, research, and creativity—always at your service!',
+    image: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=facearea&w=256&h=256&facepad=2',
+    tags: ['AI', 'Assistant', 'Web App'],
+    appUrl: '#',
   }
 ];
