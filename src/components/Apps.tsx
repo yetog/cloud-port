@@ -1,6 +1,6 @@
 
 import { apps } from '../data/apps';
-import { ExternalLink, Download } from 'lucide-react';
+import { ExternalLink, Download, Github } from 'lucide-react';
 import {
   Carousel,
   CarouselContent,
@@ -16,7 +16,7 @@ const Apps = () => {
         <div className="max-w-6xl mx-auto">
           <h2 className="section-title">Apps</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mb-12">
-            I've also created custom tools and platforms designed to enhance productivity, creativity, and digital workflows. These personal apps reflect my passion for automation, cloud integration, and user-first design.
+            I've created custom tools and platforms designed to enhance productivity, creativity, and digital workflows. These personal apps reflect my passion for automation, AI integration, and user-first design.
           </p>
           <Carousel
             opts={{
@@ -31,7 +31,7 @@ const Apps = () => {
               {apps.map((app, index) => (
                 <CarouselItem
                   key={app.id}
-                  className="basis-full md:basis-1/4 p-2"
+                  className="basis-full md:basis-1/3 lg:basis-1/4 p-2"
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
                   <div
@@ -66,6 +66,17 @@ const Apps = () => {
                         >
                           <ExternalLink size={14} className="mr-1" />
                           Open App
+                        </a>
+                      )}
+                      {app.githubUrl && (
+                        <a
+                          href={app.githubUrl}
+                          className="flex items-center text-xs text-primary hover:underline"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <Github size={14} className="mr-1" />
+                          GitHub
                         </a>
                       )}
                       {app.storeUrl && (

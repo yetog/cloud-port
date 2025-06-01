@@ -7,39 +7,62 @@ export interface App {
   tags: string[];
   appUrl?: string;
   storeUrl?: string;
+  githubUrl?: string;
 }
 
 export const apps: App[] = [
   {
-    id: 'meditation',
-    title: 'Meditation App',
-    description: 'A minimalist meditation app with customizable ambient sounds and interval timers.',
+    id: 'questful-living-adventure',
+    title: 'Questful Living Adventure',
+    description: 'An RPG-style task organizer that gamifies your daily productivity and goals.',
     image: '/placeholder.svg',
-    tags: ['Web App', 'PWA', 'React'],
-    appUrl: 'https://zaylegend.com/meditation/',
+    tags: ['Web App', 'RPG', 'Productivity'],
+    appUrl: '/questful-living-adventure/',
+    githubUrl: 'https://github.com/yetog/questful-living-adventure',
   },
   {
-    id: 'magic-stream',
-    title: 'Magic Stream',
-    description: 'A looping background music experience for studying, creating, and relaxing.',
+    id: 'media-magic-streamer',
+    title: 'Media Magic Streamer',
+    description: 'A powerful media streaming platform for organizing and playing your content.',
     image: '/placeholder.svg',
-    tags: ['Web App', 'Audio', 'Streaming'],
-    appUrl: 'https://zaylegend.com/magic-stream/',
+    tags: ['Web App', 'Media', 'Streaming'],
+    appUrl: '/media-magic-streamer/',
+    githubUrl: 'https://github.com/yetog/media-magic-streamer',
   },
   {
-    id: 'playful-space-arcade-main',
+    id: 'script-scribe-ai-editor',
+    title: 'Script Scribe AI Editor',
+    description: 'An intelligent script editor inspired by Wolf of NY aesthetics with AI-powered features.',
+    image: '/placeholder.svg',
+    tags: ['Web App', 'AI', 'Editor'],
+    appUrl: '/script-scribe-ai-editor/',
+    githubUrl: 'https://github.com/yetog/script-scribe-ai-editor',
+  },
+  {
+    id: 'playful-space-arcade',
     title: 'Playful Space Arcade',
     description: 'A fast-paced, arcade-style space shooter to test your reflexes and score high!',
     image: '/placeholder.svg',
     tags: ['Game', 'Arcade', 'Vite'],
-    appUrl: 'https://zaylegend.com/playful-space-arcade-main/',
+    appUrl: '/playful-space-arcade/',
+    githubUrl: 'https://github.com/yetog/playful-space-arcade',
   },
   {
-    id: 'wolf-of-ny',
-    title: 'Wolf of NY',
-    description: 'A cinematic landing page inspired by classic finance and NYC aesthetics.',
+    id: 'pdf-saga-summarize',
+    title: 'PDF Saga Summarize',
+    description: 'A document summary tool designed for better retention and understanding of PDFs.',
     image: '/placeholder.svg',
-    tags: ['Landing Page', 'Finance', 'Design'],
-    appUrl: 'https://zaylegend.com/wolf-of-ny/',
+    tags: ['Web App', 'AI', 'Documents'],
+    appUrl: '/pdf-saga-summarize/',
+    githubUrl: 'https://github.com/yetog/pdf-saga-summarize',
+  },
+  {
+    id: 'serene-chord-scapes',
+    title: 'Serene Chord Scapes',
+    description: 'A minimalist meditation app with customizable ambient sounds and interval timers.',
+    image: '/placeholder.svg',
+    tags: ['Web App', 'PWA', 'Meditation'],
+    appUrl: '/serene-chord-scapes/',
+    githubUrl: 'https://github.com/yetog/serene-chord-scapes',
   }
 ];
