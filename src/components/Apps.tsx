@@ -37,13 +37,6 @@ const Apps = () => {
                   <div
                     className="glass-panel p-5 flex flex-col h-full transition-all duration-500 opacity-100 transform-none"
                   >
-                    <div className="w-16 h-16 rounded-xl mb-4 overflow-hidden bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center">
-                      <img
-                        src={app.image}
-                        alt={app.title}
-                        className="w-10 h-10 object-contain"
-                      />
-                    </div>
                     <h3 className="text-lg font-bold mb-2">{app.title}</h3>
                     <p className="text-sm text-muted-foreground mb-4 flex-1">{app.description}</p>
                     <div className="flex flex-wrap gap-2 mb-4">

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { projects } from '../data/projects';
 import { ExternalLink, Code, Cloud, Globe, Image as ImageIcon, Headphones } from 'lucide-react';
@@ -115,13 +116,6 @@ const Projects = () => {
                       loaded ? 'opacity-100 transform-none' : 'opacity-0 translate-y-8'
                     }`}
                   >
-                    <div className="aspect-video w-full bg-muted mb-4 rounded overflow-hidden">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
                     <div className="flex items-center gap-2 mb-2">
                       {categoryIcons[project.category as keyof typeof categoryIcons]}
                       <span className="text-sm text-muted-foreground">
