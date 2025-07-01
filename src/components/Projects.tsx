@@ -1,5 +1,4 @@
-
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { projects } from '../data/projects';
 import { ExternalLink, Code, Cloud, Globe, Image as ImageIcon, Headphones } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -10,6 +9,7 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
+import PasswordModal from './PasswordModal';
 
 // Project category types and their corresponding icons
 const categoryIcons = {
@@ -29,6 +29,15 @@ const categoryTitles = {
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState('cloud');
   const [loaded, setLoaded] = useState(false);
+  const [passwordModal, setPasswordModal] = useState<{
+    isOpen: boolean;
+    projectTitle: string;
+    demoUrl: string | null;
+  }>({
+    isOpen: false,
+    projectTitle: '',
+    demoUrl: null
+  });
 
   // Get unique categories from projects
   const categories = [...new Set(projects.map(project => project.category))];
@@ -41,6 +50,23 @@ const Projects = () => {
     const timer = setTimeout(() => setLoaded(true), 300);
     return () => clearTimeout(timer);
   }, [activeCategory]);
+
+  const handleDemoClick = (project: typeof projects[0]) => {
+    setPasswordModal({
+      isOpen: true,
+      projectTitle: project.title,
+      demoUrl: project.demoUrl || null
+    });
+  };
+
+  const handlePasswordSuccess = () => {
+    if (passwordModal.demoUrl && passwordModal.demoUrl !== '#') {
+      window.open(passwordModal.demoUrl, '_blank');
+    } else {
+      // Scroll to contact section if no demo URL
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <section id="projects" className="py-20 md:py-28 bg-secondary/50">
@@ -122,17 +148,13 @@ const Projects = () => {
                         <ExternalLink size={16} className="mr-1" />
                         View Details
                       </Link>
-                      {project.demoUrl && (
-                        <a
-                          href={project.demoUrl}
-                          className="flex items-center text-sm text-primary hover:underline"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <ExternalLink size={16} className="mr-1" />
-                          View Demo
-                        </a>
-                      )}
+                      <button
+                        onClick={() => handleDemoClick(project)}
+                        className="flex items-center text-sm text-primary hover:underline"
+                      >
+                        <ExternalLink size={16} className="mr-1" />
+                        🔐 View Demo
+                      </button>
                       {project.codeUrl && (
                         <a
                           href={project.codeUrl}
@@ -156,6 +178,13 @@ const Projects = () => {
           </Carousel>
         </div>
       </div>
+
+      <PasswordModal
+        isOpen={passwordModal.isOpen}
+        onClose={() => setPasswordModal(prev => ({ ...prev, isOpen: false }))}
+        onSuccess={handlePasswordSuccess}
+        projectTitle={passwordModal.projectTitle}
+      />
     </section>
   );
 };
