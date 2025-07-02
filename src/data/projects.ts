@@ -1,4 +1,3 @@
-
 import { ASSETS } from '../config/assets';
 
 export interface Project {
@@ -126,7 +125,7 @@ export const projects: Project[] = [
     demoUrl: '#',
   },
   
-  // New projects from CSV - now using IONOS bucket images
+  // New projects from CSV - now using IONOS bucket images with fixed paths
   // Cloud Services
   {
     id: 'multiple-natures',
@@ -150,7 +149,7 @@ export const projects: Project[] = [
     id: 'ta2-music',
     title: 'Contract Management for TA2 SOUND+MUSIC',
     description: 'Managing billing and infrastructure for TA2 SOUND+MUSIC with cloud and web hosting solutions.',
-    image: ASSETS.projects.ta2Music,
+    image: ASSETS.projects.ta2Music, // Fixed path reference
     tags: ['Cloud Services', 'Web Hosting', 'Infrastructure'],
     category: 'cloud',
     demoUrl: 'www.ta2music.com',

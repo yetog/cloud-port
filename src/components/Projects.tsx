@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { projects } from '../data/projects';
 import { ExternalLink, Code, Cloud, Globe, Image as ImageIcon, Headphones } from 'lucide-react';
@@ -10,6 +9,7 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import PasswordModal from './PasswordModal';
 
 // Project category types and their corresponding icons
@@ -116,14 +116,28 @@ const Projects = () => {
                       loaded ? 'opacity-100 transform-none' : 'opacity-0 translate-y-8'
                     }`}
                   >
+                    {/* Project Image */}
+                    <div className="mb-4">
+                      <AspectRatio ratio={16 / 9}>
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover rounded-lg"
+                          loading="lazy"
+                        />
+                      </AspectRatio>
+                    </div>
+                    
                     <div className="flex items-center gap-2 mb-2">
                       {categoryIcons[project.category as keyof typeof categoryIcons]}
                       <span className="text-sm text-muted-foreground">
                         {categoryTitles[project.category as keyof typeof categoryTitles]}
                       </span>
                     </div>
+                    
                     <h3 className="text-xl font-bold mb-2">{project.title}</h3>
                     <p className="text-muted-foreground mb-4">{project.description}</p>
+                    
                     <div className="flex flex-wrap gap-2 mb-4">
                       {project.tags.map(tag => (
                         <span
@@ -134,6 +148,7 @@ const Projects = () => {
                         </span>
                       ))}
                     </div>
+                    
                     <div className="flex gap-4 mt-4">
                       <Link
                         to={`/projects/${project.id}`}
