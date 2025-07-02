@@ -6,7 +6,9 @@ export const IONOS_CONFIG = {
 };
 
 export const getAssetUrl = (path: string): string => {
-  return `${IONOS_CONFIG.endpoint}/${IONOS_CONFIG.bucket_name}/${path}`;
+  const url = `${IONOS_CONFIG.endpoint}/${IONOS_CONFIG.bucket_name}/${path}`;
+  console.log(`Asset URL generated: ${url}`);
+  return url;
 };
 
 // Asset paths - using your uploaded IONOS bucket images
@@ -19,13 +21,13 @@ export const ASSETS = {
     // All project images from your uploads - fixed paths to match actual uploaded files
     multipleNatures: getAssetUrl('projects/multiplenatures.png'),
     triuneEntertainment: getAssetUrl('projects/triuneentertainment.png'),
-    ta2Music: getAssetUrl('projects/ta2music.png'), // Fixed: removed www. prefix
+    ta2Music: getAssetUrl('projects/ta2music.png'),
     abtechExpress: getAssetUrl('projects/abtechexpressshipping.png'),
     reflxnAesthetics: getAssetUrl('projects/reflxnsaesthetics.png'),
     cornerstoneAppliance: getAssetUrl('projects/cornerstoneappliancetrainingcourse.png'),
     eloWellness: getAssetUrl('projects/elowellnessretreat.png'),
     chrisAppliance: getAssetUrl('projects/chrisappliancecompany.png'),
-    auroraResearch: getAssetUrl('projects/auroraresearchresources.com.png'), // Fixed: matches uploaded filename
+    auroraResearch: getAssetUrl('projects/auroraresearchresources.com.png'),
     bridgeCorp: getAssetUrl('projects/thebridgecorp.png'),
     corridorContemporary: getAssetUrl('projects/corridorcontemporary.png'),
     artEmmanuel: getAssetUrl('projects/artemmanuel.png'),
@@ -45,11 +47,12 @@ export const ASSETS = {
     musicWorks: getAssetUrl('projects/musicworksnyc.png'),
     hudsonBoxing: getAssetUrl('projects/hudsonboxinggym.png'),
     castellLp: getAssetUrl('projects/castelllp.png'),
-    // Additional uploaded images
     buddysCashews: getAssetUrl('projects/buddyscashews.png'),
   },
   profile: {
+    // Try both extensions to see which one works
     avatar: getAssetUrl('profile/avatar.jpg'),
+    avatarPng: getAssetUrl('profile/avatar.png'), // Alternative in case it's PNG
     background: getAssetUrl('profile/background.jpg'),
   }
 };

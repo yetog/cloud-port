@@ -22,17 +22,23 @@ const PasswordModal = ({ isOpen, onClose, onSuccess, projectTitle }: PasswordMod
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Demo password attempt for:', projectTitle);
+    console.log('Password entered:', password);
+    console.log('Correct password:', DEMO_PASSWORD);
     
     if (password === DEMO_PASSWORD) {
+      console.log('Password correct, calling onSuccess');
       onSuccess();
       onClose();
       setPassword('');
       setAttempts(0);
       setShowLinkedIn(false);
     } else {
+      console.log('Password incorrect, attempt:', attempts + 1);
       setAttempts(prev => prev + 1);
       if (attempts >= 2) {
         setShowLinkedIn(true);
+        console.log('Max attempts reached, showing LinkedIn option');
       }
       setPassword('');
     }
@@ -86,7 +92,10 @@ const PasswordModal = ({ isOpen, onClose, onSuccess, projectTitle }: PasswordMod
               <Button 
                 variant="outline" 
                 className="w-full"
-                onClick={() => window.open(LINKEDIN_URL, '_blank')}
+                onClick={() => {
+                  console.log('Opening LinkedIn URL:', LINKEDIN_URL);
+                  window.open(LINKEDIN_URL, '_blank');
+                }}
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
                 Connect on LinkedIn
