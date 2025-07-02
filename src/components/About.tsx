@@ -5,6 +5,8 @@ import { ASSETS } from '../config/assets';
 
 const About = () => {
   const [visibleSkills, setVisibleSkills] = useState<string[]>([]);
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const skillsRef = useRef<HTMLDivElement>(null);
 
   // Handle intersection observer for skills animation
@@ -32,6 +34,16 @@ const About = () => {
     };
   }, []);
 
+  const handleImageLoad = () => {
+    console.log('Profile image loaded successfully');
+    setImageLoaded(true);
+  };
+
+  const handleImageError = () => {
+    console.log('Profile image failed to load, trying alternative...');
+    setImageError(true);
+  };
+
   return (
     <section id="about" className="py-20 md:py-28">
       <div className="container mx-auto px-4">
@@ -41,11 +53,28 @@ const About = () => {
           <div className="grid md:grid-cols-3 gap-10">
             <div className="md:col-span-1">
               <div className="aspect-square w-full max-w-xs mx-auto md:mx-0 overflow-hidden rounded-xl glass-panel">
-                <img 
-                  src={ASSETS.profile.avatar} 
-                  alt="Profile photo"
-                  className="w-full h-full object-cover"
-                />
+                {!imageError ? (
+                  <img 
+                    src={ASSETS.profile.avatar} 
+                    alt="Profile photo"
+                    className="w-full h-full object-cover"
+                    onLoad={handleImageLoad}
+                    onError={handleImageError}
+                  />
+                ) : (
+                  <img 
+                    src={ASSETS.profile.avatarPng} 
+                    alt="Profile photo"
+                    className="w-full h-full object-cover"
+                    onLoad={handleImageLoad}
+                    onError={() => console.log('Both profile images failed to load')}
+                  />
+                )}
+                {!imageLoaded && !imageError && (
+                  <div className="w-full h-full bg-secondary animate-pulse flex items-center justify-center">
+                    <span className="text-muted-foreground">Loading...</span>
+                  </div>
+                )}
               </div>
             </div>
             
