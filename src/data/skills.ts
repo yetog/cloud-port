@@ -20,6 +20,7 @@ export const skills: Skill[] = [
   
   // Soft Skills
   { name: 'Solution Design', level: 95, category: 'soft' },
-  { name: 'Data Analaytics', level: 90, category: 'soft' },
+  { name: 'Technical Teaching', level: 90, category: 'soft' },
+  { name: 'Data Analytics', level: 90, category: 'soft' },
   { name: 'Project Management', level: 85, category: 'soft' },
 ];

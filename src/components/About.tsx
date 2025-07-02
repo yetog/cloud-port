@@ -1,6 +1,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { skills } from '../data/skills';
+import { ASSETS } from '../config/assets';
 
 const About = () => {
   const [visibleSkills, setVisibleSkills] = useState<string[]>([]);
@@ -40,10 +41,11 @@ const About = () => {
           <div className="grid md:grid-cols-3 gap-10">
             <div className="md:col-span-1">
               <div className="aspect-square w-full max-w-xs mx-auto md:mx-0 overflow-hidden rounded-xl glass-panel">
-                {/* Replace with your actual profile image */}
-                <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center text-white">
-                  <span className="text-6xl font-bold">IY</span>
-                </div>
+                <img 
+                  src={ASSETS.profile.avatar} 
+                  alt="Profile photo"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
             
