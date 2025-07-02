@@ -16,22 +16,22 @@ export const ASSETS = {
     wolfAiAssistant: getAssetUrl('apps/Wolf.png'),
   },
   projects: {
-    // All project images from your uploads
+    // All project images from your uploads - fixed paths to match actual uploaded files
     multipleNatures: getAssetUrl('projects/multiplenatures.png'),
     triuneEntertainment: getAssetUrl('projects/triuneentertainment.png'),
-    ta2Music: getAssetUrl('projects/www.ta2music.png'),
+    ta2Music: getAssetUrl('projects/ta2music.png'), // Fixed: removed www. prefix
     abtechExpress: getAssetUrl('projects/abtechexpressshipping.png'),
     reflxnAesthetics: getAssetUrl('projects/reflxnsaesthetics.png'),
     cornerstoneAppliance: getAssetUrl('projects/cornerstoneappliancetrainingcourse.png'),
     eloWellness: getAssetUrl('projects/elowellnessretreat.png'),
     chrisAppliance: getAssetUrl('projects/chrisappliancecompany.png'),
-    auroraResearch: getAssetUrl('projects/auroraresearchresources.png'),
+    auroraResearch: getAssetUrl('projects/auroraresearchresources.com.png'), // Fixed: matches uploaded filename
     bridgeCorp: getAssetUrl('projects/thebridgecorp.png'),
     corridorContemporary: getAssetUrl('projects/corridorcontemporary.png'),
     artEmmanuel: getAssetUrl('projects/artemmanuel.png'),
     hayesCarpentry: getAssetUrl('projects/hayescarpentry.png'),
-    cmha: getAssetUrl('projects/cmha.png'),
-    pcdDover: getAssetUrl('projects/pcd-dover.png'),
+    cmha: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d', // Fallback - missing from uploads
+    pcdDover: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158', // Fallback - missing from uploads
     achieveCmo: getAssetUrl('projects/achievecmo.png'),
     zeartsGallery: getAssetUrl('projects/zearts.png'),
     nutritionalParty: getAssetUrl('projects/thenutritionalpartybook.png'),
@@ -45,6 +45,8 @@ export const ASSETS = {
     musicWorks: getAssetUrl('projects/musicworksnyc.png'),
     hudsonBoxing: getAssetUrl('projects/hudsonboxinggym.png'),
     castellLp: getAssetUrl('projects/castelllp.png'),
+    // Additional uploaded images
+    buddysCashews: getAssetUrl('projects/buddyscashews.png'),
   },
   profile: {
     avatar: getAssetUrl('profile/avatar.jpg'),
