@@ -2,6 +2,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { projects } from '../data/projects';
 import { ArrowLeft, ExternalLink, Code, Cloud, Globe, Image, Headphones } from 'lucide-react';
+import { generateWebsiteUrl } from '../utils/websiteUrl';
 
 const categoryIcons = {
   cloud: <Cloud className="h-6 w-6" />,
@@ -35,6 +36,8 @@ const ProjectDetail = () => {
       </div>
     );
   }
+
+  const websiteUrl = generateWebsiteUrl(project.image, project.demoUrl);
 
   // Render project details if found
   return (
@@ -94,17 +97,15 @@ const ProjectDetail = () => {
           </div>
           
           <div className="flex flex-wrap gap-4">
-            {project.demoUrl && (
-              <a 
-                href={project.demoUrl}
-                className="button-primary flex items-center"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <ExternalLink size={18} className="mr-2" />
-                View Demo
-              </a>
-            )}
+            <a 
+              href={websiteUrl}
+              className="button-primary flex items-center"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <ExternalLink size={18} className="mr-2" />
+              View Website
+            </a>
             {project.codeUrl && (
               <a 
                 href={project.codeUrl}

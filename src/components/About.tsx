@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { skills } from '../data/skills';
 import { ASSETS } from '../config/assets';
@@ -52,12 +51,12 @@ const About = () => {
           
           <div className="grid md:grid-cols-3 gap-10">
             <div className="md:col-span-1">
-              <div className="aspect-square w-full max-w-xs mx-auto md:mx-0 overflow-hidden rounded-xl glass-panel">
+              <div className="aspect-[3/4] w-full max-w-xs mx-auto md:mx-0 overflow-hidden rounded-xl glass-panel">
                 {!imageError ? (
                   <img 
                     src={ASSETS.profile.avatar} 
                     alt="Profile photo"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top"
                     onLoad={handleImageLoad}
                     onError={handleImageError}
                   />
@@ -65,7 +64,7 @@ const About = () => {
                   <img 
                     src={ASSETS.profile.avatarPng} 
                     alt="Profile photo"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top"
                     onLoad={handleImageLoad}
                     onError={() => console.log('Both profile images failed to load')}
                   />
