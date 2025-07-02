@@ -21,7 +21,7 @@ export const ASSETS = {
     // All project images from your uploads - fixed paths to match actual uploaded files
     multipleNatures: getAssetUrl('projects/multiplenatures.png'),
     triuneEntertainment: getAssetUrl('projects/triuneentertainment.png'),
-    ta2Music: getAssetUrl('projects/ta2music.png'),
+    ta2Music: 'https://portfoliowebsite.s3.us-central-1.ionoscloud.com/projects/TA2.png', // Updated to new URL
     abtechExpress: getAssetUrl('projects/abtechexpressshipping.png'),
     reflxnAesthetics: getAssetUrl('projects/reflxnsaesthetics.png'),
     cornerstoneAppliance: getAssetUrl('projects/cornerstoneappliancetrainingcourse.png'),
@@ -33,7 +33,7 @@ export const ASSETS = {
     artEmmanuel: getAssetUrl('projects/artemmanuel.png'),
     hayesCarpentry: getAssetUrl('projects/hayescarpentry.png'),
     cmha: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d', // Fallback - missing from uploads
-    pcdDover: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158', // Fallback - missing from uploads
+    pcdDover: 'https://images.unsplash.com/photo-1581091225-a6a2a5aee158', // Fallback - missing from uploads
     achieveCmo: getAssetUrl('projects/achievecmo.png'),
     zeartsGallery: getAssetUrl('projects/zearts.png'),
     nutritionalParty: getAssetUrl('projects/thenutritionalpartybook.png'),

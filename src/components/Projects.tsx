@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { projects } from '../data/projects';
-import { ExternalLink, Code, Cloud, Globe, Image as ImageIcon, Headphones } from 'lucide-react';
+import { ExternalLink, Code, Cloud, Globe, Image as ImageIcon, Headphones, Construction } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   Carousel,
@@ -73,10 +73,17 @@ const Projects = () => {
     <section id="projects" className="py-20 md:py-28 bg-secondary/50">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="section-title">Projects</h2>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="section-title">Projects</h2>
+            <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-sm">
+              <Construction className="h-4 w-4" />
+              Under Maintenance
+            </div>
+          </div>
           <p className="text-lg text-muted-foreground max-w-3xl mb-12">
             Here are selected infrastructure and hosting projects I've helped develop or manage. From scalable server architectures to sleek, client-ready websites — each project reflects a blend of efficiency, modern design, and long-term sustainability.
           </p>
+          
           {/* Category Filter Tabs */}
           <div className="flex flex-wrap gap-2 mb-8 justify-center md:justify-start">
             {categories.map((category) => (

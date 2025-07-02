@@ -16,10 +16,20 @@ export const generateWebsiteUrl = (image: string, demoUrl?: string): string => {
   const filename = image.split('/').pop()?.replace('.png', '').replace('.jpg', '').replace('.jpeg', '') || '';
   
   // Handle special cases based on filename
-  if (filename === 'ta2music') {
+  if (filename === 'ta2music' || filename === 'TA2') {
     return 'https://www.ta2music.com';
   }
   
   // Default case: filename + .com
   return `https://${filename}.com`;
+};
+
+export const validateWebsiteUrl = async (url: string): Promise<boolean> => {
+  try {
+    // Simple validation - check if URL is well-formed
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
 };
