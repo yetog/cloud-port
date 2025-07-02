@@ -1,8 +1,9 @@
-
 import { useParams, Link } from 'react-router-dom';
+import { useState } from 'react';
 import { projects } from '../data/projects';
 import { ArrowLeft, ExternalLink, Code, Cloud, Globe, Image, Headphones } from 'lucide-react';
-import { generateWebsiteUrl } from '../utils/websiteUrl';
+import { generateWebsiteUrl, validateWebsiteUrl } from '../utils/websiteUrl';
+import PasswordModal from '../components/PasswordModal';
 
 const categoryIcons = {
   cloud: <Cloud className="h-6 w-6" />,
@@ -20,6 +21,7 @@ const categoryTitles = {
 
 const ProjectDetail = () => {
   const { projectId } = useParams();
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
   
   // Find the project with the matching ID
   const project = projects.find((p) => p.id === projectId);
@@ -38,6 +40,19 @@ const ProjectDetail = () => {
   }
 
   const websiteUrl = generateWebsiteUrl(project.image, project.demoUrl);
+
+  const handleWebsiteClick = async () => {
+    const isValid = await validateWebsiteUrl(websiteUrl);
+    if (isValid) {
+      window.open(websiteUrl, '_blank');
+    } else {
+      setShowPasswordModal(true);
+    }
+  };
+
+  const handlePasswordSuccess = () => {
+    window.open(websiteUrl, '_blank');
+  };
 
   // Render project details if found
   return (
@@ -97,15 +112,13 @@ const ProjectDetail = () => {
           </div>
           
           <div className="flex flex-wrap gap-4">
-            <a 
-              href={websiteUrl}
+            <button 
+              onClick={handleWebsiteClick}
               className="button-primary flex items-center"
-              target="_blank"
-              rel="noopener noreferrer"
             >
               <ExternalLink size={18} className="mr-2" />
               View Website
-            </a>
+            </button>
             {project.codeUrl && (
               <a 
                 href={project.codeUrl}
@@ -121,6 +134,13 @@ const ProjectDetail = () => {
           </div>
         </div>
       </div>
+
+      <PasswordModal
+        isOpen={showPasswordModal}
+        onClose={() => setShowPasswordModal(false)}
+        onSuccess={handlePasswordSuccess}
+        projectTitle={project.title}
+      />
     </div>
   );
 };
