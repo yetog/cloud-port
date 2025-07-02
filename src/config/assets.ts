@@ -9,26 +9,42 @@ export const getAssetUrl = (path: string): string => {
   return `${IONOS_CONFIG.endpoint}/${IONOS_CONFIG.bucket_name}/${path}`;
 };
 
-// Asset paths - you can update these when you upload your images
+// Asset paths - using your uploaded IONOS bucket images
 export const ASSETS = {
   apps: {
-    cloudLlmAssistant: getAssetUrl('apps/cloud-llm-assistant.png'),
-    wolfAiAssistant: getAssetUrl('apps/wolf-ai-assistant.png'),
+    cloudLlmAssistant: getAssetUrl('apps/Ashley.png'),
+    wolfAiAssistant: getAssetUrl('apps/Wolf.png'),
   },
   projects: {
-    // Placeholder paths for existing projects - replace with actual uploaded images
-    cloudMigration: getAssetUrl('projects/cloud-migration.jpg'),
-    devopsPipeline: getAssetUrl('projects/devops-pipeline.jpg'),
-    cloudSecurity: getAssetUrl('projects/cloud-security.jpg'),
-    scalableArchitecture: getAssetUrl('projects/scalable-architecture.jpg'),
-    serverlessApi: getAssetUrl('projects/serverless-api.jpg'),
-    nextjsHosting: getAssetUrl('projects/nextjs-hosting.jpg'),
-    artExhibition: getAssetUrl('projects/art-exhibition.jpg'),
-    mixedMediaSalon: getAssetUrl('projects/mixed-media-salon.jpg'),
-    galleryTech: getAssetUrl('projects/gallery-tech.jpg'),
-    musicProduction: getAssetUrl('projects/music-production.jpg'),
-    remoteMix: getAssetUrl('projects/remote-mix.jpg'),
-    immersiveAudio: getAssetUrl('projects/immersive-audio.jpg'),
+    // All project images from your uploads
+    multipleNatures: getAssetUrl('projects/multiplenatures.png'),
+    triuneEntertainment: getAssetUrl('projects/triuneentertainment.png'),
+    ta2Music: getAssetUrl('projects/www.ta2music.png'),
+    abtechExpress: getAssetUrl('projects/abtechexpressshipping.png'),
+    reflxnAesthetics: getAssetUrl('projects/reflxnsaesthetics.png'),
+    cornerstoneAppliance: getAssetUrl('projects/cornerstoneappliancetrainingcourse.png'),
+    eloWellness: getAssetUrl('projects/elowellnessretreat.png'),
+    chrisAppliance: getAssetUrl('projects/chrisappliancecompany.png'),
+    auroraResearch: getAssetUrl('projects/auroraresearchresources.png'),
+    bridgeCorp: getAssetUrl('projects/thebridgecorp.png'),
+    corridorContemporary: getAssetUrl('projects/corridorcontemporary.png'),
+    artEmmanuel: getAssetUrl('projects/artemmanuel.png'),
+    hayesCarpentry: getAssetUrl('projects/hayescarpentry.png'),
+    cmha: getAssetUrl('projects/cmha.png'),
+    pcdDover: getAssetUrl('projects/pcd-dover.png'),
+    achieveCmo: getAssetUrl('projects/achievecmo.png'),
+    zeartsGallery: getAssetUrl('projects/zearts.png'),
+    nutritionalParty: getAssetUrl('projects/thenutritionalpartybook.png'),
+    starfuraSpace: getAssetUrl('projects/starfura-space.png'),
+    cubbysCruises: getAssetUrl('projects/cubbyscruises.png'),
+    oww1Association: getAssetUrl('projects/oww1.png'),
+    blucciFurniture: getAssetUrl('projects/blucci.png'),
+    iyfeiEntertainment: getAssetUrl('projects/iyfei.png'),
+    agnesMas: getAssetUrl('projects/agnesmasdexaxars.png'),
+    wraRealty: getAssetUrl('projects/wrarealty.png'),
+    musicWorks: getAssetUrl('projects/musicworksnyc.png'),
+    hudsonBoxing: getAssetUrl('projects/hudsonboxinggym.png'),
+    castellLp: getAssetUrl('projects/castelllp.png'),
   },
   profile: {
     avatar: getAssetUrl('profile/avatar.jpg'),
