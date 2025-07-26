@@ -20,6 +20,10 @@ export const generateWebsiteUrl = (image: string, demoUrl?: string): string => {
     return 'https://www.ta2music.com';
   }
   
+  if (filename === 'zen-reset') {
+    return 'http://zaylegend.com/zen-reset';
+  }
+  
   // Default case: filename + .com
   return `https://${filename}.com`;
 };
