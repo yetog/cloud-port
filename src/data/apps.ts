@@ -28,5 +28,14 @@ export const apps: App[] = [
     image: ASSETS.apps.wolfAiAssistant,
     tags: ['AI Assistant', 'TTS', 'MCP', 'HuggingFace'],
     appUrl: 'https://huggingface.co/spaces/Agents-MCP-Hackathon/Wolf-AI-yetog',
+  },
+  {
+    id: 'zen-reset-meditation',
+    title: '🧘 Zen Reset - Meditation App',
+    description: 'A minimalist meditation web app designed to create calming experiences through guided audio. Built with Docker, optimized for fast loading, portable deployment, and always-on availability via Linux VM.',
+    image: ASSETS.apps.zenReset,
+    tags: ['React', 'Docker', 'NGINX', 'Ubuntu', 'Meditation', 'Audio'],
+    appUrl: 'http://zaylegend.com/zen-reset',
+    githubUrl: 'https://github.com/zaylegend/zen-reset',
   }
 ];

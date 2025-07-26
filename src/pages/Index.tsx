@@ -16,8 +16,8 @@ const Index = () => {
         {/* Main content */}
         <Hero />
         <About />
-        <Projects />
         <Apps />
+        <Projects />
         <Contact />
         <Footer />
       </main>

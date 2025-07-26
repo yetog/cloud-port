@@ -16,6 +16,7 @@ export const ASSETS = {
   apps: {
     cloudLlmAssistant: getAssetUrl('apps/Ashley.png'),
     wolfAiAssistant: getAssetUrl('apps/Wolf.png'),
+    zenReset: getAssetUrl('apps/zen-reset.png'),
   },
   projects: {
     // All project images from your uploads - fixed paths to match actual uploaded files
