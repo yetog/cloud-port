@@ -1,1 +1,399 @@
+name: Deploy Portfolio to Server
 
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch: # Allow manual triggering
+
+env:
+  NODE_VERSION: '18'
+  PORTFOLIO_DIR: '/var/www/zaylegend/portfolio'
+  BACKUP_DIR: '/var/www/zaylegend/backups'
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Security & Dependency Scan
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run security audit
+      run: npm audit --audit-level moderate
+
+    - name: Check for outdated dependencies
+      run: npm outdated || true
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    name: Build & Test Portfolio
+    needs: security-scan
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Setup and build apps
+      run: |
+        # Make scripts executable
+        chmod +x scripts/*.sh
+        
+        # Setup and build apps if scripts exist
+        if [ -f "scripts/setup-apps.sh" ]; then
+          echo "🔧 Setting up submodule apps..."
+          ./scripts/setup-apps.sh
+        fi
+        
+        if [ -f "scripts/build-apps.sh" ]; then
+          echo "🔨 Building submodule apps..."
+          ./scripts/build-apps.sh
+        fi
+
+    - name: Build main portfolio
+      run: |
+        echo "🏗️ Building main portfolio..."
+        npm run build
+        
+        # Verify build output
+        if [ ! -d "dist" ]; then
+          echo "❌ Build failed: No dist directory created"
+          exit 1
+        fi
+        
+        if [ ! -f "dist/index.html" ]; then
+          echo "❌ Build failed: No index.html in dist"
+          exit 1
+        fi
+        
+        echo "✅ Build verification passed"
+        ls -la dist/
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: portfolio-build
+        path: dist/
+        retention-days: 1
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to Production Server
+    needs: build-and-test
+    environment: production
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: portfolio-build
+        path: dist/
+
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_PORT || 22 }}
+        timeout: 300s
+        command_timeout: 30m
+        script: |
+          set -e
+          
+          # Configuration
+          PORTFOLIO_DIR="${{ env.PORTFOLIO_DIR }}"
+          BACKUP_DIR="${{ env.BACKUP_DIR }}"
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          DEPLOY_LOG="/var/log/portfolio-deploy.log"
+          
+          # Logging function
+          log() {
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$DEPLOY_LOG"
+          }
+          
+          log "🚀 Starting deployment at $(date)"
+          log "📝 Commit: $(cd "$PORTFOLIO_DIR" && git rev-parse HEAD || echo 'unknown')"
+          
+          # Create backup directory
+          mkdir -p "$BACKUP_DIR"
+          
+          # Create backup of current deployment
+          if [ -d "$PORTFOLIO_DIR" ]; then
+            log "📦 Creating backup..."
+            cp -r "$PORTFOLIO_DIR" "$BACKUP_DIR/portfolio-backup-$TIMESTAMP"
+            log "✅ Backup created: $BACKUP_DIR/portfolio-backup-$TIMESTAMP"
+          fi
+          
+          # Navigate to portfolio directory
+          cd "$PORTFOLIO_DIR"
+          
+          # Check if directory is a git repository
+          if [ ! -d ".git" ]; then
+            log "❌ Error: $PORTFOLIO_DIR is not a git repository"
+            exit 1
+          fi
+          
+          # Stash any local changes
+          log "💾 Stashing local changes..."
+          git stash push -m "Auto-stash before deployment $TIMESTAMP" || true
+          
+          # Pull latest changes with error handling
+          log "⬇️ Pulling latest changes..."
+          if ! git fetch origin; then
+            log "❌ Error: Failed to fetch from origin"
+            exit 1
+          fi
+          
+          if ! git reset --hard origin/main; then
+            log "❌ Error: Failed to reset to origin/main"
+            exit 1
+          fi
+          
+          # Update submodules
+          log "🔄 Updating submodules..."
+          if ! git submodule update --init --recursive --remote; then
+            log "❌ Error: Failed to update submodules"
+            exit 1
+          fi
+          
+          # Check Node.js version
+          log "📋 Checking Node.js version..."
+          node_version=$(node --version)
+          log "Node.js version: $node_version"
+          
+          # Install dependencies
+          log "📦 Installing dependencies..."
+          if ! npm ci --production=false; then
+            log "❌ Error: Failed to install dependencies"
+            exit 1
+          fi
+          
+          # Setup and build apps
+          log "🔨 Building applications..."
+          if [ -f "scripts/setup-apps.sh" ]; then
+            chmod +x scripts/setup-apps.sh
+            if ! ./scripts/setup-apps.sh; then
+              log "❌ Error: Failed to setup apps"
+              exit 1
+            fi
+          fi
+          
+          if [ -f "scripts/build-apps.sh" ]; then
+            chmod +x scripts/build-apps.sh
+            if ! ./scripts/build-apps.sh; then
+              log "❌ Error: Failed to build apps"
+              exit 1
+            fi
+          fi
+          
+          # Build main portfolio
+          log "🏗️ Building main portfolio..."
+          if ! npm run build; then
+            log "❌ Error: Failed to build main portfolio"
+            exit 1
+          fi
+          
+          # Verify build output
+          if [ ! -d "dist" ]; then
+            log "❌ Error: No dist directory created"
+            exit 1
+          fi
+          
+          if [ ! -f "dist/index.html" ]; then
+            log "❌ Error: No index.html in dist"
+            exit 1
+          fi
+          
+          # Get build info
+          build_size=$(du -sh dist/ | cut -f1)
+          file_count=$(find dist/ -type f | wc -l)
+          log "📊 Build completed: $build_size, $file_count files"
+          
+          # Set proper permissions
+          log "🔐 Setting permissions..."
+          sudo chown -R langchain:www-data /var/www/zaylegend
+          sudo chmod -R 755 "$PORTFOLIO_DIR/dist"
+          sudo chmod -R 755 "$PORTFOLIO_DIR/public"
+          
+          # Test nginx configuration
+          log "🧪 Testing nginx configuration..."
+          if ! sudo nginx -t; then
+            log "❌ Error: Nginx configuration test failed"
+            exit 1
+          fi
+          
+          # Reload nginx gracefully
+          log "🔄 Reloading nginx..."
+          if ! sudo systemctl reload nginx; then
+            log "❌ Error: Failed to reload nginx"
+            exit 1
+          fi
+          
+          # Wait for nginx to reload
+          sleep 2
+          
+          # Comprehensive deployment verification
+          log "✅ Verifying deployment..."
+          
+          # Test local response
+          if ! curl -s -o /dev/null -w "%{http_code}" http://localhost | grep -q "200\|301\|302"; then
+            log "❌ Error: Local site not responding properly"
+            exit 1
+          fi
+          
+          # Test external response
+          if ! curl -s -o /dev/null -w "%{http_code}" https://zaylegend.com | grep -q "200"; then
+            log "⚠️ Warning: External site may not be responding properly"
+          fi
+          
+          # Test some key apps
+          for app in "questful-living-adventure" "media-magic-streamer" "script-scribe-ai-editor"; do
+            if [ -d "public/$app" ]; then
+              if curl -s -o /dev/null -w "%{http_code}" "http://localhost/$app/" | grep -q "200"; then
+                log "✅ App $app responding correctly"
+              else
+                log "⚠️ Warning: App $app may not be responding"
+              fi
+            fi
+          done
+          
+          # Clean up old backups (keep last 5)
+          log "🧹 Cleaning up old backups..."
+          cd "$BACKUP_DIR"
+          backup_count=$(ls -1 | grep "portfolio-backup-" | wc -l)
+          if [ "$backup_count" -gt 5 ]; then
+            ls -t | grep "portfolio-backup-" | tail -n +6 | xargs -r rm -rf
+            log "🗑️ Cleaned up $((backup_count - 5)) old backups"
+          fi
+          
+          # Generate content hash for cache verification
+          cd "$PORTFOLIO_DIR"
+          content_hash=$(find dist/ -type f -exec md5sum {} \; | sort | md5sum | cut -d' ' -f1)
+          log "🔍 Content hash: $content_hash"
+          echo "$(date '+%Y-%m-%d %H:%M:%S') - $content_hash" >> /var/log/portfolio-hashes.log
+          
+          log "🚀 Deployment completed successfully at $(date)"
+          log "🌐 Visit https://zaylegend.com to see your updated site"
+          
+          # Show recent commits
+          log "📝 Recent commits deployed:"
+          git log --oneline -3 | while read line; do log "  $line"; done
+          
+          # Final health check
+          if curl -s https://zaylegend.com | grep -q "<!DOCTYPE html>"; then
+            log "🎉 Final verification: Site is live and serving HTML content"
+          else
+            log "⚠️ Final verification: Site may have issues"
+          fi
+
+    - name: Deployment health check
+      if: always()
+      run: |
+        echo "🔍 Running post-deployment health checks..."
+        
+        # Test main site
+        if curl -s -f https://zaylegend.com >/dev/null; then
+          echo "✅ Main site is accessible"
+        else
+          echo "❌ Main site is not accessible"
+          exit 1
+        fi
+        
+        # Test a few key apps
+        for app in questful-living-adventure media-magic-streamer script-scribe-ai-editor; do
+          if curl -s -f "https://zaylegend.com/$app/" >/dev/null; then
+            echo "✅ App $app is accessible"
+          else
+            echo "⚠️ App $app may not be accessible"
+          fi
+        done
+
+    - name: Notify deployment status
+      if: always()
+      run: |
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "🎉 Deployment completed successfully!"
+          echo "🌐 Site URL: https://zaylegend.com"
+          echo "📊 All systems operational"
+        else
+          echo "❌ Deployment failed!"
+          echo "🔍 Check logs for details"
+          echo "🚨 Site may be in inconsistent state"
+        fi
+
+  rollback:
+    runs-on: ubuntu-latest
+    name: Emergency Rollback
+    if: failure() && github.event_name != 'workflow_dispatch'
+    needs: deploy
+    steps:
+    - name: Rollback deployment
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        port: ${{ secrets.SERVER_PORT || 22 }}
+        script: |
+          set -e
+          
+          BACKUP_DIR="${{ env.BACKUP_DIR }}"
+          PORTFOLIO_DIR="${{ env.PORTFOLIO_DIR }}"
+          
+          echo "🚨 Initiating emergency rollback..."
+          
+          # Find latest backup
+          latest_backup=$(ls -t "$BACKUP_DIR" | head -1)
+          
+          if [ -n "$latest_backup" ] && [ -d "$BACKUP_DIR/$latest_backup" ]; then
+            echo "📦 Rolling back to: $latest_backup"
+            
+            # Backup current state
+            mv "$PORTFOLIO_DIR" "$PORTFOLIO_DIR-failed-$(date +%s)" || true
+            
+            # Restore from backup
+            cp -r "$BACKUP_DIR/$latest_backup" "$PORTFOLIO_DIR"
+            
+            # Set permissions
+            sudo chown -R langchain:www-data /var/www/zaylegend
+            sudo chmod -R 755 "$PORTFOLIO_DIR/dist"
+            
+            # Reload nginx
+            sudo systemctl reload nginx
+            
+            echo "✅ Rollback completed"
+            echo "🌐 Site should be restored to previous working state"
+          else
+            echo "❌ No backup found for rollback"
+            exit 1
+          fi
