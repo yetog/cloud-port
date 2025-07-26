@@ -1,0 +1,31 @@
+name: 🚀 Auto-Deploy Portfolio
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔐 Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_KEY }}
+
+      - name: 🚀 SSH & Pull Updates
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ${{ secrets.APP_DIR }}
+            git pull origin main
+
+            # Optional: build or restart commands depending on your tech stack
+            # For example, if using a static site generator or React:
+            # npm install && npm run build
+
+            # If using PM2 or another process manager:
+            # pm2 restart portfolio-app
+
+            exit
+          EOF
