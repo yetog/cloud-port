@@ -30,6 +30,18 @@ export default defineConfig(({ mode }) => ({
   build: {
     // Ensure apps are copied to dist
     copyPublicDir: true,
+    // Enable source maps for debugging
+    sourcemap: true,
+    // Add cache busting with timestamp
+    rollupOptions: {
+      output: {
+        manualChunks: undefined,
+        // Add timestamp to chunk names for cache busting
+        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`
+      }
+    }
   },
   // Configure routing for apps
   define: {
