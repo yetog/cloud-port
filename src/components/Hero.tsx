@@ -14,6 +14,7 @@ const Hero = () => {
           </p>
           <p className="mt-4 text-lg text-muted-foreground animate-fade-in" style={{ animationDelay: '0.4s' }}>
             Helping companies modernize systems, scale efficiently, and move confidently into the future.
+            <span className="block mt-1 text-sm opacity-80">🚀 Auto-deployment pipeline active</span>
           </p>
           <div className="mt-10 animate-fade-in" style={{ animationDelay: '0.6s' }}>
             <a 
