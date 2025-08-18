@@ -17,6 +17,11 @@ export const ASSETS = {
     cloudLlmAssistant: getAssetUrl('apps/Ashley.png'),
     wolfAiAssistant: getAssetUrl('apps/Wolf.png'),
     zenReset: getAssetUrl('apps/zen-reset.png'),
+    chordGenesis: getAssetUrl('apps/chord-genesis.jpg'),
+    spriteGen: getAssetUrl('apps/spritegen.jpg'),
+    djVisualizer: getAssetUrl('apps/dj-visualizer.jpg'),
+    fineLine: getAssetUrl('apps/fineline.jpg'),
+    gameHub: getAssetUrl('apps/game-hub.jpg'),
   },
   projects: {
     // All project images from your uploads - fixed paths to match actual uploaded files
