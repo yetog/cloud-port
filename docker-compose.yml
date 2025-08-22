@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  chord-genesis:
+    build: 
+      context: /var/www/zaylegend/docker-apps/chord-genesis
+      dockerfile: Dockerfile
+    container_name: chord-genesis
+    ports:
+      - "3001:3000"
+    restart: unless-stopped
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+
+  spritegen:
+    build: 
+      context: /var/www/zaylegend/docker-apps/spritegen
+      dockerfile: Dockerfile
+    container_name: spritegen
+    ports:
+      - "3002:3000"
+    restart: unless-stopped
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+
+  dj-visualizer:
+    build: 
+      context: /var/www/zaylegend/docker-apps/dj-visualizer
+      dockerfile: Dockerfile
+    container_name: dj-visualizer
+    ports:
+      - "3003:3000"
+    restart: unless-stopped
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+
+  fineline:
+    build: 
+      context: /var/www/zaylegend/docker-apps/fineline
+      dockerfile: Dockerfile
+    container_name: fineline
+    ports:
+      - "3004:3000"
+    restart: unless-stopped
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+
+  game-hub:
+    build: 
+      context: /var/www/zaylegend/docker-apps/game-hub
+      dockerfile: Dockerfile
+    container_name: game-hub
+    ports:
+      - "3005:3000"
+    restart: unless-stopped
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+
+networks:
+  portfolio-network:
+    driver: bridge
+
+volumes:
+  app-data:
+    driver: local
