@@ -1,0 +1,60 @@
+name: Deploy Portfolio (Simple)
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GH_TOKEN }}
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build portfolio
+      run: npm run build
+      
+    - name: Deploy via SCP
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: 66.179.240.58
+        username: langchain
+        password: ${{ secrets.SERVER_PASSWORD }}
+        source: "dist/*"
+        target: "/tmp/portfolio-deploy/"
+        strip_components: 1
+        
+    - name: Update server files
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: 66.179.240.58
+        username: langchain  
+        password: ${{ secrets.SERVER_PASSWORD }}
+        script: |
+          # Backup current version
+          sudo cp -r /var/www/zaylegend/portfolio/dist /var/www/zaylegend/portfolio/dist-backup-$(date +%Y%m%d-%H%M%S)
+          
+          # Copy new files
+          sudo cp -r /tmp/portfolio-deploy/* /var/www/zaylegend/portfolio/dist/
+          
+          # Set ownership
+          sudo chown -R www-data:www-data /var/www/zaylegend/portfolio/dist
+          
+          # Cleanup
+          rm -rf /tmp/portfolio-deploy
+          
+          # Test deployment
+          curl -f http://localhost:8080 && echo "✅ Deployment successful" || echo "❌ Deployment failed"
