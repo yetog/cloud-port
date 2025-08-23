@@ -1,0 +1,102 @@
+name: Deploy Apps
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'apps/**'
+  workflow_dispatch:
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.changes.outputs.apps }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+        
+    - name: Detect changed apps
+      id: changes
+      run: |
+        # Get list of changed apps
+        changed_apps=$(git diff --name-only HEAD~1 HEAD | grep '^apps/' | cut -d'/' -f2 | sort -u | tr '\n' ' ')
+        echo "apps=$changed_apps" >> $GITHUB_OUTPUT
+        echo "Changed apps: $changed_apps"
+
+  deploy-apps:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.apps != ''
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: ${{ fromJSON(needs.detect-changes.outputs.apps) }}
+        
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'apps/${{ matrix.app }}/package-lock.json'
+        
+    - name: Build app
+      run: |
+        cd apps/${{ matrix.app }}
+        npm install
+        npm run build
+        
+    - name: Deploy app to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: 66.179.240.58
+        username: langchain
+        key: ${{ secrets.DEPLOY_SSH_KEY }}
+        script: |
+          # Create backup
+          sudo cp -r /var/www/zaylegend/apps/${{ matrix.app }} /var/www/zaylegend/apps/${{ matrix.app }}-backup-$(date +%Y%m%d-%H%M%S)
+          
+          # Pull latest code
+          cd /var/www/zaylegend
+          sudo git pull origin main
+          
+          # Build and deploy app
+          cd apps/${{ matrix.app }}
+          sudo npm install
+          sudo npm run build
+          
+          # Restart Docker container
+          cd /var/www/zaylegend/apps
+          sudo docker-compose up -d --build ${{ matrix.app }}
+          
+          # Set proper ownership
+          sudo chown -R www-data:www-data /var/www/zaylegend/apps/${{ matrix.app }}
+          
+          # Health check
+          sleep 10
+          app_port=""
+          case "${{ matrix.app }}" in
+            "chord-genesis") app_port="3001" ;;
+            "spritegen") app_port="3002" ;;
+            "dj-visualizer") app_port="3003" ;;
+            "fineline") app_port="3004" ;;
+            "game-hub") app_port="3005" ;;
+          esac
+          
+          if [ ! -z "$app_port" ]; then
+            curl -f http://localhost:$app_port || echo "Warning: ${{ matrix.app }} may not be responding on port $app_port"
+          fi
+          
+    - name: Notify deployment status
+      if: always()
+      run: |
+        if [ ${{ job.status }} == 'success' ]; then
+          echo "✅ ${{ matrix.app }} deployed successfully"
+        else
+          echo "❌ ${{ matrix.app }} deployment failed"
+        fi

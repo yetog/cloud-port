@@ -1,0 +1,18 @@
+[submodule "public/questful-living-adventure"]
+	path = public/questful-living-adventure
+	url = https://github.com/yetog/questful-living-adventure.git
+[submodule "public/media-magic-streamer"]
+	path = public/media-magic-streamer
+	url = https://github.com/yetog/media-magic-streamer.git
+[submodule "public/script-scribe-ai-editor"]
+	path = public/script-scribe-ai-editor
+	url = https://github.com/yetog/script-scribe-ai-editor.git
+[submodule "public/playful-space-arcade"]
+	path = public/playful-space-arcade
+	url = https://github.com/yetog/playful-space-arcade.git
+[submodule "public/pdf-saga-summarize"]
+	path = public/pdf-saga-summarize
+	url = https://github.com/yetog/pdf-saga-summarize.git
+[submodule "public/serene-chord-scapes"]
+	path = public/serene-chord-scapes
+	url = https://github.com/yetog/serene-chord-scapes.git
