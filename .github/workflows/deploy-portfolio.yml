@@ -1,0 +1,62 @@
+name: Deploy Portfolio
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Build portfolio
+      run: npm run build
+      
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: 66.179.240.58
+        username: langchain
+        key: ${{ secrets.DEPLOY_SSH_KEY }}
+        script: |
+          # Create backup
+          sudo cp -r /var/www/zaylegend/portfolio /var/www/zaylegend/portfolio-backup-$(date +%Y%m%d-%H%M%S)
+          
+          # Pull latest code
+          cd /var/www/zaylegend/portfolio
+          sudo git pull origin main
+          
+          # Install dependencies and build
+          sudo npm install
+          sudo npm run build
+          
+          # Set proper ownership
+          sudo chown -R www-data:www-data /var/www/zaylegend/portfolio
+          
+          # Reload nginx
+          sudo systemctl reload nginx
+          
+          # Health check
+          curl -f http://localhost:8080 || echo "Warning: Portfolio may not be responding"
+          
+    - name: Notify deployment status
+      if: always()
+      run: |
+        if [ ${{ job.status }} == 'success' ]; then
+          echo "✅ Portfolio deployed successfully to https://zaylegend.com"
+        else
+          echo "❌ Portfolio deployment failed"
+        fi
