@@ -1,0 +1,23 @@
+name: Test Server Connection
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Test SSH Connection
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: 66.179.240.58
+        username: langchain
+        key: ${{ secrets.DEPLOY_SSH_KEY }}
+        script: |
+          echo "✅ SSH connection successful!"
+          echo "Current directory: $(pwd)"
+          echo "User: $(whoami)"
+          echo "Portfolio directory exists: $(ls -la /var/www/zaylegend/ | grep portfolio || echo 'NOT FOUND')"
+          echo "Node.js version: $(node --version || echo 'Node.js not found')"
+          echo "NPM version: $(npm --version || echo 'NPM not found')"
