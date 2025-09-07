@@ -84,5 +84,14 @@ export const apps: App[] = [
     tags: ['Meditation', 'Audio', 'Docker'],
     appUrl: 'https://zaylegend.com/zen-reset',
     githubUrl: 'https://github.com/zaylegend/zen-reset',
+  },
+  {
+    id: 'knowledge-base',
+    title: '📚 Knowledge Base',
+    description: 'A comprehensive personal knowledge repository covering technology, business, philosophy, and life insights. Organized collection of research, notes, and learnings across diverse topics.',
+    image: ASSETS.apps.zenReset, // Temporary - you can add a proper image later
+    tags: ['Knowledge', 'Documentation', 'Reference'],
+    appUrl: 'https://zaylegend.com/knowledge-base',
+    githubUrl: 'https://github.com/yetog/knowledge-base',
   }
 ];

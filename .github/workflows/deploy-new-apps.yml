@@ -1,0 +1,240 @@
+name: Deploy New Apps (Enhanced)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'apps/**'
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: 'Specific app to deploy'
+        required: false
+        type: string
+      force_deploy:
+        description: 'Force deployment even if no changes detected'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.changes.outputs.apps }}
+      has_changes: ${{ steps.changes.outputs.has_changes }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 2
+        
+    - name: Detect changed apps
+      id: changes
+      run: |
+        if [ "${{ github.event.inputs.app_name }}" != "" ]; then
+          # Manual workflow dispatch with specific app
+          apps="[\"${{ github.event.inputs.app_name }}\"]"
+          has_changes="true"
+          echo "Manual deployment requested for: ${{ github.event.inputs.app_name }}"
+        elif [ "${{ github.event.inputs.force_deploy }}" == "true" ]; then
+          # Force deploy all apps
+          cd apps
+          apps=$(ls -d */ 2>/dev/null | sed 's#/##g' | jq -R . | jq -s . || echo '[]')
+          has_changes="true"
+          echo "Force deployment of all apps"
+        else
+          # Detect changes from git
+          changed_files=$(git diff --name-only HEAD~1 HEAD | grep '^apps/' || echo "")
+          if [ -n "$changed_files" ]; then
+            changed_apps=$(echo "$changed_files" | cut -d'/' -f2 | sort -u)
+            apps=$(echo "$changed_apps" | jq -R . | jq -s .)
+            has_changes="true"
+            echo "Changed apps detected: $changed_apps"
+          else
+            apps="[]"
+            has_changes="false"
+            echo "No app changes detected"
+          fi
+        fi
+        
+        echo "apps=$apps" >> $GITHUB_OUTPUT
+        echo "has_changes=$has_changes" >> $GITHUB_OUTPUT
+        echo "Apps to deploy: $apps"
+
+  deploy-apps:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: ${{ fromJSON(needs.detect-changes.outputs.apps) }}
+      fail-fast: false
+        
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'apps/${{ matrix.app }}/package-lock.json'
+        
+    - name: Validate app structure
+      run: |
+        if [ ! -d "apps/${{ matrix.app }}" ]; then
+          echo "❌ App directory not found: apps/${{ matrix.app }}"
+          exit 1
+        fi
+        
+        if [ ! -f "apps/${{ matrix.app }}/package.json" ]; then
+          echo "❌ package.json not found in apps/${{ matrix.app }}"
+          exit 1
+        fi
+        
+        echo "✅ App structure validated for ${{ matrix.app }}"
+        
+    - name: Build app locally (validation)
+      run: |
+        cd apps/${{ matrix.app }}
+        npm install
+        npm run build
+        echo "✅ Local build successful for ${{ matrix.app }}"
+        
+    - name: Deploy app to server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: 66.179.240.58
+        username: langchain
+        key: ${{ secrets.DEPLOY_SSH_KEY }}
+        timeout: 300s
+        script: |
+          set -e
+          
+          echo "🚀 Starting deployment of ${{ matrix.app }}"
+          
+          # Check if our deployment script exists
+          if [ ! -f "/var/www/zaylegend/scripts/add-new-app.sh" ]; then
+            echo "❌ Deployment script not found"
+            exit 1
+          fi
+          
+          # Get app repository URL (assuming GitHub pattern)
+          app_repo="https://github.com/$(whoami)/${{ matrix.app }}"
+          
+          # Determine next available port
+          app_port=""
+          case "${{ matrix.app }}" in
+            "zen-reset") app_port="8081" ;;
+            "chord-genesis") app_port="3002" ;;
+            "fineline") app_port="3003" ;;
+            "game-hub") app_port="3004" ;;
+            "dj-visualizer") app_port="3005" ;;
+            "spritegen") app_port="3006" ;;
+            *) 
+              # Find next available port
+              for port in {3007..3020}; do
+                if ! netstat -tuln | grep -q ":$port "; then
+                  app_port="$port"
+                  break
+                fi
+              done
+              ;;
+          esac
+          
+          if [ -z "$app_port" ]; then
+            echo "❌ Could not determine port for ${{ matrix.app }}"
+            exit 1
+          fi
+          
+          echo "📡 Deploying ${{ matrix.app }} on port $app_port"
+          
+          # Use our enhanced deployment script
+          cd /var/www/zaylegend
+          
+          if [ -d "apps/${{ matrix.app }}" ]; then
+            # App exists, update it
+            cd "apps/${{ matrix.app }}"
+            sudo git pull origin main 2>/dev/null || sudo git pull origin master 2>/dev/null || echo "Could not pull updates"
+            
+            # Apply React Router fix if needed
+            if [ -f "src/App.tsx" ] && ! grep -q "basename=\"/${{ matrix.app }}\"" "src/App.tsx"; then
+              sudo sed -i 's/<BrowserRouter>/<BrowserRouter basename="\/${{ matrix.app }}">/g' src/App.tsx
+              echo "✅ Applied React Router basename fix"
+            fi
+            
+            # Build the app
+            sudo npm install
+            sudo npm run build
+            
+            # Rebuild Docker container
+            sudo docker stop ${{ matrix.app }} 2>/dev/null || true
+            sudo docker rm ${{ matrix.app }} 2>/dev/null || true
+            sudo docker build --build-arg VITE_BASE_PATH=/${{ matrix.app }}/ -t ${{ matrix.app }} .
+            sudo docker run -d --name ${{ matrix.app }} -p $app_port:80 ${{ matrix.app }}:latest
+            
+          else
+            # New app, use full deployment script
+            ./scripts/add-new-app.sh "${{ matrix.app }}" "$app_port" "$app_repo" "${{ matrix.app }}" "Deployed via GitHub Actions"
+          fi
+          
+          # Verify deployment
+          echo "🔍 Verifying deployment..."
+          sleep 15
+          
+          # Check container is running
+          if ! docker ps | grep -q "${{ matrix.app }}"; then
+            echo "❌ Container not running"
+            docker logs ${{ matrix.app }} --tail 20
+            exit 1
+          fi
+          
+          # Check local port
+          if ! curl -f "http://localhost:$app_port" >/dev/null 2>&1; then
+            echo "❌ App not responding on port $app_port"
+            exit 1
+          fi
+          
+          # Check public URL
+          if ! curl -f "https://zaylegend.com/${{ matrix.app }}/" >/dev/null 2>&1; then
+            echo "⚠️  App not accessible via public URL (nginx may need reload)"
+          fi
+          
+          echo "✅ ${{ matrix.app }} deployed successfully!"
+          
+    - name: Notify deployment status
+      if: always()
+      run: |
+        if [ ${{ job.status }} == 'success' ]; then
+          echo "✅ ${{ matrix.app }} deployed successfully to https://zaylegend.com/${{ matrix.app }}/"
+        else
+          echo "❌ ${{ matrix.app }} deployment failed"
+        fi
+
+  notify-completion:
+    needs: [detect-changes, deploy-apps]
+    if: always() && needs.detect-changes.outputs.has_changes == 'true'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deployment Summary
+      run: |
+        echo "## 🚀 Portfolio Deployment Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Apps processed:** ${{ needs.detect-changes.outputs.apps }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ needs.deploy-apps.result }}" == "success" ]; then
+          echo "✅ **Status:** All deployments successful" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Your apps should be live at:" >> $GITHUB_STEP_SUMMARY
+          for app in $(echo '${{ needs.detect-changes.outputs.apps }}' | jq -r '.[]'); do
+            echo "- https://zaylegend.com/$app/" >> $GITHUB_STEP_SUMMARY
+          done
+        else
+          echo "❌ **Status:** Some deployments failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Check the job logs for details." >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "_Deployed on $(date)_" >> $GITHUB_STEP_SUMMARY

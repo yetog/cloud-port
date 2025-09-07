@@ -59,37 +59,54 @@ jobs:
         key: ${{ secrets.DEPLOY_SSH_KEY }}
         script: |
           # Create backup
-          sudo cp -r /var/www/zaylegend/apps/${{ matrix.app }} /var/www/zaylegend/apps/${{ matrix.app }}-backup-$(date +%Y%m%d-%H%M%S)
+          sudo cp -r /var/www/zaylegend/apps/${{ matrix.app }} /var/www/zaylegend/apps/${{ matrix.app }}-backup-$(date +%Y%m%d-%H%M%S) 2>/dev/null || true
           
           # Pull latest code
-          cd /var/www/zaylegend
-          sudo git pull origin main
+          cd /var/www/zaylegend/apps/${{ matrix.app }}
+          sudo git pull origin main || sudo git pull origin master
           
-          # Build and deploy app
-          cd apps/${{ matrix.app }}
+          # Fix React Router configuration (add basename)
+          if [ -f "src/App.tsx" ] || [ -f "src/App.jsx" ]; then
+            if grep -q "BrowserRouter" src/App.*; then
+              sudo sed -i "s/<BrowserRouter>/<BrowserRouter basename=\"\/${{ matrix.app }}\">/g" src/App.* || true
+            fi
+          fi
+          
+          # Build app with correct base path
           sudo npm install
           sudo npm run build
           
-          # Restart Docker container
-          cd /var/www/zaylegend/apps
-          sudo docker-compose up -d --build ${{ matrix.app }}
+          # Get correct port for this app
+          app_port=""
+          case "${{ matrix.app }}" in
+            "zen-reset") app_port="8081" ;;
+            "chord-genesis") app_port="3002" ;;
+            "fineline") app_port="3003" ;;
+            "game-hub") app_port="3004" ;;
+            "dj-visualizer") app_port="3005" ;;
+            "spritegen") app_port="3006" ;;
+          esac
+          
+          # Stop and remove existing container
+          sudo docker stop ${{ matrix.app }} 2>/dev/null || true
+          sudo docker rm ${{ matrix.app }} 2>/dev/null || true
+          
+          # Build Docker image with correct base path
+          sudo docker build --build-arg VITE_BASE_PATH=/${{ matrix.app }}/ -t ${{ matrix.app }} .
+          
+          # Start new container
+          if [ ! -z "$app_port" ]; then
+            sudo docker run -d --name ${{ matrix.app }} -p $app_port:80 ${{ matrix.app }}:latest
+          fi
           
           # Set proper ownership
           sudo chown -R www-data:www-data /var/www/zaylegend/apps/${{ matrix.app }}
           
           # Health check
           sleep 10
-          app_port=""
-          case "${{ matrix.app }}" in
-            "chord-genesis") app_port="3001" ;;
-            "spritegen") app_port="3002" ;;
-            "dj-visualizer") app_port="3003" ;;
-            "fineline") app_port="3004" ;;
-            "game-hub") app_port="3005" ;;
-          esac
-          
           if [ ! -z "$app_port" ]; then
             curl -f http://localhost:$app_port || echo "Warning: ${{ matrix.app }} may not be responding on port $app_port"
+            curl -f https://zaylegend.com/${{ matrix.app }}/ || echo "Warning: ${{ matrix.app }} may not be accessible via nginx"
           fi
           
     - name: Notify deployment status
