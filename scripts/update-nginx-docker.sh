@@ -155,6 +155,12 @@ server {
         index index.html;
         try_files $uri $uri/ /zen-reset/index.html;
     }
+
+    location /knowledge-base {
+        root /var/www/zaylegend/apps;
+        index index.html;
+        try_files $uri $uri/ /knowledge-base/index.html;
+    }
 }
 EOF
 
