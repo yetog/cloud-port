@@ -93,5 +93,14 @@ export const apps: App[] = [
     tags: ['Knowledge', 'Documentation', 'Reference'],
     appUrl: 'https://zaylegend.com/knowledge-base',
     githubUrl: 'https://github.com/yetog/knowledge-base',
+  },
+  {
+    id: 'sensei-ai',
+    title: '🥋 Sensei AI',
+    description: 'Your GPT Trainer - Sensei AI helps you train GPT agents using your sources. Import JSON, TXT, MD, CSV and chat with citations for enhanced AI interactions.',
+    image: ASSETS.apps.zenReset, // Temporary - you can add a proper image later
+    tags: ['AI', 'Training', 'GPT', 'Citations'],
+    appUrl: 'https://sensei.zaylegend.com/',
+    githubUrl: 'https://github.com/yetog/sensei-ai',
   }
 ];
