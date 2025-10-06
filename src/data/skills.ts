@@ -11,6 +11,7 @@ export const skills: Skill[] = [
   { name: 'Network Infrastructure', level: 90, category: 'technical' },
   { name: 'Linux', level: 85, category: 'technical' },
   { name: 'Web Development', level: 75, category: 'technical' },
+  { name: 'AI Development', level: 65, category: 'technical' },
   
   // Cloud Platforms
   { name: 'IONOS', level: 90, category: 'cloud' },
