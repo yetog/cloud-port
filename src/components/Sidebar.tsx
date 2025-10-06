@@ -17,7 +17,7 @@ const Sidebar = () => {
 
   const navLinks: NavLink[] = [
     { name: 'About', href: '#about' },
-    { name: 'Apps', href: '/apps', isRoute: true },
+    { name: 'Apps', href: '#apps' },
     { name: 'Projects', href: '#projects' },
     { name: 'Contact', href: '#contact' },
   ];

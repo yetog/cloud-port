@@ -13,6 +13,25 @@ export interface App {
 }
 
 export const apps: App[] = [
+  // FEATURED APPS (First 5 - shown on main portfolio page)
+  {
+    id: 'sensei-ai',
+    title: '🥋 Sensei AI',
+    description: 'Your GPT Trainer - Sensei AI helps you train GPT agents using your sources. Import JSON, TXT, MD, CSV and chat with citations for enhanced AI interactions.',
+    image: ASSETS.apps.zenReset, // Temporary - you can add a proper image later
+    tags: ['AI', 'Training', 'GPT', 'Citations'],
+    appUrl: 'https://sensei.zaylegend.com/',
+    githubUrl: 'https://github.com/yetog/sensei-ai',
+  },
+  {
+    id: 'zen-reset-meditation',
+    title: '🧘 Zen Reset',
+    description: 'A minimalist meditation web app designed to create calming experiences through guided audio. Built with Docker, optimized for fast loading, portable deployment, and always-on availability via Linux VM.',
+    image: ASSETS.apps.zenReset,
+    tags: ['Meditation', 'Audio', 'Docker'],
+    appUrl: 'https://zaylegend.com/zen-reset',
+    githubUrl: 'https://github.com/zaylegend/zen-reset',
+  },
   {
     id: 'chord-genesis',
     title: '🎵 Chord Genesis',
@@ -22,6 +41,26 @@ export const apps: App[] = [
     appUrl: 'https://zaylegend.com/chord-genesis',
     githubUrl: 'https://github.com/yetog/chord-genesis',
   },
+  {
+    id: 'wolf-ai-assistant',
+    title: '🐺 Wolf AI Assistant', 
+    description: 'Advanced AI assistant with TTS and MCP integration, featuring sophisticated conversational capabilities and voice interaction.',
+    image: ASSETS.apps.wolfAiAssistant,
+    tags: ['AI', 'Assistant', 'TTS'],
+    appUrl: 'https://huggingface.co/spaces/Agents-MCP-Hackathon/Wolf-AI-yetog',
+    githubUrl: 'https://github.com/yetog/wolf-ai-assistant',
+  },
+  {
+    id: 'voice-assistant',
+    title: '🎙️ Voice Assistant',
+    description: 'Advanced conversational AI with real-time voice interaction powered by ElevenLabs and IONOS AI. Features voice-to-voice communication, WebSocket streaming, and intelligent coaching evaluations.',
+    image: ASSETS.apps.zenReset, // Temporary - you can add a proper image later
+    tags: ['AI', 'Voice', 'Real-time', 'ElevenLabs'],
+    appUrl: 'https://zaylegend.com/voice-assistant',
+    githubUrl: 'https://github.com/yetog/voice-agent-11',
+  },
+  
+  // OTHER APPS
   {
     id: 'cloud-llm-assistant',
     title: '🤖 Cloud LLM Assistant',
@@ -68,24 +107,6 @@ export const apps: App[] = [
     githubUrl: 'https://github.com/yetog/spritegen',
   },
   {
-    id: 'wolf-ai-assistant',
-    title: '🐺 Wolf AI Assistant', 
-    description: 'Advanced AI assistant with TTS and MCP integration, featuring sophisticated conversational capabilities and voice interaction.',
-    image: ASSETS.apps.wolfAiAssistant,
-    tags: ['AI', 'Assistant', 'TTS'],
-    appUrl: 'https://huggingface.co/spaces/Agents-MCP-Hackathon/Wolf-AI-yetog',
-    githubUrl: 'https://github.com/yetog/wolf-ai-assistant',
-  },
-  {
-    id: 'zen-reset-meditation',
-    title: '🧘 Zen Reset',
-    description: 'A minimalist meditation web app designed to create calming experiences through guided audio. Built with Docker, optimized for fast loading, portable deployment, and always-on availability via Linux VM.',
-    image: ASSETS.apps.zenReset,
-    tags: ['Meditation', 'Audio', 'Docker'],
-    appUrl: 'https://zaylegend.com/zen-reset',
-    githubUrl: 'https://github.com/zaylegend/zen-reset',
-  },
-  {
     id: 'knowledge-base',
     title: '📚 Knowledge Base',
     description: 'A comprehensive personal knowledge repository covering technology, business, philosophy, and life insights. Organized collection of research, notes, and learnings across diverse topics.',
@@ -93,23 +114,5 @@ export const apps: App[] = [
     tags: ['Knowledge', 'Documentation', 'Reference'],
     appUrl: 'https://zaylegend.com/knowledge-base',
     githubUrl: 'https://github.com/yetog/knowledge-base',
-  },
-  {
-    id: 'sensei-ai',
-    title: '🥋 Sensei AI',
-    description: 'Your GPT Trainer - Sensei AI helps you train GPT agents using your sources. Import JSON, TXT, MD, CSV and chat with citations for enhanced AI interactions.',
-    image: ASSETS.apps.zenReset, // Temporary - you can add a proper image later
-    tags: ['AI', 'Training', 'GPT', 'Citations'],
-    appUrl: 'https://sensei.zaylegend.com/',
-    githubUrl: 'https://github.com/yetog/sensei-ai',
-  },
-  {
-    id: 'voice-assistant',
-    title: '🎙️ Voice Assistant',
-    description: 'Advanced conversational AI with real-time voice interaction powered by ElevenLabs and IONOS AI. Features voice-to-voice communication, WebSocket streaming, and intelligent coaching evaluations.',
-    image: ASSETS.apps.zenReset, // Temporary - you can add a proper image later
-    tags: ['AI', 'Voice', 'Real-time', 'ElevenLabs'],
-    appUrl: 'https://zaylegend.com/voice-assistant',
-    githubUrl: 'https://github.com/yetog/voice-agent-11',
   }
 ];

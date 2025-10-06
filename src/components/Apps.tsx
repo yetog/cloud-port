@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/carousel";
 
 const Apps = () => {
-  // Featured apps - show only the first 4 apps
-  const featuredApps = apps.slice(0, 4);
+  // Featured apps - show only the first 5 apps
+  const featuredApps = apps.slice(0, 5);
 
   return (
     <section id="apps" className="py-20 md:py-28">
