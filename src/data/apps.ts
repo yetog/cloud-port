@@ -102,5 +102,14 @@ export const apps: App[] = [
     tags: ['AI', 'Training', 'GPT', 'Citations'],
     appUrl: 'https://sensei.zaylegend.com/',
     githubUrl: 'https://github.com/yetog/sensei-ai',
+  },
+  {
+    id: 'voice-assistant',
+    title: '🎙️ Voice Assistant',
+    description: 'Advanced conversational AI with real-time voice interaction powered by ElevenLabs and IONOS AI. Features voice-to-voice communication, WebSocket streaming, and intelligent coaching evaluations.',
+    image: ASSETS.apps.zenReset, // Temporary - you can add a proper image later
+    tags: ['AI', 'Voice', 'Real-time', 'ElevenLabs'],
+    appUrl: 'https://zaylegend.com/voice-assistant',
+    githubUrl: 'https://github.com/yetog/voice-agent-11',
   }
 ];
