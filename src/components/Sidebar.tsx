@@ -1,20 +1,23 @@
 
 import { useState, useEffect } from 'react';
 import { Menu } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 interface NavLink {
   name: string;
   href: string;
   icon?: React.ReactNode;
+  isRoute?: boolean; // For router links vs hash links
 }
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const location = useLocation();
 
   const navLinks: NavLink[] = [
     { name: 'About', href: '#about' },
-    { name: 'Apps', href: '#apps' },
+    { name: 'Apps', href: '/apps', isRoute: true },
     { name: 'Projects', href: '#projects' },
     { name: 'Contact', href: '#contact' },
   ];
@@ -71,21 +74,43 @@ const Sidebar = () => {
           
           <nav className="flex-1">
             <ul className="space-y-2">
-              {navLinks.map((link) => (
-                <li key={link.name}>
-                  <a
-                    href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`flex items-center justify-center md:justify-start p-3 rounded-lg transition-colors
-                              ${activeSection === link.href.substring(1) 
+              {navLinks.map((link) => {
+                const isActive = link.isRoute 
+                  ? location.pathname === link.href
+                  : activeSection === link.href.substring(1);
+                
+                const linkElement = (
+                  <div
+                    className={`flex items-center justify-center md:justify-start p-3 rounded-lg transition-colors cursor-pointer
+                              ${isActive 
                                 ? 'bg-white/20 text-white' 
                                 : 'text-gray-400 hover:bg-white/10 hover:text-white'}`}
                   >
                     {link.icon && <span className="mr-3">{link.icon}</span>}
                     <span className="hidden md:block">{link.name}</span>
-                  </a>
-                </li>
-              ))}
+                  </div>
+                );
+
+                return (
+                  <li key={link.name}>
+                    {link.isRoute ? (
+                      <Link
+                        to={link.href}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {linkElement}
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.href}
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {linkElement}
+                      </a>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </nav>
           

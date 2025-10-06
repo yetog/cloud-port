@@ -1,6 +1,8 @@
 
 import { apps } from '../data/apps';
-import { ExternalLink, Download, Github } from 'lucide-react';
+import { ExternalLink, Download, Github, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
 import {
   Carousel,
   CarouselContent,
@@ -10,14 +12,27 @@ import {
 } from "@/components/ui/carousel";
 
 const Apps = () => {
+  // Featured apps - show only the first 4 apps
+  const featuredApps = apps.slice(0, 4);
+
   return (
     <section id="apps" className="py-20 md:py-28">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
-          <h2 className="section-title">Apps</h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mb-12">
+          <h2 className="section-title">Featured Apps</h2>
+          <p className="text-lg text-muted-foreground max-w-3xl mb-8">
             I've created custom tools and platforms designed to enhance productivity, creativity, and digital workflows. These personal apps reflect my passion for automation, AI integration, and user-first design.
           </p>
+          
+          {/* View All Apps Button */}
+          <div className="flex justify-center mb-12">
+            <Button asChild variant="outline" size="lg" className="group">
+              <Link to="/apps" className="flex items-center">
+                View All Apps ({apps.length})
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </Button>
+          </div>
           <Carousel
             opts={{
               align: "start",
@@ -28,7 +43,7 @@ const Apps = () => {
             className="w-full"
           >
             <CarouselContent>
-              {apps.map((app, index) => (
+              {featuredApps.map((app, index) => (
                 <CarouselItem
                   key={app.id}
                   className="basis-full md:basis-1/3 lg:basis-1/4 p-2"
