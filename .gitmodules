@@ -16,3 +16,6 @@
 [submodule "public/serene-chord-scapes"]
 	path = public/serene-chord-scapes
 	url = https://github.com/yetog/serene-chord-scapes.git
+[submodule "apps/knowledge-base"]
+	path = apps/knowledge-base
+	url = https://github.com/yetog/knowledge-base.git
