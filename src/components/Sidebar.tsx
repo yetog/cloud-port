@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { Menu } from 'lucide-react';
+import { Menu, Brain } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface NavLink {
@@ -19,6 +19,7 @@ const Sidebar = () => {
     { name: 'About', href: '#about' },
     { name: 'Apps', href: '#apps' },
     { name: 'Projects', href: '#projects' },
+    { name: '2nd Brain', href: '/2nd-brain', icon: <Brain size={20} />, isRoute: true },
     { name: 'Contact', href: '#contact' },
   ];
 
