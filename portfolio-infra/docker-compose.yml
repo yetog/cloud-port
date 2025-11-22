@@ -1,0 +1,128 @@
+version: '3.8'
+
+networks:
+  portfolio-network:
+    name: portfolio-network
+    driver: bridge
+
+services:
+  portfolio:
+    build:
+      context: ../apps/portfolio
+      args:
+        VITE_BASE_PATH: '/'
+    container_name: portfolio-portfolio
+    restart: unless-stopped
+    ports:
+      - "8080://github.com/yetog/portfolio.git"
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost://github.com/yetog/portfolio.git"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  zen-reset:
+    build:
+      context: ../apps/zen-reset
+      args:
+        VITE_BASE_PATH: '/zen-reset/'
+    container_name: portfolio-zen-reset
+    restart: unless-stopped
+    ports:
+      - "3001://github.com/yetog/zen-reset-123.git"
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost://github.com/yetog/zen-reset-123.git"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  chord-genesis:
+    build:
+      context: ../apps/chord-genesis
+      args:
+        VITE_BASE_PATH: '/chord-genesis/'
+    container_name: portfolio-chord-genesis
+    restart: unless-stopped
+    ports:
+      - "3002://github.com/yetog/chord-genesis.git"
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost://github.com/yetog/chord-genesis.git"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  fineline:
+    build:
+      context: ../apps/fineline
+      args:
+        VITE_BASE_PATH: '/fineline/'
+    container_name: portfolio-fineline
+    restart: unless-stopped
+    ports:
+      - "3003://github.com/yetog/fineline.git"
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost://github.com/yetog/fineline.git"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  game-hub:
+    build:
+      context: ../apps/game-hub
+      args:
+        VITE_BASE_PATH: '/game-hub/'
+    container_name: portfolio-game-hub
+    restart: unless-stopped
+    ports:
+      - "3004://github.com/yetog/playful-space-arcade.git"
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost://github.com/yetog/playful-space-arcade.git"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  dj-visualizer:
+    build:
+      context: ../apps/dj-visualizer
+      args:
+        VITE_BASE_PATH: '/dj-visualizer/'
+    container_name: portfolio-dj-visualizer
+    restart: unless-stopped
+    ports:
+      - "3005://github.com/yetog/apr.git"
+    networks:
+      - portfolio-network
+    environment:
+      - NODE_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost://github.com/yetog/apr.git"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
