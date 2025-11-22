@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  dj-visualizer:
+    build: ./dj-visualizer
+    container_name: dj-visualizer
+    ports:
+      - "3005:80"
+    restart: unless-stopped
+    networks:
+      - app-network
+    labels:
+      - "app.name=dj-visualizer"
+      - "app.description=Audio visualization and DJ tools"
+    environment:
+      - NODE_ENV=production
+
+  fineline:
+    build: ./fineline
+    container_name: fineline
+    ports:
+      - "3003:80"
+    restart: unless-stopped
+    networks:
+      - app-network
+    labels:
+      - "app.name=fineline"
+      - "app.description=Personal journaling and reflection app"
+    environment:
+      - NODE_ENV=production
+
+  chord-genesis:
+    build:
+      context: ./chord-genesis
+      args:
+        VITE_BASE_PATH: /chord-genesis/
+    container_name: chord-genesis
+    ports:
+      - "3001:80"
+    restart: unless-stopped
+    networks:
+      - app-network
+    labels:
+      - "app.name=chord-genesis"
+      - "app.description=Music chord generation and progression tool"
+    environment:
+      - NODE_ENV=production
+
+  game-hub:
+    build: ./game-hub
+    container_name: game-hub
+    ports:
+      - "3004:80"
+    restart: unless-stopped
+    networks:
+      - app-network
+    labels:
+      - "app.name=game-hub"
+      - "app.description=Retro game collection and arcade"
+    environment:
+      - NODE_ENV=production
+
+  spritegen:
+    build: ./spritegen
+    container_name: spritegen
+    ports:
+      - "3006:80"
+    restart: unless-stopped
+    networks:
+      - app-network
+    labels:
+      - "app.name=spritegen"
+      - "app.description=Sprite generation and pixel art tool"
+    environment:
+      - NODE_ENV=production
+
+
+networks:
+  app-network:
+    driver: bridge
+    name: zaylegend-apps
+
+volumes:
+  app-data:
+    driver: local
