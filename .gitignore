@@ -1,6 +1,11 @@
 # Logs
-*.log
 logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Runtime data
 pids/
@@ -18,12 +23,27 @@ temp/
 .env.production
 .env.staging
 
-# IDE files
-.vscode/
+# Node modules
+node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+*.local
+
+# IDE files and directories
+.vscode/*
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo
 *~
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # OS generated files
 .DS_Store
@@ -33,13 +53,6 @@ temp/
 .Trashes
 ehthumbs.db
 Thumbs.db
-
-# Node modules (if any)
-node_modules/
-
-# Build outputs
-dist/
-build/
 
 # Backup files
 *.backup

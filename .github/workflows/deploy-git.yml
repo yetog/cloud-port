@@ -1,0 +1,20 @@
+name: Deploy via Git Pull
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Trigger server deployment
+      run: |
+        echo "🚀 Deployment triggered for commit: ${{ github.sha }}"
+        echo "Server will pull latest changes automatically"
+        
+        # Send webhook to server (if you set one up)
+        # curl -X POST "http://66.179.240.58:9000/hooks/portfolio-deploy" \
+        #   -H "Content-Type: application/json" \
+        #   -d '{"ref": "refs/heads/main", "repository": {"name": "cloud-port"}}'
