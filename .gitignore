@@ -22,3 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Apps (have their own repos)
+apps/*/
+!apps/.gitkeep
+
+# Other directories
+cloned-sites/
+portfolio/
+public/zen-reset/

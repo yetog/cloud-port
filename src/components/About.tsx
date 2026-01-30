@@ -79,7 +79,7 @@ const About = () => {
             
             <div className="md:col-span-2">
               <p className="text-lg leading-relaxed mb-6">
-                I'm an infrastructure and cloud consultant with a passion for building scalable, resilient digital systems. With a background in web engineering and a deep understanding of cloud architecture, I help businesses optimize infrastructure, enhance security, and improve operational agility.
+                I'm an infrastructure and AI consultant with a passion for building scalable, resilient digital systems. With a background in web engineering and a deep understanding of cloud architecture, I help businesses optimize infrastructure, enhance security, and improve operational agility.
               </p>
               <p className="text-lg leading-relaxed mb-8">
                 Whether it's streamlining deployments, migrating to cloud-native platforms, or improving performance, I bring a hands-on, solution-oriented approach to every project.

@@ -10,7 +10,7 @@ const Hero = () => {
             Isayah Young-Burke
           </h1>
           <p className="mt-6 text-xl md:text-2xl text-muted-foreground animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            Infrastructure & Cloud Consultant
+            Infrastructure & AI Consultant
           </p>
           <p className="mt-4 text-lg text-muted-foreground animate-fade-in" style={{ animationDelay: '0.4s' }}>
             Helping companies modernize systems, scale efficiently, and move confidently into the future.

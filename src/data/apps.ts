@@ -59,7 +59,16 @@ export const apps: App[] = [
     appUrl: 'https://zaylegend.com/voice-assistant',
     githubUrl: 'https://github.com/yetog/voice-agent-11',
   },
-  
+  {
+    id: 'contentforge',
+    title: '🔥 ContentForge',
+    description: 'Unified creative content platform combining AI sprite generation, story creation, voice synthesis, and presentation generation. Go from story concept to complete multimedia presentation seamlessly.',
+    image: ASSETS.apps.zenReset, // Temporary - add proper image later
+    tags: ['AI', 'Creative', 'Multimedia', 'Content'],
+    appUrl: 'https://zaylegend.com/contentforge',
+    githubUrl: 'https://github.com/yetog/contentforge',
+  },
+
   // OTHER APPS
   {
     id: 'cloud-llm-assistant',
