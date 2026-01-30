@@ -10,6 +10,7 @@
 **Owner:** Isayah Young-Burke
 **Role:** Infrastructure & AI Consultant
 **Domain:** Portfolio website showcasing cloud, AI, and creative projects
+**GitHub:** git@github.com:yetog/cloud-port.git
 
 ---
 
@@ -20,31 +21,28 @@
 - **Styling:** Tailwind CSS + shadcn/ui + Radix UI
 - **Routing:** React Router v6
 - **Build:** Vite with SWC
-- **Package Manager:** Bun
+- **Package Manager:** npm (bun available)
+- **CI/CD:** GitHub Actions
+- **Hosting:** Self-hosted Linux server with Nginx
 
 ### Directory Structure
 ```
-/var/www/zaylegend/           # Main portfolio
+/var/www/zaylegend/
 ├── src/
-│   ├── components/           # UI components (Hero, About, Apps, Projects, Contact)
-│   ├── pages/                # Route pages (Index, Apps, ProjectDetail)
-│   ├── data/                 # Content data (projects.ts, apps.ts, skills.ts)
-│   └── config/               # Asset URLs (IONOS S3)
-├── apps/                     # Sub-applications
-│   ├── chord-genesis/        # AI music composition (port 3001)
-│   ├── dj-visualizer/        # Gesture-controlled DJ (port 3005)
-│   ├── fineline/             # Timeline journal (port 3003)
-│   ├── game-hub/             # Mini-games platform (port 3004)
-│   ├── spritegen/            # AI sprite generator (port 3006)
-│   ├── voice-assistant/      # Voice AI (port 3007)
-│   ├── knowledge-base/       # Knowledge repository (port 3008)
-│   ├── contentforge/         # Creative content platform (NOT YET ON PORTFOLIO)
-│   ├── zen-reset/            # Meditation app (Docker, port 8081)
-│   ├── testing/              # Apps in testing phase
-│   └── upgrades/             # Apps being upgraded
-├── scripts/                  # Automation scripts
-├── dist/                     # Production build
-└── PORTFOLIO_ROADMAP.md      # Active task list
+│   ├── components/        # UI components
+│   ├── pages/             # Route pages (Index, Apps, Music, ProjectDetail)
+│   ├── data/              # Content data (projects, apps, skills, music)
+│   └── config/            # Asset URLs (IONOS S3)
+├── apps/
+│   ├── [finished apps]/   # 9 production apps
+│   ├── testing/           # 7 beta apps
+│   └── upgrades/          # 4 apps being enhanced
+├── scripts/               # Automation (deploy, backup, context)
+├── sessions/              # Session logs
+├── .github/workflows/     # CI/CD pipelines
+├── dist/                  # Production build
+├── CLAUDE.md              # This file
+└── PORTFOLIO_ROADMAP.md   # Task tracking
 ```
 
 ### Port Mapping
@@ -59,67 +57,146 @@
 | 3006 | Sprite Gen |
 | 3007 | Voice Assistant |
 | 3008 | Knowledge Base |
+| 3009 | ContentForge |
 
 ---
 
-## Key Files to Know
+## Apps Inventory (23 Total)
 
-### Content Updates
-- `src/data/projects.ts` - Portfolio projects (30+ entries)
-- `src/data/apps.ts` - Featured applications
-- `src/data/skills.ts` - Skill ratings and categories
-- `src/config/assets.ts` - IONOS S3 image URLs
+### Finished Apps (12)
+Production-ready, fully functional:
+- Sensei AI, Zen Reset, Chord Genesis, Wolf AI, Voice Assistant
+- ContentForge, Cloud LLM Assistant, DJ Visualizer
+- FineLine, Game Hub, Sprite Gen, Knowledge Base
+
+### Testing Apps (7)
+Beta/experimental in `/apps/testing/`:
+- darkflow-mind-mapper, bh-ai-79, gmat-mastery-suite
+- losk (Light Novel Hub), purple-lotus (Zodiac Social)
+- got-hired-ai (Resume Builder), zen-tot
+
+### Upgrading Apps (4)
+Active development in `/apps/upgrades/`:
+- Ashley-v3 (Cloud Provision + 11Labs)
+- sensei-ai-io (Sales + Retention)
+- ask-hr-beta (AI HR Assistant)
+- sop-ai-beta (SOP RAG Chatbot)
+
+---
+
+## Key Files
+
+### Data Files (Content)
+| File | Purpose |
+|------|---------|
+| `src/data/apps.ts` | App definitions with status (finished/testing/upgrading) |
+| `src/data/projects.ts` | Portfolio projects (30+ entries) |
+| `src/data/skills.ts` | Skill ratings and categories |
+| `src/data/music.ts` | Music/discography data |
+| `src/config/assets.ts` | IONOS S3 image URLs |
+
+### Pages
+| File | Route | Description |
+|------|-------|-------------|
+| `src/pages/Index.tsx` | `/` | Main portfolio page |
+| `src/pages/Apps.tsx` | `/apps` | Apps with category sections |
+| `src/pages/Music.tsx` | `/music` | Music portfolio with player |
+| `src/pages/ProjectDetail.tsx` | `/projects/:id` | Project details |
 
 ### Components
-- `src/components/Hero.tsx` - Landing section with title
-- `src/components/About.tsx` - Bio and skills
-- `src/components/Apps.tsx` - Featured apps showcase
-- `src/components/Projects.tsx` - Project grid with filtering
-- `src/components/Sidebar.tsx` - Navigation sidebar
-
-### Configuration
-- `vite.config.ts` - Build configuration
-- `tailwind.config.ts` - Theme and styling
-- `docker-compose.yml` - Container orchestration
+| File | Purpose |
+|------|---------|
+| `src/components/Sidebar.tsx` | Navigation (About, Apps, Projects, Music, Contact) |
+| `src/components/Hero.tsx` | Landing section |
+| `src/components/About.tsx` | Bio + skills |
+| `src/components/Apps.tsx` | Featured apps carousel |
+| `src/components/Projects.tsx` | Project grid with filtering |
 
 ---
 
-## Current Development Context
+## Scripts & Automation
 
-### Active Roadmap
-See `/var/www/zaylegend/PORTFOLIO_ROADMAP.md` for current tasks including:
-- Music section (new sidebar + /music page with player)
-- Apps categorization (Finished/Testing/Upgrading)
-- New apps integration
-- CI/CD pipeline setup
+### Deployment
+```bash
+./scripts/deploy.sh          # Pull from GitHub, build, deploy
+./scripts/github-backup.sh   # Push + create backup branch
+./scripts/backup.sh          # Local backup with rotation
+```
 
-### Apps in Testing (`/apps/testing/`)
-- darkflow-mind-mapper - Mind mapping tool
-- bh-ai-79 - AI application
-- gmat-mastery-suite - Test prep suite
-- losk - Light Novel Hub
-- got-hired-ai - Resume + Cover Letter Builder
-- zen-tot - TBD
+### Session Context
+```bash
+./scripts/session-context.sh  # Shows status on login
+# Auto-runs on SSH login (added to ~/.bashrc)
+```
 
-### Apps Being Upgraded (`/apps/upgrades/`)
-- Ashley-v3 - Cloud Provision Agent + 11Labs
-- sensei-ai-io - Sales + Retention Assistant
-- ask-hr-beta - AI HR Assistant
-
-### Hidden Gem
-**ContentForge** (`/apps/contentforge/`) - Full creative platform already built, not yet on portfolio. Combines sprite gen, story creation, voice synthesis, presentations.
+### CI/CD (GitHub Actions)
+- `.github/workflows/deploy.yml`
+- Builds on push to main
+- Deploys via SSH (needs secrets: SERVER_HOST, SERVER_USER, SERVER_SSH_KEY)
 
 ---
 
-## Patterns & Conventions
+## Common Tasks
 
-### Adding New Apps
-1. Clone repo to `/apps/testing/` or appropriate category
-2. Add entry to `src/data/apps.ts`
-3. Configure nginx or add to docker-compose if needed
-4. Update PORTFOLIO_ROADMAP.md
+### Add a New App
+1. Clone to `/apps/testing/` or `/apps/upgrades/`
+2. Add entry to `src/data/apps.ts` with appropriate `status`
+3. Configure nginx in `/etc/nginx/conf.d/portfolio.conf`
+4. Restart nginx: `sudo nginx -s reload`
 
-### Project Categories
+### Add a Project
+Edit `src/data/projects.ts`:
+```typescript
+{
+  id: 'unique-id',
+  title: 'Project Name',
+  description: 'Description...',
+  category: 'cloud', // cloud, hosting, art, audio, etc.
+  image: getAssetUrl('projects/image.jpg'),
+  tags: ['Tag1', 'Tag2'],
+}
+```
+
+### Add Music
+Edit `src/data/music.ts` - add to `musicProjects` array.
+
+### Update Skills
+Edit `src/data/skills.ts` or `src/components/About.tsx`.
+
+### Deploy Changes
+```bash
+npm run build              # Build locally
+git add -A && git commit   # Commit changes
+git push origin main       # Push to GitHub
+# Or use: ./scripts/deploy.sh
+```
+
+---
+
+## Session Insights
+
+### What Works Well
+- shadcn/ui + Radix for accessible components
+- Vite builds are fast (~17s)
+- Category system for apps (Finished/Testing/Upgrading)
+- Session logging for context continuity
+- IONOS S3 for reliable image hosting
+
+### Patterns Established
+- Apps have `status` field for categorization
+- Music page has fixed bottom player
+- Sidebar handles both hash links and routes
+- Scripts are in `/scripts/` and executable
+
+### Things to Remember
+- Rebuild after changes: `npm run build`
+- Nginx config: `/etc/nginx/conf.d/portfolio.conf`
+- Docker apps: `docker-compose up -d`
+- 8 Docker containers typically running
+
+---
+
+## Project Categories
 - `cloud` - Cloud Infrastructure
 - `hosting` - Web Hosting
 - `art` - Art Curation
@@ -128,69 +205,39 @@ See `/var/www/zaylegend/PORTFOLIO_ROADMAP.md` for current tasks including:
 - `marketing` - Marketing/Design
 - `ecommerce` - E-commerce
 
-### Image Hosting
-All images hosted on IONOS S3:
-- Bucket: `portfoliowebsite`
-- Endpoint: `https://s3.us-central-1.ionoscloud.com`
-- Helper: `getAssetUrl(path)` in `src/config/assets.ts`
-
----
-
-## Build & Deploy
-
-```bash
-# Development
-bun run dev          # Start dev server on port 8080
-
-# Production
-bun run build        # Build to /dist
-bun run preview      # Preview production build
-
-# Docker apps
-docker-compose up -d  # Start containerized apps
-```
-
----
-
-## Session Insights
-
-### What Works Well
-- shadcn/ui components integrate cleanly
-- Vite builds are fast with SWC
-- IONOS S3 for image hosting is reliable
-- Docker for isolated app deployments
-
-### Common Tasks
-- Adding new projects: Edit `src/data/projects.ts`
-- Adding new apps: Edit `src/data/apps.ts`, configure serving
-- Updating bio/skills: Edit `src/components/About.tsx` or `src/data/skills.ts`
-
-### Things to Remember
-- Main portfolio runs on port 8080
-- Always rebuild after content changes: `bun run build`
-- Check nginx config at `/etc/nginx/sites-enabled/` for routing
-
----
-
-## Future Plans
-
-1. **Music Section** - New sidebar nav, dedicated /music page with audio player
-2. **App Categories** - Separate Testing/Upgrading/Finished
-3. **CI/CD** - Auto-deploy on git push
-4. **Backup System** - Single repo backup of everything
-5. **Login Context** - Script showing last session + next steps
-
 ---
 
 ## Quick Reference
 
-| Action | Command/Location |
-|--------|------------------|
-| Edit projects | `src/data/projects.ts` |
-| Edit apps | `src/data/apps.ts` |
-| Edit skills | `src/data/skills.ts` |
-| Edit hero text | `src/components/Hero.tsx` |
-| Edit about | `src/components/About.tsx` |
-| Add sidebar nav | `src/components/Sidebar.tsx` |
-| Check roadmap | `PORTFOLIO_ROADMAP.md` |
-| Rebuild | `bun run build` |
+| Action | Command |
+|--------|---------|
+| Dev server | `npm run dev` |
+| Build | `npm run build` |
+| Deploy | `./scripts/deploy.sh` |
+| Backup | `./scripts/backup.sh` |
+| Push to GitHub | `git push origin main` |
+| View roadmap | `cat PORTFOLIO_ROADMAP.md` |
+| Session context | `./scripts/session-context.sh` |
+| Nginx reload | `sudo nginx -s reload` |
+| Docker status | `docker ps` |
+
+---
+
+## Completed Features (Session 2026-01-30)
+
+1. **Phase 1:** Changed "Cloud Consultant" → "AI Consultant"
+2. **Phase 2:** App category system (23 apps across 3 categories)
+3. **Phase 3:** Music section with /music page and audio player
+4. **Phase 4:** CI/CD, backup scripts, session context
+5. **Phase 5:** Documentation updates
+
+---
+
+## Future Enhancements
+
+- [ ] Add actual music tracks to discography
+- [ ] More Cloud Infrastructure projects
+- [ ] Art Curation entries
+- [ ] Audio Engineering projects/events
+- [ ] Serve testing/upgrading apps
+- [ ] Custom images for new apps
