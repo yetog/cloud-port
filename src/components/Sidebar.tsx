@@ -69,7 +69,7 @@ const Sidebar = () => {
         <div className="flex flex-col h-full p-4">
           <div className="mb-8 text-center">
             <h2 className="font-bold text-lg md:text-xl tracking-tight hidden md:block">Isayah Young-Burke</h2>
-            <p className="text-xs text-gray-400 mt-1 hidden md:block">Infrastructure & Cloud Consultant</p>
+            <p className="text-xs text-gray-400 mt-1 hidden md:block">Infrastructure & AI Consultant</p>
           </div>
           
           <nav className="flex-1">
