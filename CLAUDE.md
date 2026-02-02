@@ -138,11 +138,24 @@ Active development in `/apps/upgrades/`:
 
 ## Common Tasks
 
-### Add a New App
-1. Clone to `/apps/testing/` or `/apps/upgrades/`
-2. Add entry to `src/data/apps.ts` with appropriate `status`
-3. Configure nginx in `/etc/nginx/conf.d/portfolio.conf`
-4. Restart nginx: `sudo nginx -s reload`
+### Add a New Testing App
+**Use the deployment script** (recommended):
+```bash
+./scripts/deploy-testing-app.sh <folder-name> <url-slug> <port>
+# Example: ./scripts/deploy-testing-app.sh my-new-app my-app 3018
+```
+
+**CRITICAL: React Router apps need TWO fixes:**
+1. `vite.config.ts` needs `base: '/url-slug/'`
+2. `<BrowserRouter>` needs `basename="/url-slug"`
+
+Without both, you'll get routing 404 errors inside the app.
+
+See `docs/TESTING_APP_DEPLOYMENT.md` for full manual instructions.
+
+**Port allocation:**
+- 3010-3019: Testing apps
+- Next available: 3018
 
 ### Add a Project
 Edit `src/data/projects.ts`:

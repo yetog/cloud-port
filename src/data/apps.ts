@@ -162,6 +162,7 @@ export const testingApps: App[] = [
     image: ASSETS.apps.zenReset,
     tags: ['AI', 'Experimental'],
     status: 'testing',
+    appUrl: 'https://zaylegend.com/bh-ai',
     githubUrl: 'https://github.com/Akasuki-de/bh-ai-79',
   },
   {
@@ -191,6 +192,7 @@ export const testingApps: App[] = [
     image: ASSETS.apps.zenReset,
     tags: ['Social', 'Astrology', 'Community'],
     status: 'testing',
+    appUrl: 'https://zaylegend.com/purple-lotus',
     githubUrl: 'https://github.com/yetog/purple-lotus',
   },
   {
@@ -210,6 +212,7 @@ export const testingApps: App[] = [
     image: ASSETS.apps.zenReset,
     tags: ['Meditation', 'AI', 'Experimental'],
     status: 'testing',
+    appUrl: 'https://zaylegend.com/zen-tot',
     githubUrl: 'https://github.com/yetog/zen-tot',
   },
 ];
