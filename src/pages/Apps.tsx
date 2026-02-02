@@ -1,15 +1,13 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { finishedApps, testingApps, upgradingApps, App, AppStatus } from '../data/apps';
-import { ExternalLink, Github, Search, Filter, CheckCircle, FlaskConical, Wrench } from 'lucide-react';
+import {
+  ExternalLink, Github, Search, CheckCircle, FlaskConical, Wrench,
+  LayoutGrid, List, ArrowLeft, ChevronDown
+} from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { FF7Panel } from '@/components/rpg';
 
 const statusConfig = {
   finished: {
@@ -17,124 +15,150 @@ const statusConfig = {
     icon: CheckCircle,
     color: 'text-green-500',
     bgColor: 'bg-green-500/10',
-    borderColor: 'border-green-500/20',
-    description: 'Production ready, fully functional applications'
+    dotColor: 'bg-green-500',
   },
   testing: {
-    label: 'In Testing',
+    label: 'Testing',
     icon: FlaskConical,
     color: 'text-yellow-500',
     bgColor: 'bg-yellow-500/10',
-    borderColor: 'border-yellow-500/20',
-    description: 'Beta and experimental applications'
+    dotColor: 'bg-yellow-500',
   },
   upgrading: {
     label: 'Upgrading',
     icon: Wrench,
     color: 'text-blue-500',
     bgColor: 'bg-blue-500/10',
-    borderColor: 'border-blue-500/20',
-    description: 'Active development, being enhanced'
+    dotColor: 'bg-blue-500',
   }
 };
 
-const AppCard = ({ app, index }: { app: App; index: number }) => {
+// Compact List Row
+const AppListItem = ({ app }: { app: App }) => {
   const config = statusConfig[app.status];
-  const StatusIcon = config.icon;
 
   return (
-    <div
-      className="group relative bg-background/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:bg-background/70 hover:border-border transition-all duration-300 hover:scale-[1.02] hover:shadow-xl"
-      style={{ animationDelay: `${index * 100}ms` }}
-    >
-      {/* Status Badge */}
-      <div className={`absolute top-4 right-4 flex items-center gap-1 px-2 py-1 rounded-full text-xs ${config.bgColor} ${config.color} ${config.borderColor} border`}>
-        <StatusIcon size={12} />
-        <span>{config.label}</span>
+    <div className="flex items-center gap-4 p-3 rounded-lg border border-border/30 bg-card/30 hover:bg-card/60 hover:border-primary/30 transition-all group">
+      {/* Status Dot */}
+      <div className={`w-2 h-2 rounded-full ${config.dotColor} flex-shrink-0`} />
+
+      {/* Title & Description */}
+      <div className="flex-1 min-w-0">
+        <h3 className="font-semibold text-sm group-hover:text-primary transition-colors truncate">
+          {app.title}
+        </h3>
+        <p className="text-xs text-muted-foreground truncate">
+          {app.description}
+        </p>
       </div>
 
-      {/* App Icon/Image Placeholder */}
-      <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/10 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-        <span className="text-2xl">{app.title.split(' ')[0]}</span>
-      </div>
-
-      {/* App Title */}
-      <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors pr-20">
-        {app.title}
-      </h3>
-
-      {/* App Description */}
-      <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-3">
-        {app.description}
-      </p>
-
-      {/* Technology Tags */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {app.tags.map((tag, tagIndex) => (
-          <span
-            key={tag}
-            className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
-            style={{ animationDelay: `${tagIndex * 50}ms` }}
-          >
+      {/* Tags - Hidden on mobile */}
+      <div className="hidden md:flex gap-1 flex-shrink-0">
+        {app.tags.slice(0, 2).map(tag => (
+          <span key={tag} className="text-xs px-2 py-0.5 rounded bg-muted/50 text-muted-foreground">
             {tag}
           </span>
         ))}
       </div>
 
-      {/* Action Buttons */}
-      <div className="flex gap-3 mt-auto pt-3 border-t border-border/50">
+      {/* Actions */}
+      <div className="flex gap-2 flex-shrink-0">
         {app.appUrl && (
-          <Button
-            asChild
-            variant="default"
-            size="sm"
-            className="flex-1 bg-primary/90 hover:bg-primary text-primary-foreground"
+          <a
+            href={app.appUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+            title="Launch"
           >
-            <a
-              href={app.appUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center"
-            >
-              <ExternalLink size={14} className="mr-2" />
-              Launch
-            </a>
-          </Button>
+            <ExternalLink size={14} />
+          </a>
         )}
         {app.githubUrl && (
-          <Button
-            asChild
-            variant="outline"
-            size="sm"
-            className={app.appUrl ? "flex-1" : "w-full"}
+          <a
+            href={app.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded-lg bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+            title="View Code"
           >
-            <a
-              href={app.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center"
-            >
-              <Github size={14} className="mr-2" />
-              Code
-            </a>
-          </Button>
+            <Github size={14} />
+          </a>
         )}
       </div>
     </div>
   );
 };
 
+// Compact Grid Card
+const AppGridCard = ({ app }: { app: App }) => {
+  const config = statusConfig[app.status];
+
+  return (
+    <div className="group p-4 rounded-xl border border-border/30 bg-card/30 hover:bg-card/60 hover:border-primary/30 transition-all">
+      {/* Header */}
+      <div className="flex items-start justify-between mb-2">
+        <h3 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-1">
+          {app.title}
+        </h3>
+        <div className={`w-2 h-2 rounded-full ${config.dotColor} flex-shrink-0 mt-1.5`} />
+      </div>
+
+      {/* Description */}
+      <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
+        {app.description}
+      </p>
+
+      {/* Tags */}
+      <div className="flex flex-wrap gap-1 mb-3">
+        {app.tags.slice(0, 3).map(tag => (
+          <span key={tag} className="text-xs px-1.5 py-0.5 rounded bg-muted/50 text-muted-foreground">
+            {tag}
+          </span>
+        ))}
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-2">
+        {app.appUrl && (
+          <a
+            href={app.appUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-medium hover:bg-primary/20 transition-colors"
+          >
+            <ExternalLink size={12} />
+            Launch
+          </a>
+        )}
+        {app.githubUrl && (
+          <a
+            href={app.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`${app.appUrl ? '' : 'flex-1'} flex items-center justify-center gap-1 py-1.5 px-3 rounded-lg bg-muted/50 text-muted-foreground text-xs font-medium hover:bg-muted hover:text-foreground transition-colors`}
+          >
+            <Github size={12} />
+            Code
+          </a>
+        )}
+      </div>
+    </div>
+  );
+};
+
+// Section Component
 const AppSection = ({
   title,
-  description,
   apps,
   status,
+  viewMode,
   defaultOpen = true
 }: {
   title: string;
-  description: string;
   apps: App[];
   status: AppStatus;
+  viewMode: 'grid' | 'list';
   defaultOpen?: boolean;
 }) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -144,40 +168,39 @@ const AppSection = ({
   if (apps.length === 0) return null;
 
   return (
-    <div className="mb-16">
+    <div className="mb-8">
       {/* Section Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between mb-6 group cursor-pointer"
+        className="w-full flex items-center justify-between py-3 px-4 rounded-lg bg-card/30 border border-border/30 hover:bg-card/50 transition-colors mb-4"
       >
         <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-lg ${config.bgColor}`}>
-            <StatusIcon className={`w-6 h-6 ${config.color}`} />
-          </div>
-          <div className="text-left">
-            <h2 className="text-2xl font-bold flex items-center gap-2">
-              {title}
-              <span className={`text-sm font-normal px-2 py-0.5 rounded-full ${config.bgColor} ${config.color}`}>
-                {apps.length}
-              </span>
-            </h2>
-            <p className="text-sm text-muted-foreground">{description}</p>
-          </div>
+          <StatusIcon className={`w-5 h-5 ${config.color}`} />
+          <span className="font-semibold">{title}</span>
+          <span className={`text-xs px-2 py-0.5 rounded-full ${config.bgColor} ${config.color}`}>
+            {apps.length}
+          </span>
         </div>
-        <div className={`text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m6 9 6 6 6-6"/>
-          </svg>
-        </div>
+        <ChevronDown
+          className={`w-5 h-5 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`}
+        />
       </button>
 
-      {/* Apps Grid */}
+      {/* Content */}
       {isOpen && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {apps.map((app, index) => (
-            <AppCard key={app.id} app={app} index={index} />
-          ))}
-        </div>
+        viewMode === 'list' ? (
+          <div className="space-y-2">
+            {apps.map(app => (
+              <AppListItem key={app.id} app={app} />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {apps.map(app => (
+              <AppGridCard key={app.id} app={app} />
+            ))}
+          </div>
+        )
       )}
     </div>
   );
@@ -185,133 +208,131 @@ const AppSection = ({
 
 const Apps = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState<'all' | AppStatus>('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
 
-  // Combine all apps for search
   const allApps = [...finishedApps, ...testingApps, ...upgradingApps];
 
-  // Extract unique tags
-  const allTags = ['all', ...new Set(allApps.flatMap(app => app.tags))];
-
-  // Filter function
   const filterApps = (apps: App[]) => {
     return apps.filter(app => {
-      const matchesSearch = searchTerm === '' ||
+      return searchTerm === '' ||
         app.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         app.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         app.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-
-      return matchesSearch;
     });
   };
 
   const filteredFinished = filterApps(finishedApps);
   const filteredTesting = filterApps(testingApps);
   const filteredUpgrading = filterApps(upgradingApps);
-
   const totalFiltered = filteredFinished.length + filteredTesting.length + filteredUpgrading.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90 relative overflow-hidden">
-      {/* Gradient Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-72 h-72 bg-green-400/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-96 h-96 bg-yellow-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
-      </div>
+    <div className="min-h-screen bg-background bg-grid">
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Back Link */}
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8"
+        >
+          <ArrowLeft size={18} />
+          <span>Back to Portfolio</span>
+        </Link>
 
-      <div className="relative z-10">
-        {/* Header Section */}
-        <div className="container mx-auto px-4 pt-20 pb-12">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-              Apps Collection
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
-              A collection of applications, crafted with dedication. Explore tools for productivity, creativity, AI, and digital workflows.
-            </p>
-
-            {/* Stats */}
-            <div className="flex justify-center gap-6 mb-8">
-              <div className="flex items-center gap-2 text-sm">
-                <CheckCircle className="w-4 h-4 text-green-500" />
-                <span className="text-muted-foreground">{finishedApps.length} Finished</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <FlaskConical className="w-4 h-4 text-yellow-500" />
-                <span className="text-muted-foreground">{testingApps.length} Testing</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Wrench className="w-4 h-4 text-blue-500" />
-                <span className="text-muted-foreground">{upgradingApps.length} Upgrading</span>
+        {/* Header */}
+        <FF7Panel className="mb-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-glow mb-2">Apps Collection</h1>
+              <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                <span className="flex items-center gap-1">
+                  <CheckCircle size={14} className="text-green-500" />
+                  {finishedApps.length} Finished
+                </span>
+                <span className="flex items-center gap-1">
+                  <FlaskConical size={14} className="text-yellow-500" />
+                  {testingApps.length} Testing
+                </span>
+                <span className="flex items-center gap-1">
+                  <Wrench size={14} className="text-blue-500" />
+                  {upgradingApps.length} Upgrading
+                </span>
               </div>
             </div>
 
-            {/* Search */}
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-8">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            {/* Controls */}
+            <div className="flex items-center gap-3">
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search apps..."
+                  placeholder="Search..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-background/50 backdrop-blur-sm border-border/50"
+                  className="pl-9 w-40 md:w-56 bg-background/50 border-border/50"
                 />
               </div>
-            </div>
 
-            {searchTerm && (
-              <p className="text-sm text-muted-foreground mb-4">
-                Found {totalFiltered} app{totalFiltered !== 1 ? 's' : ''} matching "{searchTerm}"
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Apps Sections */}
-        <div className="container mx-auto px-4 pb-20">
-          <div className="max-w-6xl mx-auto">
-            {/* Finished Apps */}
-            <AppSection
-              title="Finished Apps"
-              description={statusConfig.finished.description}
-              apps={filteredFinished}
-              status="finished"
-              defaultOpen={true}
-            />
-
-            {/* Testing Apps */}
-            <AppSection
-              title="Apps in Testing"
-              description={statusConfig.testing.description}
-              apps={filteredTesting}
-              status="testing"
-              defaultOpen={true}
-            />
-
-            {/* Upgrading Apps */}
-            <AppSection
-              title="Apps Being Upgraded"
-              description={statusConfig.upgrading.description}
-              apps={filteredUpgrading}
-              status="upgrading"
-              defaultOpen={true}
-            />
-
-            {/* No Results State */}
-            {totalFiltered === 0 && searchTerm && (
-              <div className="text-center py-20">
-                <div className="w-16 h-16 bg-muted/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search className="w-8 h-8 text-muted-foreground" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">No apps found</h3>
-                <p className="text-muted-foreground">
-                  Try adjusting your search criteria
-                </p>
+              {/* View Toggle */}
+              <div className="flex rounded-lg border border-border/50 overflow-hidden">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 transition-colors ${viewMode === 'list' ? 'bg-primary/20 text-primary' : 'bg-background/50 text-muted-foreground hover:text-foreground'}`}
+                  title="List view"
+                >
+                  <List size={18} />
+                </button>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 transition-colors ${viewMode === 'grid' ? 'bg-primary/20 text-primary' : 'bg-background/50 text-muted-foreground hover:text-foreground'}`}
+                  title="Grid view"
+                >
+                  <LayoutGrid size={18} />
+                </button>
               </div>
-            )}
+            </div>
           </div>
-        </div>
+        </FF7Panel>
+
+        {/* Search Results */}
+        {searchTerm && (
+          <p className="text-sm text-muted-foreground mb-4">
+            Found {totalFiltered} app{totalFiltered !== 1 ? 's' : ''} matching "{searchTerm}"
+          </p>
+        )}
+
+        {/* App Sections */}
+        <AppSection
+          title="Finished Apps"
+          apps={filteredFinished}
+          status="finished"
+          viewMode={viewMode}
+          defaultOpen={true}
+        />
+
+        <AppSection
+          title="Apps in Testing"
+          apps={filteredTesting}
+          status="testing"
+          viewMode={viewMode}
+          defaultOpen={false}
+        />
+
+        <AppSection
+          title="Apps Being Upgraded"
+          apps={filteredUpgrading}
+          status="upgrading"
+          viewMode={viewMode}
+          defaultOpen={false}
+        />
+
+        {/* No Results */}
+        {totalFiltered === 0 && searchTerm && (
+          <div className="text-center py-16">
+            <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-lg font-semibold mb-2">No apps found</h3>
+            <p className="text-muted-foreground">Try a different search term</p>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -58,7 +58,11 @@ export default {
           darkgray: "#333333",
           black: "#000000",
           white: "#FFFFFF",
-        }
+        },
+        // Extended RPG palette
+        gold: "hsl(var(--gold))",
+        warning: "hsl(var(--warning))",
+        success: "hsl(var(--success))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -67,15 +71,23 @@ export default {
       },
       fontFamily: {
         sans: [
-          "SF Pro Display", 
-          "SF Pro", 
-          "-apple-system", 
-          "BlinkMacSystemFont", 
-          "system-ui", 
-          "Roboto", 
-          "Helvetica Neue", 
-          "Arial", 
+          "SF Pro Display",
+          "SF Pro",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "system-ui",
+          "Roboto",
+          "Helvetica Neue",
+          "Arial",
           "sans-serif"
+        ],
+        mono: [
+          "SF Mono",
+          "Monaco",
+          "Consolas",
+          "Liberation Mono",
+          "Courier New",
+          "monospace"
         ],
       },
       keyframes: {
@@ -94,16 +106,40 @@ export default {
         "slide-in": {
           "0%": { opacity: "0", transform: "translateX(-20px)" },
           "100%": { opacity: "1", transform: "translateX(0)" }
+        },
+        "pulse-glow": {
+          "0%, 100%": { opacity: "1" },
+          "50%": { opacity: "0.6" }
+        },
+        "slide-in-up": {
+          "from": { opacity: "0", transform: "translateY(20px)" },
+          "to": { opacity: "1", transform: "translateY(0)" }
+        },
+        "shimmer": {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" }
+        },
+        "scale-up": {
+          "0%": { transform: "scale(0.95)", opacity: "0" },
+          "100%": { transform: "scale(1)", opacity: "1" }
         }
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.5s ease-out forwards",
-        "slide-in": "slide-in 0.5s ease-out forwards"
+        "slide-in": "slide-in 0.5s ease-out forwards",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "slide-in-up": "slide-in-up 0.4s ease-out forwards",
+        "shimmer": "shimmer 2s linear infinite",
+        "scale-up": "scale-up 0.3s ease-out forwards"
       },
       boxShadow: {
         'apple': '0 4px 30px rgba(0, 0, 0, 0.1)',
+        'glow': '0 0 20px hsl(var(--primary) / 0.3)',
+        'glow-strong': '0 0 30px hsl(var(--primary) / 0.5)',
+        'inner-glow': 'inset 0 0 20px hsl(var(--primary) / 0.1)',
+        'glow-gold': '0 0 20px hsl(var(--gold) / 0.3)',
       },
     },
   },
