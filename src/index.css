@@ -5,26 +5,60 @@
 
 @layer base {
   :root {
-    --background: 220 20% 97%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
+    /* RPG Dark Theme - Purple/Black Cyberpunk Inspired */
+    --background: 0 0% 3%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 270 70% 55%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 12%;
+    --accent-foreground: 270 70% 65%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 142.1 76.2% 36.3%;
-    --radius: 0.5rem;
+    --border: 270 70% 55% / 0.2;
+    --input: 0 0% 10%;
+    --ring: 270 70% 55%;
+    --radius: 0.75rem;
+
+    /* Extended Palette */
+    --gold: 45 93% 47%;
+    --warning: 38 92% 50%;
+    --success: 142 76% 45%;
+  }
+
+  /* Light Theme */
+  :root.light {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 270 70% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 40%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 270 70% 45%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 270 70% 45% / 0.15;
+    --input: 0 0% 92%;
+    --ring: 270 70% 45%;
+
+    /* Extended Palette - Light */
+    --gold: 45 93% 40%;
+    --warning: 38 92% 45%;
+    --success: 142 76% 36%;
   }
 
   * {
@@ -34,6 +68,7 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   html {
@@ -42,28 +77,274 @@
 }
 
 @layer components {
-  .glass-panel {
-    @apply bg-white/10 backdrop-blur-lg border border-white/20 rounded-xl shadow-apple;
+  /* ========================================
+     FF7R-INSPIRED UTILITY CLASSES
+     ======================================== */
+
+  /* Panel Frame - Primary Container */
+  .ff7-panel {
+    @apply relative border-2 rounded-xl p-4;
+    border-color: hsl(var(--primary) / 0.6);
+    background: hsl(var(--card) / 0.95);
+    backdrop-filter: blur(16px);
+    box-shadow:
+      inset 0 0 20px hsl(var(--primary) / 0.1),
+      0 0 30px hsl(var(--primary) / 0.15);
   }
-  
+
+  .ff7-panel-highlight {
+    @apply ff7-panel;
+    border-color: hsl(var(--primary) / 0.8);
+    box-shadow:
+      inset 0 0 30px hsl(var(--primary) / 0.15),
+      0 0 40px hsl(var(--primary) / 0.25);
+  }
+
+  .ff7-panel-muted {
+    @apply ff7-panel;
+    border-color: hsl(var(--muted-foreground) / 0.3);
+    box-shadow:
+      inset 0 0 15px hsl(var(--muted) / 0.1),
+      0 0 20px hsl(var(--muted) / 0.1);
+  }
+
+  /* Section Header */
+  .ff7-header {
+    @apply uppercase tracking-widest text-xs font-bold mb-4;
+    color: hsl(var(--primary));
+    border-left: 3px solid hsl(var(--primary));
+    padding-left: 0.75rem;
+  }
+
+  /* Legacy glass-panel updated for dark theme */
+  .glass-panel {
+    @apply ff7-panel;
+  }
+
   .section-container {
     @apply px-4 md:px-6 py-20 max-w-screen-xl mx-auto;
   }
-  
+
   .section-title {
     @apply text-3xl md:text-4xl font-bold mb-8 tracking-tight;
   }
-  
+
   .button-primary {
-    @apply bg-primary text-primary-foreground rounded-lg px-4 py-2 font-medium transition-all 
-    hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    @apply bg-primary text-primary-foreground rounded-lg px-4 py-2 font-medium transition-all;
+    box-shadow: 0 0 15px hsl(var(--primary) / 0.3);
   }
-  
+
+  .button-primary:hover {
+    @apply bg-primary/90;
+    box-shadow: 0 0 25px hsl(var(--primary) / 0.5);
+  }
+
+  .button-primary:focus {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Segmented Progress Bar */
   .progress-bar {
-    @apply h-2 bg-secondary rounded-full overflow-hidden relative;
+    @apply h-2 rounded-sm overflow-hidden;
+    background: hsl(var(--muted));
   }
-  
+
   .progress-bar-fill {
-    @apply h-full bg-primary absolute left-0 top-0 transition-all duration-1000;
+    @apply h-full absolute left-0 top-0 transition-all duration-1000;
+    background: repeating-linear-gradient(
+      90deg,
+      hsl(var(--primary)) 0px,
+      hsl(var(--primary)) 6px,
+      transparent 6px,
+      transparent 8px
+    );
+  }
+
+  /* Progress Segmented (explicit class) */
+  .progress-segmented {
+    @apply h-2 rounded-sm overflow-hidden relative;
+    background: hsl(var(--muted));
+  }
+
+  .progress-segmented-fill {
+    @apply h-full;
+    background: repeating-linear-gradient(
+      90deg,
+      hsl(var(--primary)) 0px,
+      hsl(var(--primary)) 6px,
+      transparent 6px,
+      transparent 8px
+    );
+  }
+
+  /* Text Glow Effect */
+  .text-glow {
+    text-shadow: 0 0 10px hsl(var(--primary) / 0.5);
+  }
+
+  .text-glow-strong {
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.7), 0 0 40px hsl(var(--primary) / 0.3);
+  }
+
+  /* Grid Background Pattern */
+  .bg-grid {
+    background-image:
+      linear-gradient(hsl(var(--primary) / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / 0.03) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  /* Animated Grid Background */
+  .bg-grid-animated {
+    background-image:
+      linear-gradient(hsl(var(--primary) / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--primary) / 0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+    animation: grid-pulse 8s ease-in-out infinite;
+  }
+
+  @keyframes grid-pulse {
+    0%, 100% { background-position: 0 0; opacity: 1; }
+    50% { background-position: 16px 16px; opacity: 0.6; }
+  }
+
+  /* Floating Particles */
+  .particle {
+    @apply absolute rounded-full pointer-events-none;
+    background: hsl(var(--primary) / 0.3);
+    animation: float var(--duration, 20s) ease-in-out infinite;
+    will-change: transform;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0) translateX(0); }
+    25% { transform: translateY(-20px) translateX(10px); }
+    50% { transform: translateY(-10px) translateX(-10px); }
+    75% { transform: translateY(-30px) translateX(5px); }
+  }
+
+  /* Hover Lift Effect */
+  .hover-lift {
+    @apply transition-all duration-200;
+  }
+
+  .hover-lift:hover {
+    @apply -translate-y-0.5;
+    box-shadow: 0 4px 20px hsl(var(--primary) / 0.15);
+  }
+
+  /* Materia Slot Base */
+  .materia-slot {
+    @apply transition-all duration-200;
+    width: 0.75rem;
+    height: 0.75rem;
+    transform: rotate(45deg);
+    border: 1px solid hsl(var(--primary) / 0.4);
+    background: transparent;
+  }
+
+  .materia-slot-filled {
+    background: hsl(var(--primary));
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 8px hsl(var(--primary));
+  }
+
+  .materia-slot-gold {
+    background: hsl(var(--gold));
+    border-color: hsl(var(--gold));
+    box-shadow: 0 0 8px hsl(var(--gold));
+  }
+
+  /* Stat Abbreviation */
+  .stat-abbr {
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+
+  .stat-value {
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    font-weight: 600;
+  }
+
+  /* Focus Ring with Glow */
+  .focus-glow:focus {
+    @apply outline-none;
+    box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary) / 0.5), 0 0 15px hsl(var(--primary) / 0.3);
+  }
+
+  /* ========================================
+     ACCESSIBILITY UTILITIES
+     ======================================== */
+
+  /* Skip Link - Hidden until focused */
+  .skip-link {
+    @apply absolute left-4 bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium z-[100];
+    top: -100px;
+    transition: top 0.2s ease;
+  }
+
+  .skip-link:focus {
+    top: 1rem;
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Visible focus states for keyboard navigation */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+
+  /* Remove outline for mouse/touch users */
+  :focus:not(:focus-visible) {
+    @apply outline-none ring-0;
+  }
+
+  /* Touch targets - minimum 44x44px for accessibility */
+  .touch-target {
+    @apply min-w-[44px] min-h-[44px] flex items-center justify-center;
+  }
+
+  /* Screen reader only - visually hidden but accessible */
+  .sr-only {
+    @apply absolute w-[1px] h-[1px] p-0 -m-[1px] overflow-hidden whitespace-nowrap;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+
+  /* Alert role styling for form errors */
+  [role="alert"] {
+    @apply text-destructive text-sm mt-1;
+  }
+
+  /* Live region for dynamic content announcements */
+  [aria-live] {
+    @apply sr-only;
+  }
+
+  [aria-live].visible {
+    @apply static w-auto h-auto p-0 m-0 overflow-visible whitespace-normal;
+    clip: auto;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-in,
+  .animate-pulse-glow,
+  .animate-slide-in-up {
+    animation: none !important;
+  }
+
+  .hover-lift:hover {
+    transform: none;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
