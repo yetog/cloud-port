@@ -11,7 +11,7 @@ const Index = () => {
   const { isCollapsed, toggleCollapse } = useSidebarContext();
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-screen">
       {/* Skip Link for Keyboard Users */}
       <a href="#main-content" className="skip-link">
         Skip to main content
@@ -30,7 +30,7 @@ const Index = () => {
 
       <main
         id="main-content"
-        className="transition-all duration-300 md:pl-16"
+        className="transition-all duration-300 md:ml-16"
         role="main"
         aria-label="Main content"
       >
