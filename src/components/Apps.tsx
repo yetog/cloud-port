@@ -17,8 +17,8 @@ const Apps = () => {
 
   return (
     <section id="apps" className="py-20 md:py-28">
-      <div className="container mx-auto px-4">
-        <div className="max-w-6xl mx-auto">
+      <div className="px-4 md:px-8">
+        <div className="max-w-6xl">
           <h2 className="section-title">Featured Apps</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mb-8">
             I've created custom tools and platforms designed to enhance productivity, creativity, and digital workflows. These personal apps reflect my passion for automation, AI integration, and user-first design.
