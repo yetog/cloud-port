@@ -71,8 +71,8 @@ const Projects = () => {
 
   return (
     <section id="projects" className="py-20 md:py-28 bg-secondary/50">
-      <div className="px-4 md:px-8">
-        <div className="max-w-6xl">
+      <div className="container mx-auto px-4">
+        <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-3 mb-4">
             <h2 className="section-title">Projects</h2>
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-sm">
@@ -109,7 +109,7 @@ const Projects = () => {
               skipSnaps: false,
               dragFree: false,
             }}
-            className="w-full"
+            className="w-full px-1"
           >
             <CarouselContent>
               {filteredProjects.map((project, index) => (
