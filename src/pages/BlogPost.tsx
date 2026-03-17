@@ -1,7 +1,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import {
   ArrowLeft, Calendar, Clock, Tag, User, ChevronLeft, ChevronRight,
-  BookOpen
+  BookOpen, Download
 } from 'lucide-react';
 import { getPostById, blogPosts, blogCategories } from '../data/blog';
 
@@ -78,6 +78,18 @@ const BlogPost = () => {
                   {post.readTime}
                 </span>
               </div>
+
+              {/* Download Button for Scripts */}
+              {post.downloadUrl && (
+                <a
+                  href={post.downloadUrl}
+                  download
+                  className="inline-flex items-center gap-2 mt-6 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Script
+                </a>
+              )}
             </header>
 
             {/* Featured Image */}
