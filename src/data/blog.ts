@@ -36,15 +36,60 @@ export const blogPosts: BlogPost[] = [
   {
     id: 'session-2026-03-17',
     title: 'Brain CLI, Blog System Expansion, and Session Automation',
-    excerpt: 'Work session - 0 tasks completed, 0 commits.',
+    excerpt: 'Major infrastructure day: Built the brain CLI command center, expanded blog with 24 posts, and added session automation workflow.',
     content: `
-# Session: 2026-03-17\n\n## Summary\nBrain CLI, Blog System Expansion, and Session Automation\n\n## Stats\n- Duration: 0:00:22\n- Tasks: 0\n- Commits: 0
+# Session: 2026-03-17
+
+## Summary
+A productive infrastructure session focused on building automation tools and expanding the documentation system.
+
+## Accomplishments
+
+### Brain CLI Command Center
+Built a comprehensive Python CLI tool for portfolio management:
+- **brain status** - Portfolio health at a glance
+- **brain apps health** - Check all 25 apps across 3 categories
+- **brain task add/list/done** - SQLite-backed task tracking
+- **brain session start/end** - Automated session documentation workflow
+- **brain deploy/backup** - One-command operations
+
+### Blog System Expansion
+Expanded the blog from 6 posts to 24 posts:
+- Added **Sessions** category for work documentation
+- Added **Scripts** category with downloadable attachments
+- Added **Docs** category for technical documentation
+- Converted all 10 session markdown files to blog posts
+- Created 6 script documentation posts with download buttons
+
+### Session Automation Workflow
+Built end-to-end automation for documentation:
+- \`brain session start\` - Begins tracking time and tasks
+- \`brain session end "title"\` - Auto-generates blog post, builds, deploys, commits, and pushes
+- Captures completed tasks and git commits during session
+- Posts automatically appear on /blog under Sessions category
+
+### Other Fixes
+- Fixed carousel left-edge clipping issue with padding adjustment
+- Updated CLAUDE.md with brain CLI documentation
+- Created TELOS personal context system (mission, goals, beliefs)
+
+## Technical Details
+- Python CLI with subprocess, SQLite, and socket port checking
+- 25 apps tracked: 12 finished, 7 testing, 4 upgrading
+- Blog uses React TypeScript with category filtering
+- Session workflow integrates git, npm build, and nginx reload
+
+## Commits
+- feat: Add session workflow to brain CLI
+- feat: Add 24 blog posts - sessions, scripts with downloads, and docs
+- docs: Update CLAUDE.md with brain CLI and current state
+- fix: Resolve carousel left edge clipping issue
     `,
     author: 'Isayah Young-Burke',
     date: '2026-03-17',
-    readTime: '2 min read',
+    readTime: '5 min read',
     category: 'sessions',
-    tags: ["Session", "CLI", "Development"]
+    tags: ["Session", "CLI", "Automation", "Infrastructure", "Development"]
   },
   {
     id: 'session-2026-03-17',
