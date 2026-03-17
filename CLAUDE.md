@@ -1,7 +1,7 @@
 # CLAUDE.md - Portfolio Infrastructure Context
 
 > This file helps Claude understand the portfolio infrastructure for optimal assistance.
-> Last Updated: 2026-01-30
+> Last Updated: 2026-03-17
 
 ---
 
@@ -34,53 +34,67 @@
 │   ├── data/              # Content data (projects, apps, skills, music)
 │   └── config/            # Asset URLs (IONOS S3)
 ├── apps/
-│   ├── [finished apps]/   # 9 production apps
-│   ├── testing/           # 7 beta apps
+│   ├── [finished apps]/   # 12 production apps
+│   ├── testing/           # 8 beta apps
 │   └── upgrades/          # 4 apps being enhanced
+├── telos/                 # Personal context (mission, goals, beliefs)
 ├── scripts/               # Automation (deploy, backup, context)
 ├── sessions/              # Session logs
+├── docs/                  # Documentation
 ├── .github/workflows/     # CI/CD pipelines
 ├── dist/                  # Production build
+├── brain.py               # CLI command center
+├── brain.db               # SQLite task database
 ├── CLAUDE.md              # This file
 └── PORTFOLIO_ROADMAP.md   # Task tracking
 ```
 
 ### Port Mapping
-| Port | Application |
-|------|-------------|
-| 8080 | Main Portfolio |
-| 8081 | Zen Reset (Docker) |
-| 3001 | Chord Genesis |
-| 3003 | Fineline |
-| 3004 | Game Hub |
-| 3005 | DJ Visualizer |
-| 3006 | Sprite Gen |
-| 3007 | Voice Assistant |
-| 3008 | Knowledge Base |
-| 3009 | ContentForge |
+| Port | Application | Status |
+|------|-------------|--------|
+| 8080 | Main Portfolio | Finished |
+| 8081 | Zen Reset | Finished |
+| 3001 | Chord Genesis | Finished |
+| 3003 | Fineline | Finished |
+| 3004 | Game Hub | Finished |
+| 3005 | DJ Visualizer | Finished |
+| 3006 | Sprite Gen | Finished |
+| 3007 | Voice Assistant | Finished |
+| 3008 | Knowledge Base | Finished |
+| 3009 | ContentForge | Finished |
+| 3010 | Darkflow Mind Mapper | Testing |
+| 3012 | GMAT Mastery Suite | Testing |
+| 3013 | Losk | Testing |
+| 3014 | Got Hired AI | Testing |
+| 3015 | BH AI 79 | Testing |
+| 3016 | Purple Lotus | Testing |
+| 3017 | Zen ToT | Testing |
+| 3018 | Forge Fit | Testing |
 
 ---
 
-## Apps Inventory (23 Total)
+## Apps Inventory (25 Total)
 
-### Finished Apps (12)
+Run `brain apps` or `brain apps health` for live status.
+
+### Finished Apps (13)
 Production-ready, fully functional:
 - Sensei AI, Zen Reset, Chord Genesis, Wolf AI, Voice Assistant
 - ContentForge, Cloud LLM Assistant, DJ Visualizer
-- FineLine, Game Hub, Sprite Gen, Knowledge Base
+- FineLine, Game Hub, Sprite Gen, Knowledge Base, Portfolio
 
-### Testing Apps (7)
-Beta/experimental in `/apps/testing/`:
-- darkflow-mind-mapper, bh-ai-79, gmat-mastery-suite
-- losk (Light Novel Hub), purple-lotus (Zodiac Social)
-- got-hired-ai (Resume Builder), zen-tot
+### Testing Apps (8)
+Beta/experimental, running on ports 3010-3018:
+- Darkflow Mind Mapper, BH AI 79, GMAT Mastery Suite
+- Losk (Light Novel Hub), Purple Lotus (Zodiac Social)
+- Got Hired AI (Resume Builder), Zen ToT, Forge Fit
 
 ### Upgrading Apps (4)
-Active development in `/apps/upgrades/`:
+Active development, not yet deployed:
 - Ashley-v3 (Cloud Provision + 11Labs)
-- sensei-ai-io (Sales + Retention)
-- ask-hr-beta (AI HR Assistant)
-- sop-ai-beta (SOP RAG Chatbot)
+- Sensei AI IO (Sales + Retention)
+- Ask HR Beta (AI HR Assistant)
+- SOP AI Beta (SOP RAG Chatbot)
 
 ---
 
@@ -133,6 +147,38 @@ Active development in `/apps/upgrades/`:
 - `.github/workflows/deploy.yml`
 - Builds on push to main
 - Deploys via SSH (needs secrets: SERVER_HOST, SERVER_USER, SERVER_SSH_KEY)
+
+---
+
+## Brain CLI
+
+The `brain` command is the central CLI for managing the portfolio. Available globally via `/usr/local/bin/brain`.
+
+### Commands
+```bash
+brain status              # Overview: nginx, docker, git, disk, pending tasks
+brain deploy              # Run deployment script
+brain backup              # Run backup script
+brain apps                # List all 25 apps by category
+brain apps health         # Check which apps are UP/DOWN
+brain apps restart <name> # Restart a specific container
+brain task add "title"    # Add a task to SQLite database
+brain task list           # View pending tasks
+brain task done <id>      # Mark task as complete
+brain task all            # View all tasks including completed
+brain help                # Show help
+```
+
+### Database
+Tasks are stored in `brain.db` (SQLite). Tables:
+- `tasks` - id, title, status, priority, created_at, completed_at
+- `sessions` - id, date, summary, created_at
+
+### TELOS (Personal Context)
+Located in `/telos/` directory:
+- `mission.md` - Who you are, what you do
+- `goals.md` - Short and long-term objectives
+- `beliefs.md` - Core principles
 
 ---
 
@@ -202,10 +248,12 @@ git push origin main       # Push to GitHub
 - Scripts are in `/scripts/` and executable
 
 ### Things to Remember
+- Use `brain status` for quick overview
+- Use `brain task add` to track work
 - Rebuild after changes: `npm run build`
 - Nginx config: `/etc/nginx/conf.d/portfolio.conf`
 - Docker apps: `docker-compose up -d`
-- 8 Docker containers typically running
+- 17 Docker containers typically running
 
 ---
 
@@ -224,33 +272,46 @@ git push origin main       # Push to GitHub
 
 | Action | Command |
 |--------|---------|
+| **Brain CLI** | |
+| Full status | `brain status` |
+| Apps health check | `brain apps health` |
+| Add task | `brain task add "title"` |
+| View tasks | `brain task list` |
+| **Development** | |
 | Dev server | `npm run dev` |
 | Build | `npm run build` |
-| Deploy | `./scripts/deploy.sh` |
-| Backup | `./scripts/backup.sh` |
+| Deploy | `brain deploy` or `./scripts/deploy.sh` |
+| Backup | `brain backup` or `./scripts/backup.sh` |
+| **Git** | |
 | Push to GitHub | `git push origin main` |
-| View roadmap | `cat PORTFOLIO_ROADMAP.md` |
-| Session context | `./scripts/session-context.sh` |
+| **Infrastructure** | |
 | Nginx reload | `sudo nginx -s reload` |
 | Docker status | `docker ps` |
+| Restart app | `brain apps restart <name>` |
 
 ---
 
-## Completed Features (Session 2026-01-30)
+## Completed Features
 
+### Session 2026-01-30
 1. **Phase 1:** Changed "Cloud Consultant" → "AI Consultant"
 2. **Phase 2:** App category system (23 apps across 3 categories)
 3. **Phase 3:** Music section with /music page and audio player
 4. **Phase 4:** CI/CD, backup scripts, session context
 5. **Phase 5:** Documentation updates
 
+### Session 2026-03-17
+6. **TELOS System:** Personal context docs (mission, goals, beliefs)
+7. **Brain CLI:** Unified command center with 25 apps tracked
+8. **SQLite Tasks:** Task tracking with add/list/done commands
+9. **Carousel Fix:** Resolved left-edge clipping issue
+
 ---
 
 ## Future Enhancements
 
 - [ ] Add actual music tracks to discography
+- [ ] Deploy upgrading apps (Ashley-v3, Sensei AI IO, etc.)
+- [ ] Add session logging commands to brain CLI
 - [ ] More Cloud Infrastructure projects
-- [ ] Art Curation entries
-- [ ] Audio Engineering projects/events
-- [ ] Serve testing/upgrading apps
 - [ ] Custom images for new apps
