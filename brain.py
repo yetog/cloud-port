@@ -14,6 +14,9 @@ Commands:
   task list           Show all pending tasks
   task done <id>      Mark a task as complete
   task all            Show all tasks including completed
+  session start       Start a new work session
+  session end <title> End session, create blog post, deploy
+  session list        Show recent sessions
   help                Show this help message
 """
 
@@ -22,12 +25,16 @@ import sys
 import os
 import socket
 import sqlite3
+import re
+import json
 from datetime import datetime
 
 # Configuration
 PORTFOLIO_DIR = "/var/www/zaylegend"
 SCRIPTS_DIR = f"{PORTFOLIO_DIR}/scripts"
 DB_PATH = f"{PORTFOLIO_DIR}/brain.db"
+BLOG_TS_PATH = f"{PORTFOLIO_DIR}/src/data/blog.ts"
+SESSION_FILE = f"{PORTFOLIO_DIR}/.current_session"
 
 # App registry with categories and ports
 # Format: "name": (port, "category", "container_name")
@@ -414,6 +421,261 @@ def cmd_task_done(task_id):
     print(f"  {task[0]}")
     print()
 
+# ============ SESSION COMMANDS ============
+
+def cmd_session(subcommand=None, *args):
+    """Manage sessions"""
+    if subcommand == "start":
+        cmd_session_start()
+    elif subcommand == "end" and args:
+        cmd_session_end(" ".join(args))
+    elif subcommand == "list":
+        cmd_session_list()
+    else:
+        print("Usage: brain session [start|end <title>|list]")
+
+def cmd_session_start():
+    """Start a new work session"""
+    now = datetime.now()
+
+    # Check if session already active
+    if os.path.exists(SESSION_FILE):
+        with open(SESSION_FILE, 'r') as f:
+            data = json.load(f)
+        start_time = datetime.fromisoformat(data['start_time'])
+        print(color(f"\n Session already active\n", Colors.YELLOW))
+        print(f"  Started: {start_time.strftime('%Y-%m-%d %H:%M')}")
+        print(f"  Duration: {str(now - start_time).split('.')[0]}")
+        end_cmd = 'brain session end "title"'
+        print(f"\n  Run {color(end_cmd, Colors.CYAN)} to finish")
+        print()
+        return
+
+    # Create new session
+    session_data = {
+        'start_time': now.isoformat(),
+        'tasks_at_start': get_pending_task_count()
+    }
+
+    with open(SESSION_FILE, 'w') as f:
+        json.dump(session_data, f)
+
+    print(color(f"\n Session started\n", Colors.BOLD + Colors.GREEN))
+    print(f"  Time: {now.strftime('%Y-%m-%d %H:%M')}")
+    print(f"  Pending tasks: {session_data['tasks_at_start']}")
+    end_hint = 'brain session end "What you built"'
+    print(f"\n  When done, run: {color(end_hint, Colors.CYAN)}")
+    print()
+
+def cmd_session_end(title):
+    """End session, create blog post, and deploy"""
+    now = datetime.now()
+
+    # Check if session is active
+    if not os.path.exists(SESSION_FILE):
+        print(color("\n No active session\n", Colors.RED))
+        print(f"  Run {color('brain session start', Colors.CYAN)} first")
+        print()
+        return
+
+    # Load session data
+    with open(SESSION_FILE, 'r') as f:
+        data = json.load(f)
+
+    start_time = datetime.fromisoformat(data['start_time'])
+    duration = now - start_time
+    duration_str = str(duration).split('.')[0]
+
+    # Get completed tasks since session start
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("""
+        SELECT title FROM tasks
+        WHERE status = 'completed'
+        AND completed_at >= ?
+        ORDER BY completed_at
+    """, (data['start_time'],))
+    completed_tasks = [row[0] for row in c.fetchall()]
+    conn.close()
+
+    # Get git commits since session start
+    git_log, _, _ = run(f"git log --since='{start_time.isoformat()}' --oneline 2>/dev/null")
+    commits = git_log.strip().split('\n') if git_log.strip() else []
+
+    print(color(f"\n Ending session...\n", Colors.BOLD + Colors.CYAN))
+    print(f"  Duration: {duration_str}")
+    print(f"  Tasks completed: {len(completed_tasks)}")
+    print(f"  Commits: {len(commits)}")
+
+    # Create blog post
+    post_id = f"session-{now.strftime('%Y-%m-%d')}"
+    date_str = now.strftime('%Y-%m-%d')
+    read_time = max(2, len(completed_tasks) + len(commits))
+
+    # Build content
+    content_parts = [f"# Session: {now.strftime('%Y-%m-%d')}\\n\\n## Summary\\n{title}"]
+
+    if completed_tasks:
+        content_parts.append("\\n\\n## Tasks Completed")
+        for task in completed_tasks:
+            content_parts.append(f"\\n- {task}")
+
+    if commits:
+        content_parts.append("\\n\\n## Commits")
+        for commit in commits[:10]:  # Limit to 10
+            content_parts.append(f"\\n- {commit}")
+
+    content_parts.append(f"\\n\\n## Stats\\n- Duration: {duration_str}\\n- Tasks: {len(completed_tasks)}\\n- Commits: {len(commits)}")
+
+    content = "".join(content_parts)
+
+    # Generate tags from title
+    tags = ['Session']
+    keywords = ['CLI', 'API', 'Docker', 'Deploy', 'Fix', 'Feature', 'Bug', 'UI', 'Database', 'Auth']
+    for kw in keywords:
+        if kw.lower() in title.lower():
+            tags.append(kw)
+    if len(tags) < 3:
+        tags.append('Development')
+
+    # Create the blog post entry
+    escaped_title = title.replace("'", "\\'")
+    escaped_content = content.replace('`', '\\`')
+    tasks_count = len(completed_tasks)
+    commits_count = len(commits)
+    tags_json = json.dumps(tags)
+
+    new_post = f'''  {{
+    id: '{post_id}',
+    title: '{escaped_title}',
+    excerpt: 'Work session - {tasks_count} tasks completed, {commits_count} commits.',
+    content: `
+{escaped_content}
+    `,
+    author: 'Isayah Young-Burke',
+    date: '{date_str}',
+    readTime: '{read_time} min read',
+    category: 'sessions',
+    tags: {tags_json}
+  }},'''
+
+    # Insert into blog.ts
+    print(f"  Creating blog post...")
+
+    try:
+        with open(BLOG_TS_PATH, 'r') as f:
+            blog_content = f.read()
+
+        # Find the insertion point (after "export const blogPosts: BlogPost[] = [")
+        insert_marker = "export const blogPosts: BlogPost[] = ["
+        insert_pos = blog_content.find(insert_marker)
+
+        if insert_pos == -1:
+            print(color("  Error: Could not find insertion point in blog.ts", Colors.RED))
+            return
+
+        insert_pos += len(insert_marker)
+
+        # Insert the new post
+        new_content = blog_content[:insert_pos] + "\n" + new_post + blog_content[insert_pos:]
+
+        with open(BLOG_TS_PATH, 'w') as f:
+            f.write(new_content)
+
+        print(color("  Blog post created", Colors.GREEN))
+    except Exception as e:
+        print(color(f"  Error creating blog post: {e}", Colors.RED))
+        return
+
+    # Build
+    print(f"  Building...")
+    _, err, code = run("npm run build", capture=True)
+    if code != 0:
+        print(color(f"  Build failed: {err}", Colors.RED))
+        return
+    print(color("  Build complete", Colors.GREEN))
+
+    # Deploy (reload nginx)
+    print(f"  Deploying...")
+    run("sudo nginx -s reload", capture=True)
+    print(color("  Deployed", Colors.GREEN))
+
+    # Git commit
+    print(f"  Committing...")
+    run("git add src/data/blog.ts", capture=True)
+    commit_msg = f"session: {title}"
+    run(f'git commit -m "{commit_msg}"', capture=True)
+    print(color("  Committed", Colors.GREEN))
+
+    # Push
+    print(f"  Pushing...")
+    _, err, code = run("git push origin main", capture=True)
+    if code == 0:
+        print(color("  Pushed to GitHub", Colors.GREEN))
+    else:
+        print(color(f"  Push failed (commit saved locally)", Colors.YELLOW))
+
+    # Save to sessions table
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("""
+        INSERT INTO sessions (date, summary, created_at)
+        VALUES (?, ?, ?)
+    """, (date_str, title, now.isoformat()))
+    conn.commit()
+    conn.close()
+
+    # Clean up session file
+    os.remove(SESSION_FILE)
+
+    print(color(f"\n Session complete!\n", Colors.BOLD + Colors.GREEN))
+    print(f"  Blog post: /blog/{post_id}")
+    print(f"  Duration: {duration_str}")
+    print()
+
+def cmd_session_list():
+    """List recent sessions"""
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("""
+        SELECT date, summary, created_at
+        FROM sessions
+        ORDER BY created_at DESC
+        LIMIT 10
+    """)
+    sessions = c.fetchall()
+    conn.close()
+
+    print(color(f"\n Recent Sessions\n", Colors.BOLD + Colors.CYAN))
+    print("=" * 55)
+
+    if not sessions:
+        print(f"  {color('No sessions recorded', Colors.DIM)}")
+    else:
+        for date, summary, created_at in sessions:
+            print(f"  {color(date, Colors.BLUE)}  {summary[:40]}")
+
+    print("=" * 55)
+
+    # Check for active session
+    if os.path.exists(SESSION_FILE):
+        with open(SESSION_FILE, 'r') as f:
+            data = json.load(f)
+        start_time = datetime.fromisoformat(data['start_time'])
+        duration = datetime.now() - start_time
+        print(f"  {color('Active session:', Colors.GREEN)} {str(duration).split('.')[0]}")
+
+    print()
+
+def get_pending_task_count():
+    """Get count of pending tasks"""
+    conn = get_db()
+    c = conn.cursor()
+    c.execute("SELECT COUNT(*) FROM tasks WHERE status = 'pending'")
+    count = c.fetchone()[0]
+    conn.close()
+    return count
+
 def cmd_help():
     """Show help message"""
     print(__doc__)
@@ -441,6 +703,10 @@ def main():
         subcommand = sys.argv[2] if len(sys.argv) > 2 else None
         args = sys.argv[3:] if len(sys.argv) > 3 else []
         cmd_task(subcommand, *args)
+    elif command == "session":
+        subcommand = sys.argv[2] if len(sys.argv) > 2 else None
+        args = sys.argv[3:] if len(sys.argv) > 3 else []
+        cmd_session(subcommand, *args)
     elif command in ["help", "--help", "-h"]:
         cmd_help()
     else:
