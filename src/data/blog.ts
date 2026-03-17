@@ -6,10 +6,11 @@ export interface BlogPost {
   author: string;
   date: string;
   readTime: string;
-  category: 'cloud' | 'ai' | 'devops' | 'creative' | 'tutorial' | 'insights';
+  category: 'cloud' | 'ai' | 'devops' | 'creative' | 'tutorial' | 'insights' | 'docs' | 'sessions' | 'scripts';
   tags: string[];
   image?: string;
   featured?: boolean;
+  downloadUrl?: string;
 }
 
 export interface BlogCategory {
@@ -20,6 +21,9 @@ export interface BlogCategory {
 
 export const blogCategories: BlogCategory[] = [
   { id: 'all', title: 'All Posts', color: 'bg-muted' },
+  { id: 'docs', title: 'Docs', color: 'bg-emerald-500' },
+  { id: 'sessions', title: 'Sessions', color: 'bg-violet-500' },
+  { id: 'scripts', title: 'Scripts', color: 'bg-amber-500' },
   { id: 'cloud', title: 'Cloud', color: 'bg-blue-500' },
   { id: 'ai', title: 'AI', color: 'bg-purple-500' },
   { id: 'devops', title: 'DevOps', color: 'bg-green-500' },
@@ -29,6 +33,540 @@ export const blogCategories: BlogCategory[] = [
 ];
 
 export const blogPosts: BlogPost[] = [
+  {
+    id: 'session-2026-03-17',
+    title: 'Building a Portfolio Brain CLI',
+    excerpt: 'How I created a unified command-line interface to manage my portfolio infrastructure, track tasks, and monitor 25 apps.',
+    content: `
+# Building a Portfolio Brain CLI
+
+Today I built a unified command-line interface called "brain" to manage my portfolio infrastructure. Here's what I accomplished and why.
+
+## The Problem
+
+Managing a portfolio with 25 apps across different states (finished, testing, upgrading) was becoming unwieldy:
+- Multiple scripts scattered in /scripts/
+- No central way to check health of all apps
+- Tasks getting lost in my head
+- Context switching between sessions
+
+## The Solution: brain.py
+
+A single Python CLI that wraps everything:
+
+\`\`\`bash
+brain status              # Overview at a glance
+brain apps health         # Check all 25 apps
+brain task add "title"    # Track tasks in SQLite
+brain task list           # View pending work
+brain deploy              # Deploy changes
+\`\`\`
+
+## Key Features
+
+### 1. App Health Monitoring
+The CLI tracks 25 apps across 3 categories and can check port availability instantly:
+- **Finished (13)**: Production-ready apps
+- **Testing (8)**: Beta apps on ports 3010-3018
+- **Upgrading (4)**: In development
+
+### 2. SQLite Task Tracking
+No more losing ideas. Tasks persist in a local database:
+- Add tasks with a single command
+- Mark complete when done
+- View all or just pending
+
+### 3. TELOS Context
+Borrowed from the Sentinel project - a /telos directory with:
+- mission.md - Who I am
+- goals.md - What I'm working toward
+- beliefs.md - Core principles
+
+## Other Wins Today
+
+- Fixed the carousel left-edge clipping issue
+- Updated CLAUDE.md with full brain CLI documentation
+- Committed everything to GitHub
+
+## What's Next
+
+- Add session logging to brain CLI
+- Deploy remaining testing apps
+- Music streaming setup
+
+The brain CLI has already made managing the portfolio feel more intentional and organized. One command to rule them all.
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-03-17',
+    readTime: '4 min read',
+    category: 'sessions',
+    tags: ['CLI', 'Python', 'Infrastructure', 'Automation'],
+    featured: true
+  },
+  {
+    id: 'session-2026-03-16',
+    title: 'Sentinel Analysis & Carousel Debugging',
+    excerpt: 'Analyzed the Sentinel AI assistant architecture and documented a stubborn carousel clipping bug.',
+    content: `
+# Session: 2026-03-16
+
+## Summary
+Worked on two main areas: fixing a carousel layout issue and analyzing the Sentinel repo for infrastructure inspiration.
+
+## Carousel Layout Issue
+The left edge of Featured Apps and Projects carousels was being clipped. We tried several approaches:
+- Adding margin/padding to main container
+- Removing centering from containers
+- Adding padding to carousel wrapper
+
+**Root cause identified:** The shadcn Carousel component uses \`-ml-4\` negative margin combined with \`overflow-hidden\`, which clips the left edge.
+
+## Sentinel Analysis
+Cloned and analyzed the Sentinel autonomous AI assistant. Key findings:
+- 48 autonomous skills (deploy, email, calendar, etc.)
+- Multi-interface access (Slack, CLI, REST API)
+- Memory layers (Redis, Postgres, Neo4j)
+- TELOS personal context system
+
+Created a 5-phase adoption plan to bring key concepts to the portfolio.
+
+## Documents Created
+- \`docs/CAROUSEL_LAYOUT_BRAINSTORM.md\`
+- \`docs/SENTINEL_COMPARISON_AUDIT.md\`
+- \`docs/SENTINEL_ADOPTION_PLAN.md\`
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-03-16',
+    readTime: '4 min read',
+    category: 'sessions',
+    tags: ['Debugging', 'Architecture', 'AI', 'Sentinel']
+  },
+  {
+    id: 'session-2026-02-16',
+    title: 'S3 Music Upload & Branding Cleanup',
+    excerpt: 'Built an S3 upload script for music, integrated 25 tracks, and removed all Lovable branding from apps.',
+    content: `
+# Session: 2026-02-16
+
+## Summary
+Big session focused on music integration and branding cleanup.
+
+## S3 Music Upload Script
+Created a Python script to batch upload music to IONOS S3:
+- Supports MP3, WAV, FLAC, M4A, AAC, OGG, WMA
+- Auto-generates public URLs
+- Outputs TypeScript snippets for music.ts
+
+## PH Pool Beat Tape
+Integrated 25 tracks from the PH Pool - Ambiance Beat Tape:
+- All tracks uploaded to S3
+- Music player now has real audio playback
+- Progress bar with seeking, volume control, repeat
+
+## Branding Cleanup
+Removed Lovable branding from 9 apps across 10 files:
+- darkflow-mind-mapper
+- bh-ai-79
+- got-hired-ai
+- losk
+- gmat-mastery-suite
+- sop-ai-beta
+- ask-hr-beta
+- sensei-ai-io
+
+Replaced with ZayLegend branding (og:image, twitter:site, author).
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-02-16',
+    readTime: '5 min read',
+    category: 'sessions',
+    tags: ['S3', 'Music', 'Branding', 'Python']
+  },
+  {
+    id: 'session-2026-02-15',
+    title: 'Eternal Vibe: Audio Analysis & SFX Layer',
+    excerpt: 'Built a Python audio analysis backend and synthesized SFX layer for Chord Genesis.',
+    content: `
+# Session: 2026-02-15
+
+## Summary
+Built the foundation for the "Eternal Vibe" music production system in Chord Genesis.
+
+## Python Audio Analysis Backend
+Created a FastAPI backend at port 3020 that analyzes uploaded audio:
+- BPM and beat strength detection
+- Key detection with confidence score
+- Energy level classification
+- Mood estimation
+- Automatic ElevenLabs prompt generation
+
+## SFX Layer
+Built a Web Audio API synthesized sound effects layer:
+
+| Category | Effects |
+|----------|---------|
+| Ambient | Warm Pad, Vinyl Crackle, Soft Rain, Space Drift |
+| Risers | Filter Sweep, Noise Rise, Pitch Rise |
+| Impacts | Deep Boom, Cinematic Hit, Sub Drop |
+| Transitions | Whoosh, Glitch Stutter, Tape Stop |
+
+## Architecture
+\`\`\`
+Frontend (React) → Port 3001
+Backend (FastAPI) → Port 3020
+\`\`\`
+
+The Style Replicator lets you upload a reference track, extract its musical features, and generate matching prompts for AI music generation.
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-02-15',
+    readTime: '6 min read',
+    category: 'sessions',
+    tags: ['Audio', 'Python', 'FastAPI', 'Web Audio API', 'Chord Genesis']
+  },
+  {
+    id: 'session-2026-02-14',
+    title: 'Eternal Vibe Research Phase',
+    excerpt: 'Deep research into ElevenLabs, librosa audio analysis, and open source music generation.',
+    content: `
+# Session: 2026-02-14
+
+## Summary
+Completed research phase for Chord Genesis enhancement and the Eternal Vibe concept.
+
+## Research Areas
+
+### ElevenLabs Capabilities
+- Music generation up to 5 minutes
+- Sound effects API with looping
+- Inpainting API for fine-grained editing
+- Stem separation
+- Video generation with lip-sync
+
+### Audio Analysis (Librosa)
+- Feature extraction: tempo, key, chroma, MFCCs
+- Style profile generation from reference tracks
+- Requires Python backend
+
+### Open Source Music Generation
+- **ACE-Step 1.5**: Local GPU-based, "open source Suno killer"
+- **HeartMuLa**: Offline song generation with vocals
+- No official Suno API yet
+
+## Next Steps Identified
+1. Build Python Audio Analysis Service (foundation)
+2. Add SFX Layer to Chord Genesis (quick win)
+3. Explore ACE-Step for local generation
+4. Research binaural beats for therapeutic music
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-02-14',
+    readTime: '4 min read',
+    category: 'sessions',
+    tags: ['Research', 'ElevenLabs', 'Audio', 'AI Music']
+  },
+  {
+    id: 'session-2026-02-02',
+    title: 'Testing Apps Deployment Complete',
+    excerpt: 'Deployed all remaining testing apps and optimized Chord Genesis bundle size by 96%.',
+    content: `
+# Session: 2026-02-02
+
+## Summary
+Deployed all remaining testing apps and committed major changes.
+
+## Testing Apps Deployed
+All 7 testing apps now live:
+
+| App | Port | Status |
+|-----|------|--------|
+| darkflow-mind-mapper | 3010 | Running |
+| gmat-mastery-suite | 3012 | Running |
+| losk | 3013 | Running |
+| got-hired-ai | 3014 | Running |
+| bh-ai-79 | 3015 | Running |
+| purple-lotus | 3016 | Running |
+| zen-tot | 3017 | Running |
+
+## Performance Optimization
+Chord Genesis bundle size reduction:
+- **Before:** 2.4MB single bundle
+- **After:** 94KB main + 141KB React + 2.2MB ElevenLabs (lazy loaded)
+- **Result:** 96% reduction in initial load
+
+## Git Commits
+- Portfolio: 36 files changed, 4641 insertions
+- Added Services page, Blog page, RPG UI styling
+- Accessibility improvements (ARIA, skip links, focus states)
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-02-02',
+    readTime: '4 min read',
+    category: 'sessions',
+    tags: ['Deployment', 'Docker', 'Performance', 'Testing Apps']
+  },
+  {
+    id: 'session-2026-01-31',
+    title: 'Services, Blog & RPG UI Theme',
+    excerpt: 'Created Services and Blog pages from scratch and applied FF7-inspired RPG styling.',
+    content: `
+# Session: 2026-01-31
+
+## Summary
+Major feature additions - created Services and Blog pages, plus RPG UI theming.
+
+## Issues Identified
+Services and Blog pages were never created - they needed to be built from scratch.
+
+## What Was Built
+
+### Services Page
+- 11 services across 4 categories
+- Responsive grid layout
+- Service detail modals
+
+### Blog Page
+- Search functionality
+- Category filtering
+- 6 sample posts
+- Individual post view
+
+### RPG UI Theme
+Inspired by Final Fantasy VII:
+- Glass panel effects with glow
+- Sound effects toggle
+- Theme toggle (dark/light)
+- Custom loading animations
+
+## Chord Genesis Enhancements
+- Added "City Pop Bounce" genre
+- Artist/Producer style presets (J Dilla, Pharrell, Metro Boomin)
+- Advanced controls wired to music generation
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-01-31',
+    readTime: '5 min read',
+    category: 'sessions',
+    tags: ['UI/UX', 'Blog', 'Services', 'RPG Theme']
+  },
+  {
+    id: 'session-2026-01-30',
+    title: 'Major Portfolio Overhaul - 5 Phases',
+    excerpt: 'Completed all 5 roadmap phases: content fixes, app categories, music section, CI/CD, and documentation.',
+    content: `
+# Session: 2026-01-30
+
+## Summary
+Major portfolio overhaul completing all 5 phases of the roadmap.
+
+## Phase 1: Content Fixes
+Changed "Infrastructure & Cloud Consultant" → "Infrastructure & AI Consultant"
+
+## Phase 2: App Category System
+- Restructured apps.ts with status field (finished/testing/upgrading)
+- Cloned 11 new repos
+- Updated Apps page with collapsible category sections
+- **Total:** 12 Finished, 7 Testing, 4 Upgrading = 23 Apps
+
+## Phase 3: Music Section
+- Added Music link to sidebar
+- Created music.ts data structure
+- Built /music page with player
+- Play/pause, skip, shuffle, repeat controls
+
+## Phase 4: CI/CD & Infrastructure
+- GitHub Actions workflow
+- deploy.sh, backup.sh, github-backup.sh scripts
+- session-context.sh for status on login
+
+## Phase 5: Documentation
+- Comprehensive CLAUDE.md update
+- Session logging system
+- Updated PORTFOLIO_ROADMAP.md
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-01-30',
+    readTime: '5 min read',
+    category: 'sessions',
+    tags: ['Portfolio', 'CI/CD', 'Music', 'Infrastructure'],
+    featured: true
+  },
+  {
+    id: 'session-2025-12-27-branding',
+    title: 'Complete Branding Audit & Fix',
+    excerpt: 'Comprehensive audit removing Lovable/GPT Engineer branding from all 6 portfolio apps.',
+    content: `
+# Session: 2025-12-27
+
+## Overview
+Comprehensive branding audit across all applications on zaylegend.com.
+
+## Critical Issues Found
+6 apps had external branding issues:
+1. **Game-Hub** - GPT Engineer script + Lovable branding
+2. **DJ-Visualizer** - External domain references + Umami analytics
+3. **Fineline** - Lovable branding in dist files
+4. **Chord-Genesis** - Old IONOS references
+5. **Voice-Assistant** - "IONOS Assistant" branding
+6. **SpriteGen** - Mixed branding in meta tags
+
+## Actions Taken
+For each app:
+- Removed GPT Engineer scripts
+- Updated titles to "[App Name] - ZayLegend"
+- Fixed Open Graph and Twitter meta tags
+- Updated author attribution
+- Rebuilt and redeployed containers
+
+## Branding Standards Applied
+- **Title:** \`[App Name] - ZayLegend\`
+- **Author:** \`Isayah Young Burke - zaylegend.com\`
+- **Twitter:** \`@zaylegend\`
+- **OG Image:** \`https://zaylegend.com/favicon.ico\`
+
+## Result
+100% complete - all 6 apps now show consistent ZayLegend branding.
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2025-12-27',
+    readTime: '5 min read',
+    category: 'sessions',
+    tags: ['Branding', 'Docker', 'Meta Tags', 'Audit']
+  },
+  {
+    id: 'session-2025-12-27-zenreset',
+    title: 'Zen Reset Branding Fix',
+    excerpt: 'Fixed Zen Reset app showing Lovable branding in mobile link previews.',
+    content: `
+# Session: 2025-12-27 - Zen Reset
+
+## Issue
+Zen Reset meditation app was showing Lovable branding when sharing links on mobile.
+
+## Root Cause
+- GPT Engineer script tag in HTML
+- Open Graph meta tags pointing to Lovable images
+- Docker container serving cached files
+- Favicon references pointing to wrong assets
+
+## Solution
+1. Removed GPT Engineer script from index.html
+2. Updated Open Graph image to ZayLegend favicon
+3. Updated Twitter card meta tags
+4. Fixed favicon in Docker container
+
+## Key Learning
+The app runs in a Docker container on port 8081. Updates need to be deployed to the container:
+\`\`\`bash
+docker cp /path/to/file zen-reset-new:/usr/share/nginx/html/
+\`\`\`
+
+Mobile link preview caching may take 24-48 hours to refresh.
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2025-12-27',
+    readTime: '3 min read',
+    category: 'sessions',
+    tags: ['Docker', 'Branding', 'Zen Reset', 'Mobile']
+  },
+  {
+    id: 'brain-cli-docs',
+    title: 'Brain CLI Documentation',
+    excerpt: 'Complete reference for the brain command-line interface - commands, usage, and examples.',
+    content: `
+# Brain CLI Documentation
+
+The brain CLI is the central command center for managing the portfolio infrastructure.
+
+## Installation
+
+The CLI is automatically available at \`/usr/local/bin/brain\` via symlink to \`/var/www/zaylegend/brain.py\`.
+
+## Commands
+
+### Status
+\`\`\`bash
+brain status
+\`\`\`
+Shows:
+- Nginx status
+- Docker container count
+- Git status (uncommitted files, branch, last commit)
+- Disk usage
+- Pending tasks count
+- Quick health check of critical apps
+
+### Apps Management
+\`\`\`bash
+brain apps              # List all apps by category
+brain apps health       # Check UP/DOWN status of all apps
+brain apps restart <n>  # Restart a container by name
+\`\`\`
+
+### Task Tracking
+\`\`\`bash
+brain task add "title"  # Add a new task
+brain task list         # Show pending tasks
+brain task done <id>    # Mark task as complete
+brain task all          # Show all tasks (including completed)
+\`\`\`
+
+### Deployment
+\`\`\`bash
+brain deploy            # Run deployment script
+brain backup            # Run backup script
+\`\`\`
+
+## Database
+
+Tasks are stored in \`brain.db\` (SQLite) with the following schema:
+
+\`\`\`sql
+CREATE TABLE tasks (
+    id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
+    status TEXT DEFAULT 'pending',
+    priority INTEGER DEFAULT 3,
+    created_at TIMESTAMP,
+    completed_at TIMESTAMP
+);
+\`\`\`
+
+## App Registry
+
+The CLI tracks 25 apps:
+
+| Category | Count | Ports |
+|----------|-------|-------|
+| Finished | 13 | 8080-8081, 3001-3009 |
+| Testing | 8 | 3010-3018 |
+| Upgrading | 4 | Not deployed |
+
+## Examples
+
+Check if any apps are down:
+\`\`\`bash
+brain apps health | grep DOWN
+\`\`\`
+
+Add and complete a task:
+\`\`\`bash
+brain task add "Fix carousel layout"
+# ... do the work ...
+brain task done 1
+\`\`\`
+
+Quick status check:
+\`\`\`bash
+brain status
+\`\`\`
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-03-17',
+    readTime: '3 min read',
+    category: 'docs',
+    tags: ['CLI', 'Documentation', 'Reference', 'Brain']
+  },
   {
     id: 'building-ai-agents-2026',
     title: 'Building AI Agents in 2026: A Practical Guide',
@@ -246,6 +784,315 @@ The future belongs to those who can effectively orchestrate human creativity wit
     readTime: '6 min read',
     category: 'insights',
     tags: ['AI', 'Future of Work', 'Insights', 'Career']
+  },
+  // ============ SCRIPTS ============
+  {
+    id: 'script-deploy',
+    title: 'Deploy Script: One-Command Deployment',
+    excerpt: 'A bash script that pulls, builds, and deploys the portfolio with automatic backups.',
+    content: `
+# Deploy Script
+
+## The Problem
+Deploying changes required multiple manual steps:
+1. SSH into server
+2. Pull latest changes
+3. Install dependencies
+4. Build the project
+5. Hope nothing breaks
+
+## The Solution
+A single script that handles everything:
+\`\`\`bash
+./scripts/deploy.sh
+\`\`\`
+
+## What It Does
+1. **Backs up current build** - Creates timestamped tarball of dist/
+2. **Pulls from GitHub** - Fetches and resets to origin/main
+3. **Installs dependencies** - Runs npm ci
+4. **Builds production** - Runs npm run build
+5. **Verifies success** - Checks dist/index.html exists
+
+## Key Features
+- Automatic backup rotation (keeps last 5)
+- Color-coded output
+- Logging to deploy.log
+- Exit on error (set -e)
+
+## What I Learned
+- Always backup before deploying
+- Use \`npm ci\` instead of \`npm install\` in CI/CD
+- Color output makes scripts more readable
+- Logging helps debug failed deploys
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-01-30',
+    readTime: '3 min read',
+    category: 'scripts',
+    tags: ['Bash', 'Deployment', 'Automation', 'DevOps'],
+    downloadUrl: '/downloads/scripts/deploy.sh'
+  },
+  {
+    id: 'script-backup',
+    title: 'Backup Script: Automated Local Backups',
+    excerpt: 'Automated backup script with rotation - keeps your portfolio safe.',
+    content: `
+# Backup Script
+
+## The Problem
+No systematic backups. If something broke, recovery was painful.
+
+## The Solution
+\`\`\`bash
+./scripts/backup.sh
+\`\`\`
+
+## What It Does
+1. Creates timestamped backup of:
+   - Source code (src/)
+   - Configuration files
+   - Current build (dist/)
+2. Compresses to .tar.gz
+3. Rotates old backups (keeps last 10)
+4. Reports backup size
+
+## Backup Locations
+- Local: \`/var/www/zaylegend/backups/\`
+- Includes date in filename: \`backup_20260317_120000.tar.gz\`
+
+## What I Learned
+- Regular backups are essential
+- Rotation prevents disk filling up
+- Compression saves significant space
+- Include both source and build
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-01-30',
+    readTime: '2 min read',
+    category: 'scripts',
+    tags: ['Bash', 'Backup', 'Automation'],
+    downloadUrl: '/downloads/scripts/backup.sh'
+  },
+  {
+    id: 'script-session-context',
+    title: 'Session Context: Status on SSH Login',
+    excerpt: 'Shows portfolio status automatically when you SSH into the server.',
+    content: `
+# Session Context Script
+
+## The Problem
+Every time I SSH into the server, I had to manually check:
+- Git status
+- Docker containers
+- Pending tasks
+- Recently modified files
+
+## The Solution
+Auto-run on login:
+\`\`\`bash
+# Added to ~/.bashrc
+source /var/www/zaylegend/scripts/session-context.sh
+\`\`\`
+
+## What It Shows
+\`\`\`
+╔══════════════════════════════════════════╗
+║  ZAYLEGEND PORTFOLIO - SESSION CONTEXT   ║
+╠══════════════════════════════════════════╣
+║  2026-03-17 12:00:00                     ║
+╚══════════════════════════════════════════╝
+
+▶ GIT STATUS:
+  Branch: main | Commit: abc123 | Uncommitted: 3 files
+
+▶ RECENTLY MODIFIED (last 24h):
+  Apps.tsx
+  music.ts
+
+▶ DOCKER CONTAINERS:
+  17 running, 0 stopped
+
+▶ PENDING TASKS:
+  - Fix carousel layout
+  - Deploy testing apps
+\`\`\`
+
+## What I Learned
+- Context switching wastes time
+- Immediate visibility = faster work
+- Sourcing scripts in .bashrc is powerful
+- ASCII art makes things fun
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-01-30',
+    readTime: '3 min read',
+    category: 'scripts',
+    tags: ['Bash', 'Productivity', 'SSH', 'Automation'],
+    downloadUrl: '/downloads/scripts/session-context.sh'
+  },
+  {
+    id: 'script-deploy-testing-app',
+    title: 'Deploy Testing App: Full App Deployment',
+    excerpt: 'Automates deploying a new testing app with Docker, nginx config, and port allocation.',
+    content: `
+# Deploy Testing App Script
+
+## The Problem
+Deploying a new testing app required:
+1. Clone the repo
+2. Fix vite.config.ts base path
+3. Fix BrowserRouter basename
+4. Build the app
+5. Create Dockerfile
+6. Build Docker image
+7. Run container
+8. Update nginx config
+9. Reload nginx
+
+## The Solution
+\`\`\`bash
+./scripts/deploy-testing-app.sh <folder-name> <url-slug> <port>
+\`\`\`
+
+## Example
+\`\`\`bash
+./scripts/deploy-testing-app.sh my-new-app my-app 3018
+\`\`\`
+
+## What It Does
+1. Validates the app folder exists
+2. Updates vite.config.ts with correct base path
+3. Updates BrowserRouter basename
+4. Runs npm install and build
+5. Creates Dockerfile.simple for nginx serving
+6. Builds and runs Docker container
+7. Generates nginx location block
+8. Reloads nginx
+
+## Critical React Router Fix
+Two things MUST be set for SPA routing:
+1. \`vite.config.ts\`: \`base: '/url-slug/'\`
+2. \`<BrowserRouter basename="/url-slug">\`
+
+## What I Learned
+- React Router apps need special handling for subpaths
+- Automating complex deploys saves hours
+- Always verify with curl after deploy
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-02-02',
+    readTime: '4 min read',
+    category: 'scripts',
+    tags: ['Bash', 'Docker', 'Nginx', 'Deployment'],
+    downloadUrl: '/downloads/scripts/deploy-testing-app.sh'
+  },
+  {
+    id: 'script-upload-music-s3',
+    title: 'S3 Music Upload: Batch Upload to IONOS',
+    excerpt: 'Python script to batch upload music files to IONOS S3 with auto-generated URLs.',
+    content: `
+# S3 Music Upload Script
+
+## The Problem
+Needed to upload 25 music tracks to S3 and get public URLs for each.
+
+## The Solution
+\`\`\`bash
+python3 scripts/upload-music-to-s3.py ~/Music/album-folder/
+\`\`\`
+
+## What It Does
+1. Scans folder for audio files (.mp3, .wav, .flac, etc.)
+2. Uploads each to IONOS S3 bucket
+3. Sets public-read ACL
+4. Outputs TypeScript snippets for music.ts
+
+## Example Output
+\`\`\`typescript
+{
+  id: 'track-1',
+  title: 'Abode',
+  audioUrl: 'https://s3.ionoscloud.com/bucket/music/Abode.mp3'
+}
+\`\`\`
+
+## Features
+- Dry run mode (\`--dry-run\`)
+- Progress indicator
+- Error handling with retry
+- Supports: MP3, WAV, FLAC, M4A, AAC, OGG
+
+## Configuration
+Uses \`.env.s3\` for credentials:
+\`\`\`
+S3_ACCESS_KEY=xxx
+S3_SECRET_KEY=xxx
+S3_BUCKET=portfoliowebsite
+S3_ENDPOINT=https://s3.ionoscloud.com
+\`\`\`
+
+## What I Learned
+- boto3 makes S3 operations simple
+- Always use environment variables for credentials
+- Dry run mode prevents accidents
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-02-16',
+    readTime: '3 min read',
+    category: 'scripts',
+    tags: ['Python', 'S3', 'AWS', 'Music', 'Automation'],
+    downloadUrl: '/downloads/scripts/upload-music-to-s3.py'
+  },
+  {
+    id: 'script-rebuild-all-apps',
+    title: 'Rebuild All Apps: Mass Docker Rebuild',
+    excerpt: 'Rebuilds and redeploys all Docker apps when major changes are needed.',
+    content: `
+# Rebuild All Apps Script
+
+## The Problem
+After a major change (like branding updates), needed to rebuild all Docker containers.
+
+## The Solution
+\`\`\`bash
+./scripts/rebuild-all-apps.sh
+\`\`\`
+
+## What It Does
+For each app in the apps directory:
+1. Stops the running container
+2. Removes the old container
+3. Rebuilds the Docker image
+4. Starts new container with correct port
+5. Verifies health with curl
+
+## Apps Rebuilt
+- chord-genesis (3001)
+- fineline (3003)
+- game-hub (3004)
+- dj-visualizer (3005)
+- sprite-gen (3006)
+- voice-assistant (3007)
+- And all testing apps...
+
+## Safety Features
+- Confirms before starting
+- Logs each step
+- Continues on single app failure
+- Reports summary at end
+
+## What I Learned
+- Mass operations need confirmation prompts
+- Parallel rebuilds can overwhelm the system
+- Always verify each app after rebuild
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-02-26',
+    readTime: '3 min read',
+    category: 'scripts',
+    tags: ['Bash', 'Docker', 'Mass Operations', 'DevOps'],
+    downloadUrl: '/downloads/scripts/rebuild-all-apps.sh'
   }
 ];
 
