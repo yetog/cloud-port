@@ -35,6 +35,19 @@ export const blogCategories: BlogCategory[] = [
 export const blogPosts: BlogPost[] = [
   {
     id: 'session-2026-03-17',
+    title: 'Brain CLI, Blog System Expansion, and Session Automation',
+    excerpt: 'Work session - 0 tasks completed, 0 commits.',
+    content: `
+# Session: 2026-03-17\n\n## Summary\nBrain CLI, Blog System Expansion, and Session Automation\n\n## Stats\n- Duration: 0:00:22\n- Tasks: 0\n- Commits: 0
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-03-17',
+    readTime: '2 min read',
+    category: 'sessions',
+    tags: ["Session", "CLI", "Development"]
+  },
+  {
+    id: 'session-2026-03-17',
     title: 'Building a Portfolio Brain CLI',
     excerpt: 'How I created a unified command-line interface to manage my portfolio infrastructure, track tasks, and monitor 25 apps.',
     content: `
