@@ -31,3 +31,9 @@ apps/*/
 cloned-sites/
 portfolio/
 public/zen-reset/
+
+# Brain CLI
+brain.db
+
+# Backups
+backups/
