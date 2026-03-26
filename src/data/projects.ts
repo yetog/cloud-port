@@ -383,4 +383,13 @@ export const projects: Project[] = [
     category: 'design',
     demoUrl: 'castelllp.com',
   },
+  {
+    id: 'green-empire',
+    title: 'Green Empire Landscaping Website',
+    description: 'Full-stack website development for Long Island landscaping company. Features service pages, location-based SEO, blog content, gallery, and lead generation forms. Built with Python static site generator and Docker deployment.',
+    image: ASSETS.projects.greenEmpire,
+    tags: ['Web Development', 'SEO', 'Docker', 'Lead Generation'],
+    category: 'design',
+    demoUrl: 'https://zaylegend.com/green-empire',
+  },
 ];

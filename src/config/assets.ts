@@ -54,6 +54,7 @@ export const ASSETS = {
     hudsonBoxing: getAssetUrl('projects/hudsonboxinggym.png'),
     castellLp: getAssetUrl('projects/castelllp.png'),
     buddysCashews: getAssetUrl('projects/buddyscashews.png'),
+    greenEmpire: getAssetUrl('projects/greenempire.png'),
   },
   profile: {
     // Try both extensions to see which one works
