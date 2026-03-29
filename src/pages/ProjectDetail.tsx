@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { projects } from '../data/projects';
-import { ArrowLeft, ExternalLink, Code, Cloud, Globe, Image, Headphones } from 'lucide-react';
+import { ArrowLeft, ExternalLink, Code, Cloud, Globe, Image, Headphones, Palette, ShoppingCart, Link2, Megaphone } from 'lucide-react';
 import { generateWebsiteUrl, validateWebsiteUrl } from '../utils/websiteUrl';
 import PasswordModal from '../components/PasswordModal';
 
@@ -9,14 +9,22 @@ const categoryIcons = {
   cloud: <Cloud className="h-6 w-6" />,
   webhosting: <Globe className="h-6 w-6" />,
   artcurating: <Image className="h-6 w-6" />,
-  audioengineering: <Headphones className="h-6 w-6" />
+  audioengineering: <Headphones className="h-6 w-6" />,
+  design: <Palette className="h-6 w-6" />,
+  ecommerce: <ShoppingCart className="h-6 w-6" />,
+  domain: <Link2 className="h-6 w-6" />,
+  marketing: <Megaphone className="h-6 w-6" />
 };
 
 const categoryTitles = {
   cloud: 'Cloud Infrastructure',
   webhosting: 'Web Hosting',
   artcurating: 'Art Curation',
-  audioengineering: 'Audio Engineering'
+  audioengineering: 'Audio Engineering',
+  design: 'Design & Branding',
+  ecommerce: 'E-commerce',
+  domain: 'Domain Management',
+  marketing: 'Marketing'
 };
 
 const ProjectDetail = () => {
@@ -90,9 +98,7 @@ const ProjectDetail = () => {
             
             {/* This would be expanded content for the detail page */}
             <p className="text-muted-foreground mb-6">
-              This project showcases my expertise in {project.category === 'cloud' ? 'cloud infrastructure' : 
-                project.category === 'webhosting' ? 'web hosting solutions' : 
-                project.category === 'artcurating' ? 'art curation' : 'audio engineering'}.
+              This project showcases my expertise in {categoryTitles[project.category as keyof typeof categoryTitles]?.toLowerCase() || project.category}.
               The implementation involved careful planning, technical execution, and client collaboration.
             </p>
           </div>

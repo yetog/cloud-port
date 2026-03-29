@@ -20,6 +20,14 @@ const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
+// DJ Pages
+const DJ = lazy(() => import("./pages/DJ"));
+const DJMixes = lazy(() => import("./pages/DJMixes"));
+const DJEvents = lazy(() => import("./pages/DJEvents"));
+const DJJourney = lazy(() => import("./pages/DJJourney"));
+const DJJourneyPost = lazy(() => import("./pages/DJJourneyPost"));
+const DJBooking = lazy(() => import("./pages/DJBooking"));
+
 const queryClient = new QueryClient();
 
 // Loading fallback component
@@ -50,6 +58,13 @@ const App = () => (
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:postId" element={<BlogPost />} />
                   <Route path="/projects/:projectId" element={<ProjectDetail />} />
+                  {/* DJ Routes */}
+                  <Route path="/dj" element={<DJ />} />
+                  <Route path="/dj/mixes" element={<DJMixes />} />
+                  <Route path="/dj/events" element={<DJEvents />} />
+                  <Route path="/dj/journey" element={<DJJourney />} />
+                  <Route path="/dj/journey/:postId" element={<DJJourneyPost />} />
+                  <Route path="/dj/booking" element={<DJBooking />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

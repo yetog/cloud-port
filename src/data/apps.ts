@@ -215,6 +215,16 @@ export const testingApps: App[] = [
     appUrl: 'https://zaylegend.com/zen-tot',
     githubUrl: 'https://github.com/yetog/zen-tot',
   },
+  {
+    id: 'ionos-exam-prep',
+    title: 'IONOS Cloud Exam Prep',
+    description: 'Password-protected study hub for IONOS Cloud Foundational certification. Features study guides, mock exams, interactive quizzes, and cheat sheets.',
+    image: ASSETS.apps.zenReset,
+    tags: ['Cloud', 'Education', 'Certification', 'IONOS'],
+    status: 'testing',
+    appUrl: 'https://zaylegend.com/ionos-exam',
+    githubUrl: 'https://github.com/yetog/IONOS-Cloud-Exam-Prep',
+  },
 ];
 
 // =============================================================================
