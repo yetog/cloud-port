@@ -153,9 +153,9 @@ const DJJourney = () => {
                             ))}
                           </div>
 
-                          {/* Core Focus */}
-                          <p className="text-sm text-muted-foreground mt-2 italic">
-                            {post.coreFocus}
+                          {/* Summary or Core Focus */}
+                          <p className="text-sm text-muted-foreground mt-2">
+                            {post.summary || post.coreFocus}
                           </p>
                         </div>
 
