@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, User, AppWindow, FolderOpen, Music, Mail as MailIcon, Github, Linkedin, Twitter, ChevronLeft, ChevronRight, Briefcase, BookOpen } from 'lucide-react';
+import { Menu, User, AppWindow, FolderOpen, Music, Mail as MailIcon, Github, Linkedin, Twitter, ChevronLeft, ChevronRight, Briefcase, BookOpen, Headphones } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import ThemeToggle from './ThemeToggle';
 import SoundToggle from './SoundToggle';
@@ -30,6 +30,7 @@ const Sidebar = () => {
     { name: 'Services', href: '/services', icon: <Briefcase size={20} />, isRoute: true },
     { name: 'Blog', href: '/blog', icon: <BookOpen size={20} />, isRoute: true },
     { name: 'Music', href: '/music', icon: <Music size={20} />, isRoute: true },
+    { name: 'DJ', href: '/dj', icon: <Headphones size={20} />, isRoute: true },
     { name: 'Contact', href: '#contact', icon: <MailIcon size={20} /> },
   ];
 
