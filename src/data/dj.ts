@@ -33,9 +33,10 @@ export interface JourneyPost {
   number: number;
   title: string;
   date: string;
-  phase: 'Foundation' | 'Failure' | 'Reflection' | 'Win' | 'Insight' | 'Commitment' | 'Learning' | 'Redemption' | 'Systems' | 'Struggle' | 'Breakthrough' | 'Exploration' | 'Perspective' | 'Community' | 'Momentum' | 'Reality' | 'Opportunity' | 'Network' | 'Direction' | 'Hack' | 'Philosophy' | 'Identity' | 'Meaning';
+  phase: 'Foundation' | 'Failure' | 'Reflection' | 'Win' | 'Insight' | 'Commitment' | 'Learning' | 'Redemption' | 'Systems' | 'Struggle' | 'Breakthrough' | 'Exploration' | 'Perspective' | 'Community' | 'Momentum' | 'Reality' | 'Opportunity' | 'Network' | 'Direction' | 'Hack' | 'Philosophy' | 'Identity' | 'Meaning' | 'Skill' | 'Growth';
   tags: string[];
   coreFocus: string;
+  summary?: string;       // One-line summary for previews
   // Content sections
   moment?: string;        // The story/scene
   whatHappened?: string;  // What went wrong or occurred
@@ -132,6 +133,14 @@ export const djEvents: DJEvent[] = [
     imageUrl: `${S3_DJ_URL}/events/queen.jpg`,
   },
   {
+    id: 'frankie-bradleys',
+    venue: "Frankie Bradley's",
+    location: 'Philadelphia',
+    type: 'Live Set',
+    description: 'Wine & Waffles event. Real venue, real crowd, high-energy set with great feedback.',
+    imageUrl: `${S3_DJ_URL}/events/frankie-bradleys.jpg`,
+  },
+  {
     id: 'private-events',
     venue: 'Private Events',
     location: 'Various',
@@ -142,7 +151,7 @@ export const djEvents: DJEvent[] = [
 ];
 
 // =============================================================================
-// JOURNEY POSTS (Season 1 - 28 Entries)
+// JOURNEY POSTS (Season 1 - 30 Entries)
 // =============================================================================
 
 export const journeyPosts: JourneyPost[] = [
@@ -154,6 +163,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Foundation',
     tags: ['Origin', 'Identity'],
     coreFocus: 'Taste, playlists',
+    summary: 'Before touching decks, you were already studying vibe, playlists, and transitions — DJing started with taste, not gear',
     published: true,
   },
   {
@@ -164,6 +174,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Failure',
     tags: ['Story', 'Failure'],
     coreFocus: 'No aux, CDJs mismatch',
+    summary: 'Showed up unprepared for CDJ-only setup, couldn\'t connect laptop, learned harsh reality of DJ environments',
     published: true,
   },
   {
@@ -174,6 +185,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Reflection',
     tags: ['Lesson', 'Insight'],
     coreFocus: 'Communication + prep',
+    summary: 'Broke down how miscommunication and lack of venue prep caused the issue — importance of asking the right questions',
     published: true,
   },
   {
@@ -184,6 +196,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Win',
     tags: ['Story', 'Win'],
     coreFocus: 'Proper setup, confidence',
+    summary: 'Came prepared with proper setup, executed a full set, gained confidence and validation',
     published: true,
   },
   {
@@ -194,6 +207,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Insight',
     tags: ['Technical', 'Lesson'],
     coreFocus: 'Environment matters',
+    summary: 'Realization that technical compatibility can override musical ability in live environments',
     published: true,
   },
   {
@@ -204,6 +218,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Commitment',
     tags: ['Progress', 'Technical'],
     coreFocus: 'Investing in gear',
+    summary: 'Decision to invest in your craft after early failures — turning point moment',
     published: true,
   },
   {
@@ -214,6 +229,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Learning',
     tags: ['Mentor', 'Skill'],
     coreFocus: 'CDJs, USBs',
+    summary: 'Learned CDJs, USB workflow, and real-world DJ expectations from an experienced friend',
     published: true,
   },
   {
@@ -224,6 +240,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Redemption',
     tags: ['Story', 'Win'],
     coreFocus: 'Full-circle moment',
+    summary: 'Redemption arc — returned to original venue prepared and delivered a strong performance',
     published: true,
   },
   {
@@ -234,6 +251,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Systems',
     tags: ['Builder', 'Technical'],
     coreFocus: 'Automation mindset',
+    summary: 'Began organizing music like data — BPM, key, crates, automation mindset',
     published: true,
   },
   {
@@ -244,6 +262,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Systems',
     tags: ['Builder', 'Deep Dive'],
     coreFocus: 'Organization workflows',
+    summary: 'Expanded into scripting and structuring music workflows for efficiency and consistency',
     published: true,
   },
   {
@@ -254,6 +273,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Struggle',
     tags: ['Technical', 'Failure'],
     coreFocus: 'Routing confusion',
+    summary: 'Struggled with Serato, audio routing, interface vs controller confusion',
     published: true,
   },
   {
@@ -264,6 +284,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Breakthrough',
     tags: ['Technical', 'Insight'],
     coreFocus: 'Gain staging',
+    summary: 'Learned gain staging — turning point in understanding sound flow',
     published: true,
   },
   {
@@ -274,6 +295,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Exploration',
     tags: ['Technical', 'Comparison'],
     coreFocus: 'Software learning',
+    summary: 'Explored DJ software ecosystems and limitations (especially streaming vs owned music)',
     published: true,
   },
   {
@@ -284,6 +306,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Perspective',
     tags: ['Technical', 'Lesson'],
     coreFocus: 'Reliability',
+    summary: 'Realized reliability and independence of USB workflows in real environments',
     published: true,
   },
   {
@@ -294,6 +317,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Community',
     tags: ['Social', 'Insight'],
     coreFocus: 'Etiquette + mindset',
+    summary: 'Observed etiquette, mindset, and how DJs interact and respect each other',
     published: true,
   },
   {
@@ -304,6 +328,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Insight',
     tags: ['Social', 'Hack'],
     coreFocus: 'Speaking their language',
+    summary: 'Using industry language (Serato, Rekordbox, CDJs) builds instant credibility',
     published: true,
   },
   {
@@ -314,6 +339,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Insight',
     tags: ['Story', 'Social'],
     coreFocus: 'Respect + awareness',
+    summary: 'Initial tension with DJ turned into respect through conversation and curiosity',
     published: true,
   },
   {
@@ -324,6 +350,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Momentum',
     tags: ['Story', 'Progress'],
     coreFocus: 'Reps + confidence',
+    summary: 'Consistent gigs helped build confidence, adaptability, and repetition',
     published: true,
   },
   {
@@ -334,6 +361,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Reality',
     tags: ['Insight', 'Philosophy'],
     coreFocus: 'Sound guy + systems',
+    summary: 'Learned how sound engineers, venues, and systems impact performance',
     published: true,
   },
   {
@@ -344,6 +372,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Opportunity',
     tags: ['Story', 'Progress'],
     coreFocus: 'Networking → opportunity',
+    summary: 'Networking led to a real opportunity — first step into consistent bookings',
     published: true,
   },
   {
@@ -354,6 +383,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Network',
     tags: ['Social', 'Growth'],
     coreFocus: 'Learning + EPK convo',
+    summary: 'Leveraged existing connection to gain insight on professional DJing and portfolio building',
     published: true,
   },
   {
@@ -364,6 +394,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Direction',
     tags: ['Strategy', 'Growth'],
     coreFocus: 'Next step clarity',
+    summary: 'Learned importance of having a professional DJ presence and materials',
     published: true,
   },
   {
@@ -374,6 +405,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Reality',
     tags: ['Story', 'Technical'],
     coreFocus: 'Bluetooth delay',
+    summary: 'Bluetooth delay issue revealed importance of proper audio monitoring',
     published: true,
   },
   {
@@ -384,6 +416,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Hack',
     tags: ['Technique', 'Hack'],
     coreFocus: 'Passive learning',
+    summary: 'Used auto-mixing and playlists to subconsciously train transition skills',
     published: true,
   },
   {
@@ -394,6 +427,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Philosophy',
     tags: ['Technical', 'Lesson'],
     coreFocus: 'Redundancy',
+    summary: 'Reinforces redundancy mindset — USBs, gear, contingencies',
     published: true,
   },
   {
@@ -404,6 +438,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Insight',
     tags: ['Psychology', 'Story'],
     coreFocus: 'Energy control',
+    summary: 'Shift from technical perfection to reading and controlling crowd energy',
     published: true,
   },
   {
@@ -414,6 +449,7 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Identity',
     tags: ['Creative', 'Brand'],
     coreFocus: 'Style emerging',
+    summary: 'Emerging style: soulful house, funk, groove-driven sets',
     published: true,
   },
   {
@@ -424,6 +460,120 @@ export const journeyPosts: JourneyPost[] = [
     phase: 'Meaning',
     tags: ['Reflection', 'Identity'],
     coreFocus: 'Bigger picture',
+    summary: 'Full-circle moment — reconnecting with music on a deeper level',
+    published: true,
+  },
+  // NEW ENTRIES
+  {
+    id: 'djing-is-physical',
+    number: 29,
+    title: 'The Night I Learned DJing Is Physical (Energy, Breaks, Endurance)',
+    date: 'Late March 2026',
+    phase: 'Skill',
+    tags: ['Performance', 'Insight', 'Reality'],
+    coreFocus: 'Energy management',
+    summary: 'Third SPiN set revealed that DJing is endurance — energy drops, your set drops',
+    moment: `This was my third time DJing at SPiN.
+
+At this point, I felt way more comfortable. Transitions were smoother, song selection was landing, and I could actually feel the room.
+
+But about two hours in… I felt it.
+
+My energy started dropping.
+
+Not mentally — physically.`,
+    whatHappened: `DJing isn't just standing there pressing buttons.
+
+You're:
+• constantly listening
+• adjusting EQ
+• planning next tracks
+• reading the crowd
+• staying in rhythm
+
+And doing that for hours straight is different.
+
+I also realized something funny mid-set: "I need a bathroom break… but I can't just leave."
+
+There's no pause button in a live set.`,
+    realization: `Two big realizations hit me that night:
+
+1. Energy management is part of DJing
+   • caffeine helps
+   • pacing matters
+   • you can't burn out early
+
+2. You need "buffer songs"
+   • longer tracks
+   • safe grooves
+   • songs that give you 2–3 minutes to step away if needed`,
+    whatChanged: `Now I'm thinking about my sets differently:
+• plan energy in waves (not just bangers)
+• include "breathing room" tracks
+• prep for real-life needs (breaks, resets)
+• treat DJing like endurance, not just performance`,
+    takeaway: "DJing isn't just musical — it's physical. If your energy drops, your set drops.",
+    published: true,
+  },
+  {
+    id: 'booked-off-video',
+    number: 30,
+    title: 'I Got Booked Off a Last-Minute Video (And Almost Missed the Opportunity)',
+    date: 'Late March 2026',
+    phase: 'Growth',
+    tags: ['Story', 'Opportunity', 'Lesson'],
+    coreFocus: 'Be ready with content',
+    summary: 'Wine & Waffles booking came fast — a random practice video saved the opportunity',
+    moment: `A couple days before my SPiN set, I reached out to an event:
+
+Wine & Waffles
+
+Just putting myself out there: "If you need a DJ, I got you."
+
+Didn't think much of it.
+
+Then the day of SPiN… they hit me back.`,
+    whatHappened: `We were going back and forth, and she asked:
+
+"Do you have anything I can listen to?"
+
+And instantly I thought: "Damn… I don't have a real DJ portfolio yet."
+
+No EPK. No mix page. No clean way to show my work.
+
+Just vibes and experience.
+
+Luckily… the day before, I randomly recorded a video of myself mixing. Nothing crazy. Just me practicing.
+
+I sent that.
+
+She watched it. We had a good conversation. I got booked.
+
+Just like that.
+
+The event was at Frankie Bradley's in Philly. This was a BIG step up:
+• real venue
+• real crowd
+• real expectations
+
+And it went great. People were rocking with the set, energy was right, and I got solid feedback.
+
+But of course… something went wrong. The CDJ setup:
+• headphone monitoring wasn't working properly
+• aux situation wasn't what I expected
+• couldn't rely fully on USB workflow
+
+If I didn't bring my laptop + controller, I would've been stuck. Again.`,
+    realization: `3 huge lessons from one night:
+
+1. Opportunities come fast — be ready
+2. Content matters (even rough content)
+3. Every venue is different — ALWAYS bring backup gear`,
+    whatChanged: `Now I'm locked in on:
+• building a real EPK (portfolio)
+• recording mixes consistently
+• always bringing: controller, laptop, adapters, backup plan`,
+    takeaway: "You don't need perfect content — you need something ready. Because opportunities don't wait for you to prepare.",
     published: true,
   },
 ];
@@ -473,6 +623,8 @@ export const phaseColors: Record<JourneyPost['phase'], string> = {
   Philosophy: 'bg-violet-500/20 text-violet-400',
   Identity: 'bg-purple-500/20 text-purple-400',
   Meaning: 'bg-indigo-500/20 text-indigo-400',
+  Skill: 'bg-cyan-500/20 text-cyan-400',
+  Growth: 'bg-emerald-500/20 text-emerald-400',
 };
 
 // Vibe colors for mixes
