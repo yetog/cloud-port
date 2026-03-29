@@ -1,7 +1,7 @@
 # CLAUDE.md - Portfolio Infrastructure Context
 
 > This file helps Claude understand the portfolio infrastructure for optimal assistance.
-> Last Updated: 2026-03-17
+> Last Updated: 2026-03-29
 
 ---
 
@@ -107,7 +107,8 @@ Active development, not yet deployed:
 | `src/data/apps.ts` | App definitions with status (finished/testing/upgrading) |
 | `src/data/projects.ts` | Portfolio projects (30+ entries) |
 | `src/data/skills.ts` | Skill ratings and categories |
-| `src/data/music.ts` | Music/discography data |
+| `src/data/music.ts` | Music/discography data (PH Pool album) |
+| `src/data/dj.ts` | DJ EPK data (mixes, events, journey posts) |
 | `src/config/assets.ts` | IONOS S3 image URLs |
 
 ### Pages
@@ -117,6 +118,12 @@ Active development, not yet deployed:
 | `src/pages/Apps.tsx` | `/apps` | Apps with category sections |
 | `src/pages/Music.tsx` | `/music` | Music portfolio with player |
 | `src/pages/ProjectDetail.tsx` | `/projects/:id` | Project details |
+| `src/pages/DJ.tsx` | `/dj` | DJ EPK landing page |
+| `src/pages/DJMixes.tsx` | `/dj/mixes` | DJ mixes with audio player |
+| `src/pages/DJEvents.tsx` | `/dj/events` | DJ events & experience |
+| `src/pages/DJJourney.tsx` | `/dj/journey` | Timeline blog (28 posts) |
+| `src/pages/DJJourneyPost.tsx` | `/dj/journey/:id` | Individual journey post |
+| `src/pages/DJBooking.tsx` | `/dj/booking` | DJ booking form |
 
 ### Components
 | File | Purpose |
@@ -307,12 +314,25 @@ git push origin main       # Push to GitHub
 8. **SQLite Tasks:** Task tracking with add/list/done commands
 9. **Carousel Fix:** Resolved left-edge clipping issue
 
+### Session 2026-03-29
+10. **DJ Zay EPK:** Full DJ portfolio section with 6 pages
+11. **Journey Blog:** Timeline system with 28 posts (Season 1)
+12. **PH Pool Album:** Added 25 tracks to music.ts with S3 URLs
+13. **IONOS Exam Prep:** Added to testing apps
+14. **Project Categories:** Added design, ecommerce, domain, marketing icons
+
 ---
 
 ## Future Enhancements
 
-- [ ] Add actual music tracks to discography
+- [x] Add actual music tracks to discography (PH Pool - 25 tracks)
 - [ ] Deploy upgrading apps (Ashley-v3, Sensei AI IO, etc.)
 - [ ] Add session logging commands to brain CLI
 - [ ] More Cloud Infrastructure projects
 - [ ] Custom images for new apps
+- [ ] Upload DJ mixes to S3 (`portfoliowebsite/dj/mixes/`)
+- [ ] Upload DJ event photos to S3 (`portfoliowebsite/dj/events/`)
+- [ ] Write full content for 28 journey posts
+- [ ] Connect DJ booking form to email service
+
+See `docs/DJ_SECTION.md` for full DJ documentation.
