@@ -106,7 +106,11 @@ src/
 
 ## Journey Blog (Season 1)
 
-28 posts documenting the DJ journey from January 2026 to present.
+30 posts documenting the DJ journey from January 2026 to present.
+
+**Fully written posts:**
+- #29: The Night I Learned DJing Is Physical
+- #30: I Got Booked Off a Last-Minute Video
 
 ### Phases
 | Phase | Color | Description |
@@ -226,7 +230,9 @@ DJ link added to sidebar at position after "Music":
 
 - [ ] Upload actual mix audio files to S3
 - [ ] Upload event photos to S3
-- [ ] Write full content for all 28 journey posts
+- [x] Write full content for posts #29 and #30 (done)
+- [x] Add summaries to all posts (done)
+- [ ] Write full content for remaining 28 posts
 - [ ] Connect booking form to email service
 - [ ] Add mix download functionality
 - [ ] Add social share buttons to journey posts
