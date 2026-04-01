@@ -17,6 +17,14 @@ Commands:
   session start       Start a new work session
   session end <title> End session, create blog post, deploy
   session list        Show recent sessions
+  skill list          List all available skills
+  skill run <name>    Execute a skill with optional params
+  skill info <name>   Show skill details and parameters
+  memory status       Show memory system status
+  memory test         Test memory operations
+  memory clear <sid>  Clear memory for a session
+  metrics status      Show observability stack status
+  metrics urls        Show Prometheus/Grafana URLs
   help                Show this help message
 """
 
@@ -680,6 +688,396 @@ def cmd_help():
     """Show help message"""
     print(__doc__)
 
+# ============ SKILL COMMANDS ============
+
+def cmd_skill(subcommand=None, *args):
+    """Manage skills"""
+    if subcommand == "list":
+        cmd_skill_list()
+    elif subcommand == "run" and args:
+        cmd_skill_run(args[0], args[1:])
+    elif subcommand == "info" and args:
+        cmd_skill_info(args[0])
+    else:
+        print("Usage: brain skill [list|run <name> [params]|info <name>]")
+
+def cmd_skill_list():
+    """List all available skills"""
+    print(color("\n Registered Skills\n", Colors.BOLD + Colors.CYAN))
+    print("=" * 60)
+
+    try:
+        # Add skills directory to path
+        import sys as _sys
+        if PORTFOLIO_DIR not in _sys.path:
+            _sys.path.insert(0, PORTFOLIO_DIR)
+
+        from skills import get_registry
+        registry = get_registry()
+
+        skills = registry.list_all()
+        available = [s for s in skills if s.is_available()]
+        unavailable = [s for s in skills if not s.is_available()]
+
+        if available:
+            print(f"\n  {color('Available', Colors.GREEN)} ({len(available)}):")
+            for skill in sorted(available, key=lambda s: s.name):
+                intents = ", ".join(skill.trigger_intents[:3]) if skill.trigger_intents else "-"
+                print(f"    {color(skill.name, Colors.CYAN):<20} {skill.description[:40]}")
+
+        if unavailable:
+            print(f"\n  {color('Not Configured', Colors.DIM)} ({len(unavailable)}):")
+            for skill in sorted(unavailable, key=lambda s: s.name):
+                print(f"    {color(skill.name, Colors.DIM):<20} (missing: {', '.join(skill.config_vars)})")
+
+        print("\n" + "=" * 60)
+        print(f"  Total: {len(skills)} skills ({len(available)} available)")
+        print(f"\n  Run: {color('brain skill run <name>', Colors.CYAN)}")
+        print(f"  Info: {color('brain skill info <name>', Colors.CYAN)}")
+
+    except ImportError as e:
+        print(color(f"  Error: Could not load skills module: {e}", Colors.RED))
+        print(f"  Make sure skills/ directory exists in {PORTFOLIO_DIR}")
+
+    print()
+
+def cmd_skill_run(skill_name, params):
+    """Execute a skill"""
+    import asyncio
+
+    print(color(f"\n Running skill: {skill_name}\n", Colors.BOLD + Colors.CYAN))
+
+    try:
+        import sys as _sys
+        if PORTFOLIO_DIR not in _sys.path:
+            _sys.path.insert(0, PORTFOLIO_DIR)
+
+        from skills import get_registry
+        registry = get_registry()
+
+        skill = registry.get(skill_name)
+        if not skill:
+            print(color(f"  Skill '{skill_name}' not found", Colors.RED))
+            print(f"\n  Available skills: {', '.join(registry.list_names())}")
+            return
+
+        if not skill.is_available():
+            print(color(f"  Skill '{skill_name}' is not configured", Colors.YELLOW))
+            if skill.config_vars:
+                print(f"  Required: {', '.join(skill.config_vars)}")
+            return
+
+        # Parse params (--key=value format)
+        param_dict = {}
+        for param in params:
+            if param.startswith("--") and "=" in param:
+                key, value = param[2:].split("=", 1)
+                # Try to parse as JSON for complex types
+                try:
+                    import json
+                    param_dict[key] = json.loads(value)
+                except:
+                    param_dict[key] = value
+            elif param.startswith("--"):
+                param_dict[param[2:]] = True
+            else:
+                # Positional params - skill-specific handling
+                if "title" not in param_dict:
+                    param_dict["title"] = param
+                elif "app_name" not in param_dict:
+                    param_dict["app_name"] = param
+
+        # Run the skill
+        result = asyncio.run(skill.run(param_dict))
+
+        # Display result
+        if result.success:
+            print(color("  Result:", Colors.GREEN))
+        else:
+            print(color("  Error:", Colors.RED))
+
+        print(f"\n{result.context_data}")
+
+        if result.execution_time_ms:
+            print(f"\n  {color(f'Completed in {result.execution_time_ms:.1f}ms', Colors.DIM)}")
+
+    except Exception as e:
+        print(color(f"  Error running skill: {e}", Colors.RED))
+        import traceback
+        traceback.print_exc()
+
+    print()
+
+def cmd_skill_info(skill_name):
+    """Show skill details"""
+    print(color(f"\n Skill Info: {skill_name}\n", Colors.BOLD + Colors.CYAN))
+
+    try:
+        import sys as _sys
+        if PORTFOLIO_DIR not in _sys.path:
+            _sys.path.insert(0, PORTFOLIO_DIR)
+
+        from skills import get_registry
+        registry = get_registry()
+
+        skill = registry.get(skill_name)
+        if not skill:
+            print(color(f"  Skill '{skill_name}' not found", Colors.RED))
+            return
+
+        print("=" * 50)
+        print(f"  Name:        {color(skill.name, Colors.CYAN)}")
+        print(f"  Description: {skill.description}")
+        print(f"  Available:   {color('Yes', Colors.GREEN) if skill.is_available() else color('No', Colors.RED)}")
+        print(f"  Approval:    {skill.approval_category.value}")
+
+        if skill.trigger_intents:
+            print(f"  Intents:     {', '.join(skill.trigger_intents)}")
+
+        if skill.config_vars:
+            print(f"  Requires:    {', '.join(skill.config_vars)}")
+
+        # Show parameter schema
+        schema = skill.get_params_schema()
+        if schema.get("properties"):
+            print(f"\n  {color('Parameters:', Colors.BOLD)}")
+            for param, info in schema["properties"].items():
+                required = "(required)" if param in schema.get("required", []) else ""
+                param_type = info.get("type", "any")
+                default = f" [default: {info['default']}]" if "default" in info else ""
+                desc = info.get("description", "")
+                print(f"    --{param} ({param_type}){default} {required}")
+                if desc:
+                    print(f"      {color(desc, Colors.DIM)}")
+
+        print("=" * 50)
+        print(f"\n  Run: {color(f'brain skill run {skill.name}', Colors.CYAN)}")
+
+    except Exception as e:
+        print(color(f"  Error: {e}", Colors.RED))
+
+    print()
+
+# ============ MEMORY COMMANDS ============
+
+def cmd_memory(subcommand=None, *args):
+    """Manage memory system"""
+    if subcommand == "status":
+        cmd_memory_status()
+    elif subcommand == "test":
+        cmd_memory_test()
+    elif subcommand == "clear" and args:
+        cmd_memory_clear(args[0])
+    else:
+        print("Usage: brain memory [status|test|clear <session_id>]")
+
+def cmd_memory_status():
+    """Show memory system status"""
+    print(color("\n Memory System Status\n", Colors.BOLD + Colors.CYAN))
+    print("=" * 55)
+
+    try:
+        import sys as _sys
+        if PORTFOLIO_DIR not in _sys.path:
+            _sys.path.insert(0, PORTFOLIO_DIR)
+
+        from memory import get_memory_manager
+        mm = get_memory_manager()
+        status = mm.get_status()
+
+        # Redis status
+        redis_info = status.get("redis", {})
+        if redis_info.get("available"):
+            print(f"\n  {color('Redis (Hot Memory)', Colors.GREEN)} - UP")
+            print(f"    Host: {redis_info.get('host')}:{redis_info.get('port')}")
+            print(f"    Memory: {redis_info.get('used_memory', 'unknown')}")
+            print(f"    Keys: {redis_info.get('total_keys', 0)}")
+        else:
+            print(f"\n  {color('Redis (Hot Memory)', Colors.RED)} - DOWN")
+            print(f"    Host: {redis_info.get('host')}:{redis_info.get('port')}")
+            if redis_info.get("error"):
+                print(f"    Error: {redis_info.get('error')}")
+
+        # Qdrant status
+        qdrant_info = status.get("qdrant", {})
+        if qdrant_info.get("available"):
+            print(f"\n  {color('Qdrant (Cold Memory)', Colors.GREEN)} - UP")
+            print(f"    Host: {qdrant_info.get('host')}:{qdrant_info.get('port')}")
+            print(f"    Collection: {qdrant_info.get('collection', 'unknown')}")
+            print(f"    Vectors: {qdrant_info.get('vectors_count', 0)}")
+            embed_source = qdrant_info.get("embedding_source", "none")
+            if embed_source == "ollama":
+                embeddings = color("Ollama (local)", Colors.GREEN)
+            elif embed_source == "openai":
+                embeddings = color("OpenAI", Colors.BLUE)
+            else:
+                embeddings = color("not configured", Colors.YELLOW)
+            print(f"    Embeddings: {embeddings}")
+        else:
+            print(f"\n  {color('Qdrant (Cold Memory)', Colors.RED)} - DOWN")
+            print(f"    Host: {qdrant_info.get('host')}:{qdrant_info.get('port')}")
+            if qdrant_info.get("error"):
+                print(f"    Error: {qdrant_info.get('error')}")
+
+        print("\n" + "=" * 55)
+
+    except ImportError as e:
+        print(color(f"  Error: Could not load memory module: {e}", Colors.RED))
+
+    print()
+
+def cmd_memory_test():
+    """Test memory operations"""
+    print(color("\n Testing Memory System\n", Colors.BOLD + Colors.CYAN))
+    print("=" * 55)
+
+    try:
+        import sys as _sys
+        if PORTFOLIO_DIR not in _sys.path:
+            _sys.path.insert(0, PORTFOLIO_DIR)
+
+        from memory import get_memory_manager
+        mm = get_memory_manager()
+
+        test_session = "brain_test_session"
+
+        # Test Redis
+        print(f"\n  {color('Testing Redis...', Colors.BLUE)}")
+        if mm.redis.is_available():
+            # Add a test message
+            result = mm.redis.add_message(
+                session_id=test_session,
+                role="user",
+                content="Test message from brain CLI"
+            )
+            print(f"    Write: {color('OK', Colors.GREEN) if result else color('FAIL', Colors.RED)}")
+
+            # Read it back
+            history = mm.redis.get_history(test_session)
+            print(f"    Read: {color('OK', Colors.GREEN) if history else color('FAIL', Colors.RED)} ({len(history)} messages)")
+
+            # Clean up
+            mm.redis.clear_history(test_session)
+            print(f"    Cleanup: {color('OK', Colors.GREEN)}")
+        else:
+            print(f"    {color('Redis not available', Colors.RED)}")
+
+        # Test Qdrant (basic connectivity only - embeddings need API key)
+        print(f"\n  {color('Testing Qdrant...', Colors.BLUE)}")
+        if mm.qdrant.is_available():
+            print(f"    Connection: {color('OK', Colors.GREEN)}")
+            stats = mm.qdrant.get_stats()
+            print(f"    Vectors: {stats.get('vectors_count', 0)}")
+            if stats.get("embeddings_available"):
+                print(f"    Embeddings: {color('OK', Colors.GREEN)}")
+            else:
+                print(f"    Embeddings: {color('Not configured', Colors.YELLOW)} (set OPENAI_API_KEY for vector search)")
+        else:
+            print(f"    {color('Qdrant not available', Colors.RED)}")
+
+        print("\n" + "=" * 55)
+        print(f"  {color('Memory system operational', Colors.GREEN)}")
+
+    except Exception as e:
+        print(color(f"  Error: {e}", Colors.RED))
+        import traceback
+        traceback.print_exc()
+
+    print()
+
+def cmd_memory_clear(session_id):
+    """Clear memory for a session"""
+    print(color(f"\n Clearing memory for session: {session_id}\n", Colors.BOLD + Colors.CYAN))
+
+    try:
+        import sys as _sys
+        if PORTFOLIO_DIR not in _sys.path:
+            _sys.path.insert(0, PORTFOLIO_DIR)
+
+        from memory import get_memory_manager
+        mm = get_memory_manager()
+
+        results = mm.clear_session(session_id)
+
+        if results.get("hot"):
+            print(f"  Redis: {color('Cleared', Colors.GREEN)}")
+        else:
+            print(f"  Redis: {color('Nothing to clear or unavailable', Colors.DIM)}")
+
+        if results.get("cold"):
+            print(f"  Qdrant: {color('Cleared', Colors.GREEN)}")
+        else:
+            print(f"  Qdrant: {color('Nothing to clear or unavailable', Colors.DIM)}")
+
+    except Exception as e:
+        print(color(f"  Error: {e}", Colors.RED))
+
+    print()
+
+# ============ METRICS/OBSERVABILITY COMMANDS ============
+
+def cmd_metrics(subcommand=None, *args):
+    """Manage observability stack"""
+    if subcommand == "status":
+        cmd_metrics_status()
+    elif subcommand == "urls":
+        cmd_metrics_urls()
+    else:
+        print("Usage: brain metrics [status|urls]")
+
+def cmd_metrics_status():
+    """Show observability stack status"""
+    print(color("\n Observability Stack Status\n", Colors.BOLD + Colors.CYAN))
+    print("=" * 55)
+
+    services = [
+        ("Prometheus", 9090, "portfolio-prometheus"),
+        ("Grafana", 3030, "portfolio-grafana"),
+        ("Node Exporter", 9100, "portfolio-node-exporter"),
+    ]
+
+    for name, port, container in services:
+        # Check if port is responding
+        is_up = check_port(port)
+
+        if is_up:
+            print(f"\n  {color(name, Colors.GREEN)} - UP")
+            print(f"    Port: {port}")
+            print(f"    Container: {container}")
+        else:
+            print(f"\n  {color(name, Colors.RED)} - DOWN")
+            print(f"    Port: {port}")
+            print(f"    Container: {container}")
+
+    print("\n" + "=" * 55)
+
+    # Show quick access info
+    print(f"\n  {color('Quick Access:', Colors.BOLD)}")
+    print(f"    Prometheus: http://localhost:9090")
+    print(f"    Grafana:    http://localhost:3030 (admin / brainAdmin2026)")
+
+    print()
+
+def cmd_metrics_urls():
+    """Show Prometheus/Grafana URLs"""
+    print(color("\n Observability URLs\n", Colors.BOLD + Colors.CYAN))
+    print("=" * 55)
+
+    print(f"\n  {color('Prometheus', Colors.BLUE)}")
+    print(f"    Local:  http://localhost:9090")
+    print(f"    Graph:  http://localhost:9090/graph")
+    print(f"    Targets: http://localhost:9090/targets")
+
+    print(f"\n  {color('Grafana', Colors.BLUE)}")
+    print(f"    Local:  http://localhost:3030")
+    print(f"    Login:  admin / brainAdmin2026")
+
+    print(f"\n  {color('Node Exporter', Colors.BLUE)}")
+    print(f"    Metrics: http://localhost:9100/metrics")
+
+    print("\n" + "=" * 55)
+    print()
+
 # ============ MAIN ============
 
 def main():
@@ -707,6 +1105,18 @@ def main():
         subcommand = sys.argv[2] if len(sys.argv) > 2 else None
         args = sys.argv[3:] if len(sys.argv) > 3 else []
         cmd_session(subcommand, *args)
+    elif command == "skill":
+        subcommand = sys.argv[2] if len(sys.argv) > 2 else None
+        args = sys.argv[3:] if len(sys.argv) > 3 else []
+        cmd_skill(subcommand, *args)
+    elif command == "memory":
+        subcommand = sys.argv[2] if len(sys.argv) > 2 else None
+        args = sys.argv[3:] if len(sys.argv) > 3 else []
+        cmd_memory(subcommand, *args)
+    elif command == "metrics":
+        subcommand = sys.argv[2] if len(sys.argv) > 2 else None
+        args = sys.argv[3:] if len(sys.argv) > 3 else []
+        cmd_metrics(subcommand, *args)
     elif command in ["help", "--help", "-h"]:
         cmd_help()
     else:

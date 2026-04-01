@@ -1,0 +1,68 @@
+# Prometheus Configuration for Portfolio Brain
+# Scrapes metrics from brain API, node exporter, and app endpoints
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers: []
+
+rule_files: []
+
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Node exporter for system metrics
+  - job_name: 'node'
+    static_configs:
+      - targets: ['172.17.0.1:9100']
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: instance
+        replacement: 'portfolio-server'
+
+  # Brain API metrics (when Phase 4 is complete)
+  - job_name: 'brain-api'
+    static_configs:
+      - targets: ['172.17.0.1:8000']
+    metrics_path: /metrics
+    scrape_interval: 30s
+
+  # Redis metrics
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['172.17.0.1:9121']
+    scrape_interval: 30s
+
+  # Portfolio app health probes
+  - job_name: 'portfolio-apps'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - http://172.17.0.1:8080   # Main portfolio
+          - http://172.17.0.1:3001   # Chord Genesis
+          - http://172.17.0.1:3003   # Fineline
+          - http://172.17.0.1:3004   # Game Hub
+          - http://172.17.0.1:3005   # DJ Visualizer
+          - http://172.17.0.1:3010   # Darkflow
+          - http://172.17.0.1:3012   # GMAT
+          - http://172.17.0.1:3013   # Losk
+          - http://172.17.0.1:3014   # Got Hired
+          - http://172.17.0.1:3015   # BH AI 79
+          - http://172.17.0.1:3016   # Purple Lotus
+          - http://172.17.0.1:3017   # Zen ToT
+          - http://172.17.0.1:3018   # Forge Fit
+          - http://172.17.0.1:3019   # Green Empire
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 172.17.0.1:9115  # Blackbox exporter
