@@ -34,6 +34,223 @@ export const blogCategories: BlogCategory[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'infrastructure-upgrade-2026-04',
+    title: 'Portfolio Brain Infrastructure Upgrade: Skills, Memory, Observability & REST API',
+    excerpt: 'Implemented a comprehensive infrastructure upgrade inspired by the Sentinel architecture - 15 skills, Redis/Qdrant memory, Prometheus/Grafana observability, and a FastAPI REST interface.',
+    content: `
+# Portfolio Brain Infrastructure Upgrade
+
+Today I completed a major infrastructure upgrade for my portfolio, bringing it to "Sentinel parity" with a full AI brain architecture. This post documents what was built and how it all fits together.
+
+## The Inspiration: Sentinel
+
+After analyzing the [Sentinel](https://github.com/cocacolasante/Sentinel.git) autonomous AI assistant, I identified four key components missing from my portfolio infrastructure:
+
+1. **Skills System** - Modular action handlers
+2. **Memory System** - Hot cache + vector search
+3. **Observability** - Metrics and dashboards
+4. **REST API** - Programmatic access
+
+## Phase 1: Skills System
+
+Built a modular skills framework with 15 skills and auto-discovery:
+
+### Architecture
+\`\`\`
+/var/www/zaylegend/skills/
+├── __init__.py
+├── base.py              # BaseSkill, SkillResult, ApprovalCategory
+├── registry.py          # Auto-discovery via pkgutil
+├── deploy_skill.py      # Wraps deploy.sh
+├── backup_skill.py      # Wraps backup.sh + git backup
+├── app_skill.py         # List, health, restart apps
+├── task_skill.py        # CRUD for tasks
+├── status_skill.py      # Aggregated system status
+└── git_skill.py         # Git operations
+\`\`\`
+
+### BaseSkill Pattern
+\`\`\`python
+class BaseSkill(ABC):
+    name: str = "base"
+    description: str = ""
+    trigger_intents: list[str] = []
+    approval_category: ApprovalCategory = ApprovalCategory.NONE
+
+    @abstractmethod
+    async def execute(self, params: dict) -> SkillResult:
+        pass
+\`\`\`
+
+### Skills Implemented (15 Total)
+| Skill | Description |
+|-------|-------------|
+| deploy | Run deployment script |
+| backup | Create backup |
+| git_backup | Push to GitHub with backup branch |
+| app_list | List all 25 apps by category |
+| app_health | Check which apps are UP/DOWN |
+| app_restart | Restart a Docker container |
+| task_create | Add a new task |
+| task_list | View pending tasks |
+| task_done | Mark task complete |
+| task_update | Update task details |
+| status | System overview |
+| git_status | Show working tree status |
+| git_log | Recent commits |
+| git_pull | Pull latest changes |
+| git_diff | Show uncommitted changes |
+
+## Phase 2: Memory System
+
+Implemented a two-tier memory architecture:
+
+### Hot Memory: Redis
+- **Purpose:** Conversation history caching
+- **TTL:** 4 hours
+- **Capacity:** 20 message pairs per session
+- **Port:** 6379
+
+### Cold Memory: Qdrant Vector DB
+- **Purpose:** Semantic search for high-signal interactions
+- **Embeddings:** Ollama (nomic-embed-text, 768 dimensions)
+- **Fallback:** OpenAI embeddings if Ollama unavailable
+- **Port:** 6333
+
+### Memory Manager
+Unified interface that orchestrates both tiers:
+\`\`\`python
+class MemoryManager:
+    def add_turn(session_id, role, content, store_in_cold=False)
+    def get_history(session_id, limit=20)
+    def search_memories(query, session_id=None, limit=5)
+    def clear_session(session_id)
+\`\`\`
+
+### Local Embeddings with Ollama
+Instead of requiring an OpenAI API key, embeddings are generated locally:
+\`\`\`bash
+ollama pull nomic-embed-text
+# Now embeddings are 100% local, no external API needed
+\`\`\`
+
+## Phase 3: Observability
+
+Full metrics and monitoring stack:
+
+### Prometheus (port 9090)
+- Scrapes 18 targets every 15 seconds
+- 30-day retention
+- Custom brain metrics
+
+### Grafana (port 3030)
+- Pre-configured datasource
+- Portfolio overview dashboard
+- App health panels
+
+### Custom Metrics
+\`\`\`python
+# observability/metrics.py
+skill_executions = Counter('brain_skill_executions_total', ...)
+skill_duration = Histogram('brain_skill_duration_seconds', ...)
+apps_status = Gauge('brain_apps_up', ...)
+tasks_pending = Gauge('brain_tasks_pending', ...)
+\`\`\`
+
+## Phase 4: REST API
+
+FastAPI application providing programmatic access:
+
+### Endpoints
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/status | System overview |
+| GET | /api/health | Quick health check |
+| GET | /api/skills | List all skills |
+| POST | /api/skills/{name}/execute | Run a skill |
+| GET | /api/apps | List all apps |
+| GET | /api/apps/health | Check all app health |
+| POST | /api/apps/{name}/restart | Restart container |
+| GET | /api/tasks | List tasks |
+| POST | /api/tasks | Create task |
+| PATCH | /api/tasks/{id} | Update task |
+| GET | /api/memory/status | Memory system status |
+| POST | /api/memory/search | Semantic search |
+
+### Example Usage
+\`\`\`bash
+# Get system status
+curl http://localhost:8000/api/status
+
+# Run a skill
+curl -X POST http://localhost:8000/api/skills/app_health/execute
+
+# Search memories
+curl -X POST http://localhost:8000/api/memory/search \\
+  -H "Content-Type: application/json" \\
+  -d '{"query": "deployment issues", "limit": 5}'
+\`\`\`
+
+## Brain CLI Updates
+
+The brain CLI now includes commands for all new systems:
+
+\`\`\`bash
+# Skills
+brain skill list              # List all 15 skills
+brain skill run <name>        # Execute a skill
+brain skill info <name>       # Show skill details
+
+# Memory
+brain memory status           # Redis + Qdrant status
+brain memory test             # Test store and search
+brain memory clear <session>  # Clear session memory
+
+# Metrics
+brain metrics status          # Check Prometheus/Grafana
+brain metrics urls            # Show dashboard URLs
+\`\`\`
+
+## Current Status
+
+\`\`\`
+Services: All UP
+├── Portfolio: up
+├── Redis: up (1.11M used)
+├── Qdrant: up (768-dim vectors)
+├── Prometheus: up
+└── Grafana: up
+
+Skills: 15 total, 15 available
+Docker: 23 containers running
+Embeddings: Ollama (local)
+API: http://localhost:8000
+\`\`\`
+
+## What's Next
+
+- Add more skills (email, calendar, notifications)
+- Grafana alerting rules
+- Nginx proxy for API endpoint
+- Explore Paperclip for agent orchestration
+
+## Key Takeaways
+
+1. **Local-first:** Using Ollama for embeddings eliminates external API dependencies
+2. **Graceful degradation:** Memory system works even if Redis or Qdrant are down
+3. **Skills are modular:** Easy to add new capabilities without touching core code
+4. **Observability matters:** Prometheus + Grafana give real-time visibility
+
+This upgrade transforms the portfolio from a simple CLI tool into a full AI brain with memory, skills, and programmatic access. The foundation is now in place for more advanced automation and agent capabilities.
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-04-01',
+    readTime: '10 min read',
+    category: 'devops',
+    tags: ['Infrastructure', 'Skills', 'Memory', 'Redis', 'Qdrant', 'Prometheus', 'Grafana', 'FastAPI', 'Ollama', 'AI'],
+    featured: true
+  },
+  {
     id: 'session-2026-03-17',
     title: 'Brain CLI, Blog System Expansion, and Session Automation',
     excerpt: 'Major infrastructure day: Built the brain CLI command center, expanded blog with 24 posts, and added session automation workflow.',
