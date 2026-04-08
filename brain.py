@@ -10,6 +10,9 @@ Commands:
   apps                List all apps by category
   apps health         Check which apps are responding
   apps restart <name> Restart a specific app container
+  apps check          Check for app updates from repos
+  apps update <name>  Pull latest and rebuild an app
+  apps update-all     Update all apps with pending changes
   task add <title>    Add a new task
   task list           Show all pending tasks
   task done <id>      Mark a task as complete
@@ -79,6 +82,9 @@ APPS = {
 
     # Other running apps
     "forge-fit":        (3018, "testing", "forge-fit"),
+
+    # Client projects
+    "green-empire":     (3019, "finished", "green-empire"),
 }
 
 # Colors for terminal output
@@ -238,10 +244,16 @@ def cmd_apps(subcommand=None, app_name=None):
         cmd_apps_health()
     elif subcommand == "restart" and app_name:
         cmd_apps_restart(app_name)
+    elif subcommand == "check":
+        cmd_apps_check()
+    elif subcommand == "update" and app_name:
+        cmd_apps_update(app_name)
+    elif subcommand == "update-all":
+        cmd_apps_update_all()
     elif subcommand == "list" or subcommand is None:
         cmd_apps_list()
     else:
-        print("Usage: brain apps [list|health|restart <name>]")
+        print("Usage: brain apps [list|health|restart <name>|check|update <name>|update-all]")
 
 def cmd_apps_list():
     """List all apps by category"""
@@ -333,6 +345,36 @@ def cmd_apps_restart(app_name):
 
     print(color(f"  Container '{app_name}' not found", Colors.RED))
     print(f"  Available: {', '.join(container_list[:5])}...")
+
+def cmd_apps_check():
+    """Check for app updates from repos"""
+    print(color("\n Checking for App Updates...\n", Colors.BOLD + Colors.CYAN))
+    check_script = f"{SCRIPTS_DIR}/check-app-updates.sh"
+    if os.path.exists(check_script):
+        subprocess.run(check_script, shell=True, cwd=PORTFOLIO_DIR)
+    else:
+        print(color("Error: check-app-updates.sh not found", Colors.RED))
+        sys.exit(1)
+
+def cmd_apps_update(app_name):
+    """Update a specific app from its repo"""
+    print(color(f"\n Updating {app_name}...\n", Colors.BOLD + Colors.CYAN))
+    update_script = f"{SCRIPTS_DIR}/update-app.sh"
+    if os.path.exists(update_script):
+        subprocess.run(f"{update_script} {app_name}", shell=True, cwd=PORTFOLIO_DIR)
+    else:
+        print(color("Error: update-app.sh not found", Colors.RED))
+        sys.exit(1)
+
+def cmd_apps_update_all():
+    """Update all apps with pending changes"""
+    print(color("\n Updating All Apps...\n", Colors.BOLD + Colors.CYAN))
+    update_script = f"{SCRIPTS_DIR}/update-all-apps.sh"
+    if os.path.exists(update_script):
+        subprocess.run(update_script, shell=True, cwd=PORTFOLIO_DIR)
+    else:
+        print(color("Error: update-all-apps.sh not found", Colors.RED))
+        sys.exit(1)
 
 # ============ TASK COMMANDS ============
 
