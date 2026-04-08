@@ -102,6 +102,68 @@ async def check_all_apps_health():
     }
 
 
+@router.get("/stats")
+async def get_stats():
+    """Get comprehensive stats for dashboard visualizations."""
+    # Category distribution
+    categories = {}
+    for app_name, info in APPS.items():
+        cat = info["category"]
+        categories[cat] = categories.get(cat, 0) + 1
+
+    # Status distribution
+    up_count = 0
+    down_count = 0
+    external_count = 0
+
+    for app_name, info in APPS.items():
+        port = info["port"]
+        if port is None:
+            external_count += 1
+        elif check_port(port):
+            up_count += 1
+        else:
+            down_count += 1
+
+    # Apps by category with status
+    category_status = {
+        "finished": {"up": 0, "down": 0, "total": 0},
+        "testing": {"up": 0, "down": 0, "total": 0},
+        "upgrading": {"up": 0, "down": 0, "total": 0},
+    }
+
+    for app_name, info in APPS.items():
+        cat = info["category"]
+        port = info["port"]
+
+        if cat in category_status:
+            category_status[cat]["total"] += 1
+            if port:
+                if check_port(port):
+                    category_status[cat]["up"] += 1
+                else:
+                    category_status[cat]["down"] += 1
+
+    return {
+        "total_apps": len(APPS),
+        "category_distribution": [
+            {"name": "Finished", "value": categories.get("finished", 0), "color": "#10b981"},
+            {"name": "Testing", "value": categories.get("testing", 0), "color": "#f59e0b"},
+            {"name": "Upgrading", "value": categories.get("upgrading", 0), "color": "#8b5cf6"},
+        ],
+        "status_distribution": {
+            "up": up_count,
+            "down": down_count,
+            "external": external_count,
+        },
+        "category_status": [
+            {"category": "Finished", "up": category_status["finished"]["up"], "down": category_status["finished"]["down"], "total": category_status["finished"]["total"]},
+            {"category": "Testing", "up": category_status["testing"]["up"], "down": category_status["testing"]["down"], "total": category_status["testing"]["total"]},
+            {"category": "Upgrading", "up": category_status["upgrading"]["up"], "down": category_status["upgrading"]["down"], "total": category_status["upgrading"]["total"]},
+        ],
+    }
+
+
 @router.get("/{app_name}")
 async def get_app_info(app_name: str):
     """Get info about a specific app."""

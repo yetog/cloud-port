@@ -12,9 +12,24 @@ import {
   AlertCircle,
   Lock,
   Server,
-  Activity
+  Activity,
+  PieChart as PieChartIcon,
+  BarChart3
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from "recharts";
 
 // Simple password protection - in production use proper auth
 const ADMIN_PASSWORD = "brain2026";
@@ -37,11 +52,19 @@ interface UpdateInfo {
   branch: string;
 }
 
+interface StatsData {
+  total_apps: number;
+  category_distribution: Array<{ name: string; value: number; color: string }>;
+  status_distribution: { up: number; down: number; external: number };
+  category_status: Array<{ category: string; up: number; down: number; total: number }>;
+}
+
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [apps, setApps] = useState<App[]>([]);
   const [updates, setUpdates] = useState<UpdateInfo[]>([]);
+  const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(false);
   const [checkingUpdates, setCheckingUpdates] = useState(false);
   const [updatingApp, setUpdatingApp] = useState<string | null>(null);
@@ -56,6 +79,14 @@ const Admin = () => {
     }
   }, []);
 
+  // Fetch initial data when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchAppsHealth();
+      checkForUpdates();
+    }
+  }, [isAuthenticated]);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
@@ -69,6 +100,16 @@ const Admin = () => {
 
   const addLog = (message: string) => {
     setLogs(prev => [...prev.slice(-50), `[${new Date().toLocaleTimeString()}] ${message}`]);
+  };
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/apps/stats`);
+      const data = await response.json();
+      setStats(data);
+    } catch (error) {
+      console.error("Failed to fetch stats:", error);
+    }
   };
 
   const fetchAppsHealth = async () => {
@@ -86,6 +127,9 @@ const Admin = () => {
       setApps(allApps);
       addLog(`Found ${data.up_count} apps up, ${data.down_count} down`);
       toast({ title: "Health Check Complete", description: `${data.up_count} up, ${data.down_count} down` });
+
+      // Also fetch stats for charts
+      await fetchStats();
     } catch (error) {
       addLog(`Error fetching health: ${error}`);
       toast({ title: "Error", description: "Failed to fetch app health", variant: "destructive" });
@@ -249,6 +293,78 @@ const Admin = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Charts Section */}
+        {stats && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Category Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <PieChartIcon className="w-5 h-5" />
+                  Apps by Category
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={stats.category_distribution}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, value }) => `${name}: ${value}`}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {stats.category_distribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="flex justify-center gap-4 mt-4">
+                  {stats.category_distribution.map((cat) => (
+                    <div key={cat.name} className="flex items-center gap-2">
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: cat.color }}
+                      />
+                      <span className="text-sm text-muted-foreground">
+                        {cat.name}: {cat.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Status by Category */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5" />
+                  Status by Category
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={stats.category_status}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="category" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="up" stackId="a" fill="#10b981" name="Online" />
+                    <Bar dataKey="down" stackId="a" fill="#ef4444" name="Offline" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Updates Section */}
         {updates.length > 0 && (
