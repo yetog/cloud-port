@@ -27,6 +27,7 @@ const DJEvents = lazy(() => import("./pages/DJEvents"));
 const DJJourney = lazy(() => import("./pages/DJJourney"));
 const DJJourneyPost = lazy(() => import("./pages/DJJourneyPost"));
 const DJBooking = lazy(() => import("./pages/DJBooking"));
+const Admin = lazy(() => import("./pages/Admin"));
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,8 @@ const App = () => (
                   <Route path="/dj/journey" element={<DJJourney />} />
                   <Route path="/dj/journey/:postId" element={<DJJourneyPost />} />
                   <Route path="/dj/booking" element={<DJBooking />} />
+                  {/* Admin */}
+                  <Route path="/admin" element={<Admin />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

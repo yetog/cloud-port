@@ -4,9 +4,29 @@ Apps API Routes
 
 import socket
 import subprocess
+import os
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from typing import Optional
 
 router = APIRouter()
+
+PORTFOLIO_DIR = "/var/www/zaylegend"
+SCRIPTS_DIR = f"{PORTFOLIO_DIR}/scripts"
+
+# App directory mappings for git operations
+APP_DIRS = {
+    "green-empire": "/var/www/Green-Empire",
+    "dj-visualizer": f"{PORTFOLIO_DIR}/apps/dj-visualizer",
+    "chord-genesis": f"{PORTFOLIO_DIR}/apps/chord-genesis",
+    "fineline": f"{PORTFOLIO_DIR}/apps/fineline",
+    "game-hub": f"{PORTFOLIO_DIR}/apps/game-hub",
+    "sprite-gen": f"{PORTFOLIO_DIR}/apps/spritegen",
+    "voice-assistant": f"{PORTFOLIO_DIR}/apps/voice-assistant",
+    "knowledge-base": f"{PORTFOLIO_DIR}/apps/knowledge-base",
+    "contentforge": f"{PORTFOLIO_DIR}/apps/contentforge",
+    "forge-fit": f"{PORTFOLIO_DIR}/apps/forge-fit",
+}
 
 # App registry
 APPS = {
@@ -148,5 +168,142 @@ async def restart_app(app_name: str):
             raise HTTPException(status_code=500, detail=f"Failed to restart: {result.stderr}")
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=504, detail="Restart timed out")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/updates/check")
+async def check_all_updates():
+    """Check all apps for available updates."""
+    updates = []
+
+    for app_name, app_dir in APP_DIRS.items():
+        if not os.path.exists(f"{app_dir}/.git"):
+            continue
+
+        try:
+            # Get current branch
+            branch_result = subprocess.run(
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                capture_output=True, text=True, cwd=app_dir, timeout=10
+            )
+            branch = branch_result.stdout.strip() or "main"
+
+            # Fetch from origin
+            subprocess.run(
+                ["git", "fetch", "origin", branch],
+                capture_output=True, cwd=app_dir, timeout=30
+            )
+
+            # Check commits behind
+            behind_result = subprocess.run(
+                ["git", "rev-list", "--count", f"HEAD..origin/{branch}"],
+                capture_output=True, text=True, cwd=app_dir, timeout=10
+            )
+            commits_behind = int(behind_result.stdout.strip() or "0")
+
+            # Get latest commit message
+            msg_result = subprocess.run(
+                ["git", "log", f"origin/{branch}", "-1", "--format=%s"],
+                capture_output=True, text=True, cwd=app_dir, timeout=10
+            )
+            latest_msg = msg_result.stdout.strip()[:60]
+
+            if commits_behind > 0:
+                updates.append({
+                    "name": app_name,
+                    "commits_behind": commits_behind,
+                    "latest_commit": latest_msg,
+                    "branch": branch,
+                })
+        except Exception as e:
+            continue
+
+    return {
+        "total_updates": len(updates),
+        "apps_with_updates": updates,
+    }
+
+
+@router.get("/{app_name}/updates")
+async def check_app_updates(app_name: str):
+    """Check if a specific app has updates available."""
+    app_dir = APP_DIRS.get(app_name)
+    if not app_dir:
+        raise HTTPException(status_code=404, detail=f"App '{app_name}' not tracked for updates")
+
+    if not os.path.exists(f"{app_dir}/.git"):
+        raise HTTPException(status_code=400, detail=f"App '{app_name}' is not a git repository")
+
+    try:
+        # Get current branch
+        branch_result = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            capture_output=True, text=True, cwd=app_dir, timeout=10
+        )
+        branch = branch_result.stdout.strip() or "main"
+
+        # Fetch from origin
+        subprocess.run(
+            ["git", "fetch", "origin", branch],
+            capture_output=True, cwd=app_dir, timeout=30
+        )
+
+        # Check commits behind
+        behind_result = subprocess.run(
+            ["git", "rev-list", "--count", f"HEAD..origin/{branch}"],
+            capture_output=True, text=True, cwd=app_dir, timeout=10
+        )
+        commits_behind = int(behind_result.stdout.strip() or "0")
+
+        # Get commit log
+        log_result = subprocess.run(
+            ["git", "log", f"HEAD..origin/{branch}", "--oneline"],
+            capture_output=True, text=True, cwd=app_dir, timeout=10
+        )
+        commits = log_result.stdout.strip().split('\n') if log_result.stdout.strip() else []
+
+        return {
+            "name": app_name,
+            "branch": branch,
+            "commits_behind": commits_behind,
+            "has_updates": commits_behind > 0,
+            "pending_commits": commits[:10],  # Limit to 10
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/{app_name}/update")
+async def update_app(app_name: str):
+    """Pull latest changes and rebuild an app."""
+    app_dir = APP_DIRS.get(app_name)
+    if not app_dir:
+        raise HTTPException(status_code=404, detail=f"App '{app_name}' not tracked for updates")
+
+    update_script = f"{SCRIPTS_DIR}/update-app.sh"
+    if not os.path.exists(update_script):
+        raise HTTPException(status_code=500, detail="Update script not found")
+
+    try:
+        result = subprocess.run(
+            [update_script, app_name],
+            capture_output=True,
+            text=True,
+            timeout=300,  # 5 min timeout for builds
+            cwd=PORTFOLIO_DIR
+        )
+
+        # Parse output for status
+        output = result.stdout + result.stderr
+        success = result.returncode == 0 or "Update complete" in output
+
+        return {
+            "name": app_name,
+            "success": success,
+            "output": output[-2000:],  # Last 2000 chars
+        }
+    except subprocess.TimeoutExpired:
+        raise HTTPException(status_code=504, detail="Update timed out (5 min limit)")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
