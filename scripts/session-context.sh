@@ -81,6 +81,22 @@ echo "  Running containers: $RUNNING"
 docker ps --format "  • {{.Names}}: {{.Status}}" 2>/dev/null | head -5 || echo "  (docker not running)"
 echo ""
 
+# App updates available
+NOTIFY_FILE="$PORTFOLIO_DIR/.app-updates"
+if [ -f "$NOTIFY_FILE" ]; then
+    UPDATE_COUNT=$(grep -v "^#" "$NOTIFY_FILE" | grep -c "|" 2>/dev/null || echo "0")
+    if [ "$UPDATE_COUNT" -gt 0 ]; then
+        echo -e "${YELLOW}▶ APP UPDATES AVAILABLE:${NC}"
+        grep -v "^#" "$NOTIFY_FILE" | while IFS='|' read -r app behind msg; do
+            [ -n "$app" ] && echo -e "  ${YELLOW}⬆${NC} $app - $behind commit(s) behind"
+        done
+        echo ""
+        echo -e "  Run: ${CYAN}brain apps check${NC} for details"
+        echo -e "  Run: ${CYAN}brain apps update <name>${NC} to update"
+        echo ""
+    fi
+fi
+
 # Last deployment
 if [ -f "$DEPLOY_LOG" ]; then
     LAST_DEPLOY=$(tail -1 "$DEPLOY_LOG" 2>/dev/null)
