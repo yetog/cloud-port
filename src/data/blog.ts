@@ -34,6 +34,109 @@ export const blogCategories: BlogCategory[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'app-update-system-2026-04',
+    title: 'Building an App Update System: Automated Repo Sync & Notifications',
+    excerpt: 'Created an automated system to check, update, and notify when any of my 25+ portfolio apps have pending GitHub updates - all from the brain CLI.',
+    content: `
+# Building an App Update System
+
+Managing 25+ apps across multiple repos can get messy. Today I built an automated update system that makes keeping everything in sync as simple as running \`brain apps check\`.
+
+## The Problem
+
+Each app lives in its own GitHub repo, deployed as a Docker container. When I push updates to a repo, I had to:
+1. SSH into the server
+2. Navigate to the app directory
+3. Run git pull
+4. Rebuild the Docker container
+5. Repeat for each app...
+
+## The Solution
+
+### New Brain CLI Commands
+
+\`\`\`bash
+# Check all apps for pending updates
+brain apps check
+
+# Update a specific app
+brain apps update green-empire
+
+# Update everything at once
+brain apps update-all
+\`\`\`
+
+### Automatic Notifications
+
+A cron job runs every 30 minutes to check for updates. When I SSH in, I immediately see which apps need attention:
+
+\`\`\`
+▶ APP UPDATES AVAILABLE:
+  ⬆ dj-visualizer - 1 commit(s) behind
+  ⬆ chord-genesis - 3 commit(s) behind
+
+  Run: brain apps check for details
+\`\`\`
+
+## How It Works
+
+### 1. Check Script
+Scans all app directories with \`.git\` folders, fetches from origin, and compares commits:
+
+\`\`\`bash
+git fetch origin "$branch" --quiet
+local_commit=$(git rev-parse HEAD)
+remote_commit=$(git rev-parse "origin/$branch")
+\`\`\`
+
+### 2. Update Script
+Handles the full workflow:
+- Stash local changes
+- Pull latest from origin
+- Detect build method (docker-compose, Dockerfile, npm)
+- Rebuild and restart container
+
+### 3. Notification System
+- Cron runs \`notify-app-updates.sh\` every 30 min
+- Writes pending updates to \`.app-updates\`
+- \`session-context.sh\` displays on login
+
+## Bonus: Green Empire Fix
+
+While testing, I also fixed a 404 issue with the Green Empire contact form. The JS was redirecting to \`/thank-you.html\` (root-relative), but since the app runs at \`/green-empire/\`, it was hitting the wrong path.
+
+Quick nginx fix:
+\`\`\`nginx
+location = /thank-you.html {
+    return 301 /green-empire/thank-you.html;
+}
+\`\`\`
+
+## Scripts Created
+
+| Script | Purpose |
+|--------|---------|
+| \`check-app-updates.sh\` | Scan repos for pending updates |
+| \`update-app.sh\` | Pull and rebuild single app |
+| \`update-all-apps.sh\` | Batch update all apps |
+| \`notify-app-updates.sh\` | Background cron checker |
+
+## What's Next
+
+- Add Slack/Discord notifications for critical app updates
+- Auto-update for non-breaking changes
+- Dashboard widget showing update status
+
+The full session notes are in \`sessions/2026-04-08-app-update-system.md\`.
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-04-08',
+    readTime: '4 min read',
+    category: 'devops',
+    tags: ['Automation', 'Docker', 'Git', 'CLI', 'DevOps', 'Infrastructure'],
+    featured: true
+  },
+  {
     id: 'infrastructure-upgrade-2026-04',
     title: 'Portfolio Brain Infrastructure Upgrade: Skills, Memory, Observability & REST API',
     excerpt: 'Implemented a comprehensive infrastructure upgrade inspired by the Sentinel architecture - 15 skills, Redis/Qdrant memory, Prometheus/Grafana observability, and a FastAPI REST interface.',
