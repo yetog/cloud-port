@@ -1,7 +1,7 @@
 # CLAUDE.md - Portfolio Infrastructure Context
 
 > This file helps Claude understand the portfolio infrastructure for optimal assistance.
-> Last Updated: 2026-03-29
+> Last Updated: 2026-04-15
 
 ---
 
@@ -71,10 +71,11 @@
 | 3017 | Zen ToT | Testing |
 | 3018 | Forge Fit | Testing |
 | 3019 | Green Empire Landscaping | Client Project (→ /green-empire) |
+| static | IONOS Cloud Exam Prep | Testing (→ /ionos-exam) |
 
 ---
 
-## Apps Inventory (25 Total)
+## Apps Inventory (26 Total)
 
 Run `brain apps` or `brain apps health` for live status.
 
@@ -84,11 +85,12 @@ Production-ready, fully functional:
 - ContentForge, Cloud LLM Assistant, DJ Visualizer
 - FineLine, Game Hub, Sprite Gen, Knowledge Base, Portfolio
 
-### Testing Apps (8)
-Beta/experimental, running on ports 3010-3018:
+### Testing Apps (9)
+Beta/experimental, running on ports 3010-3019 or static:
 - Darkflow Mind Mapper, BH AI 79, GMAT Mastery Suite
 - Losk (Light Novel Hub), Purple Lotus (Zodiac Social)
 - Got Hired AI (Resume Builder), Zen ToT, Forge Fit
+- IONOS Cloud Exam Prep (static build at /ionos-exam)
 
 ### Upgrading Apps (4)
 Active development, not yet deployed:
@@ -196,20 +198,30 @@ Located in `/telos/` directory:
 **Use the deployment script** (recommended):
 ```bash
 ./scripts/deploy-testing-app.sh <folder-name> <url-slug> <port>
-# Example: ./scripts/deploy-testing-app.sh my-new-app my-app 3018
+# Example: ./scripts/deploy-testing-app.sh my-new-app my-app 3020
 ```
 
-**CRITICAL: React Router apps need TWO fixes:**
-1. `vite.config.ts` needs `base: '/url-slug/'`
-2. `<BrowserRouter>` needs `basename="/url-slug"`
+**CRITICAL: Full Infrastructure Checklist**
+When adding a new app served under a subdirectory (e.g., `/my-app/`):
 
-Without both, you'll get routing 404 errors inside the app.
+1. **vite.config.ts** - Add `base: '/url-slug/'`
+2. **BrowserRouter** - Add `basename="/url-slug"`
+3. **API Registry** - Add to `api/routes/apps.py`:
+   - `APP_DIRS`: For git update tracking
+   - `APPS`: For health checks and dashboard
+4. **Nginx** - Add location block in `configs/portfolio.conf`
+5. **Build** - Run `npm run build`
+6. **Deploy Key** (optional) - Add server SSH key to GitHub repo for push access
+
+Without steps 1-2, you'll get blank pages or routing 404 errors.
+Without step 3, the dashboard won't track the app for updates.
 
 See `docs/TESTING_APP_DEPLOYMENT.md` for full manual instructions.
 
 **Port allocation:**
-- 3010-3019: Testing apps
-- Next available: 3018
+- 3010-3019: Testing apps (all used)
+- Next available: 3020
+- Static apps (no port): Use `alias` directive in nginx instead of `proxy_pass`
 
 ### Add a Project
 Edit `src/data/projects.ts`:
@@ -320,6 +332,47 @@ git push origin main       # Push to GitHub
 12. **PH Pool Album:** Added 25 tracks to music.ts with S3 URLs
 13. **IONOS Exam Prep:** Added to testing apps
 14. **Project Categories:** Added design, ecommerce, domain, marketing icons
+
+### Session 2026-04-15
+15. **Dashboard Integration Fix:** Added IONOS + all testing apps to API registries
+16. **Base Path Fix:** Fixed blank page issue for subdirectory apps (vite base + router basename)
+17. **Deploy Key Setup:** Configured server SSH key for pushing to IONOS repo
+18. **APP_DIRS Expansion:** Now tracking 19 apps for git updates (was 10)
+
+---
+
+## API & Dashboard
+
+The FastAPI backend (`api/`) provides app management endpoints:
+
+### Key Files
+- `api/routes/apps.py` - App registry and git tracking
+- `api/main.py` - FastAPI app entry point
+
+### Registries in `apps.py`
+| Registry | Purpose |
+|----------|---------|
+| `APP_DIRS` | Maps app names to directories for git update tracking |
+| `APPS` | Maps app names to port/category/container for health checks |
+
+**Important:** New apps must be added to BOTH registries to be fully integrated.
+
+### Endpoints
+```
+GET  /api/apps                    # List all apps
+GET  /api/apps/health             # Health check all apps
+GET  /api/apps/stats              # Stats for dashboard charts
+GET  /api/apps/updates/check      # Check all apps for git updates
+GET  /api/apps/{name}/updates     # Check specific app updates
+POST /api/apps/{name}/update      # Pull and rebuild an app
+POST /api/apps/{name}/restart     # Restart a Docker container
+```
+
+### Push from Server
+For repos with deploy keys, use:
+```bash
+GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes" git push origin main
+```
 
 ---
 

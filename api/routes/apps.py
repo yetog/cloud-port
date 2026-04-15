@@ -16,7 +16,7 @@ SCRIPTS_DIR = f"{PORTFOLIO_DIR}/scripts"
 
 # App directory mappings for git operations
 APP_DIRS = {
-    "green-empire": "/var/www/Green-Empire",
+    # Finished apps
     "dj-visualizer": f"{PORTFOLIO_DIR}/apps/dj-visualizer",
     "chord-genesis": f"{PORTFOLIO_DIR}/apps/chord-genesis",
     "fineline": f"{PORTFOLIO_DIR}/apps/fineline",
@@ -25,7 +25,17 @@ APP_DIRS = {
     "voice-assistant": f"{PORTFOLIO_DIR}/apps/voice-assistant",
     "knowledge-base": f"{PORTFOLIO_DIR}/apps/knowledge-base",
     "contentforge": f"{PORTFOLIO_DIR}/apps/contentforge",
+    # Testing apps
+    "ionos-exam": f"{PORTFOLIO_DIR}/apps/IONOS-Cloud-Exam-Prep",
     "forge-fit": f"{PORTFOLIO_DIR}/apps/forge-fit",
+    "green-empire": "/var/www/Green-Empire",
+    "bh-ai-79": f"{PORTFOLIO_DIR}/apps/testing/bh-ai-79",
+    "darkflow": f"{PORTFOLIO_DIR}/apps/testing/darkflow-mind-mapper",
+    "gmat": f"{PORTFOLIO_DIR}/apps/testing/gmat-mastery-suite",
+    "got-hired": f"{PORTFOLIO_DIR}/apps/testing/got-hired-ai",
+    "losk": f"{PORTFOLIO_DIR}/apps/testing/losk",
+    "purple-lotus": f"{PORTFOLIO_DIR}/apps/testing/purple-lotus",
+    "zen-tot": f"{PORTFOLIO_DIR}/apps/testing/zen-tot",
 }
 
 # App registry
@@ -49,6 +59,7 @@ APPS = {
     "zen-tot": {"port": 3017, "category": "testing", "container": "zen-tot"},
     "forge-fit": {"port": 3018, "category": "testing", "container": "forge-fit"},
     "green-empire": {"port": 3019, "category": "testing", "container": "green-empire"},
+    "ionos-exam": {"port": None, "category": "testing", "container": None},  # Static build, no container
 }
 
 

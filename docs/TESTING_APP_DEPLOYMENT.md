@@ -120,7 +120,29 @@ Then reload:
 sudo nginx -s reload
 ```
 
-### Step 7: Add to portfolio
+### Step 7: Add to API registries (for dashboard tracking)
+
+Edit `/var/www/zaylegend/api/routes/apps.py`:
+
+**Add to `APP_DIRS`** (for git update tracking):
+```python
+APP_DIRS = {
+    # ... existing apps ...
+    "my-app": f"{PORTFOLIO_DIR}/apps/testing/my-new-app",
+}
+```
+
+**Add to `APPS`** (for health checks):
+```python
+APPS = {
+    # ... existing apps ...
+    "my-app": {"port": 3018, "category": "testing", "container": "my-new-app"},
+}
+```
+
+The API auto-reloads (runs with `--reload`), so changes take effect immediately.
+
+### Step 8: Add to portfolio
 
 Edit `/var/www/zaylegend/src/data/apps.ts` and add to `testingApps`:
 
@@ -143,6 +165,24 @@ cd /var/www/zaylegend
 npm run build
 ```
 
+### Step 9 (Optional): Add deploy key for server push access
+
+To push changes from the server to GitHub:
+
+1. Copy the server's public key:
+   ```bash
+   cat ~/.ssh/id_ed25519.pub
+   ```
+
+2. Go to GitHub repo → Settings → Deploy keys → Add deploy key
+
+3. Paste the key, check "Allow write access", save
+
+4. Push using:
+   ```bash
+   GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes" git push origin main
+   ```
+
 ## Port Allocation
 
 | Port Range | Usage |
@@ -159,6 +199,9 @@ Current testing app ports:
 - 3015: bh-ai-79
 - 3016: purple-lotus
 - 3017: zen-tot
+- 3018: forge-fit
+- 3019: green-empire
+- static: ionos-exam (no container, served from dist/)
 
 ## Troubleshooting
 
@@ -182,3 +225,28 @@ docker stop <app-name> && docker rm <app-name>
 docker build -f Dockerfile.simple -t <app-name> .
 docker run -d --name <app-name> -p <port>:80 --restart unless-stopped <app-name>
 ```
+
+## Static App Deployment (No Docker)
+
+For apps that don't need a running server (just static files):
+
+### Nginx config (use `alias` instead of `proxy_pass`):
+```nginx
+location /my-app {
+    return 301 /my-app/;
+}
+location /my-app/ {
+    alias /var/www/zaylegend/apps/my-new-app/dist/;
+    try_files $uri $uri/ /my-app/index.html;
+}
+```
+
+### API registry:
+```python
+"my-app": {"port": None, "category": "testing", "container": None},
+```
+
+### Rebuilding:
+Just run `npm run build` - no Docker restart needed.
+
+Example: IONOS Cloud Exam Prep at `/ionos-exam/`
