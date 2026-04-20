@@ -359,8 +359,9 @@ async def update_app(app_name: str):
         raise HTTPException(status_code=500, detail="Update script not found")
 
     try:
+        # Pass the actual directory path to avoid script finding wrong directory
         result = subprocess.run(
-            [update_script, app_name],
+            [update_script, app_dir],
             capture_output=True,
             text=True,
             timeout=300,  # 5 min timeout for builds

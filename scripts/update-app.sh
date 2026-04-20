@@ -187,7 +187,7 @@ update_app() {
 
 # Main
 if [ -z "$APP_NAME" ]; then
-    print_error "Usage: $0 <app-name>"
+    print_error "Usage: $0 <app-name-or-path>"
     echo ""
     echo "Available apps with git repos:"
     for dir in "$APPS_DIR"/*/; do
@@ -197,8 +197,13 @@ if [ -z "$APP_NAME" ]; then
     exit 1
 fi
 
-# Find the app
-APP_DIR=$(find_app_dir "$APP_NAME")
+# Check if argument is already a directory path
+if [ -d "$APP_NAME/.git" ]; then
+    APP_DIR="$APP_NAME"
+else
+    # Find the app by name
+    APP_DIR=$(find_app_dir "$APP_NAME")
+fi
 
 if [ -z "$APP_DIR" ]; then
     print_error "Could not find app: $APP_NAME"

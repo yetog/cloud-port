@@ -35,6 +35,9 @@ public/zen-reset/
 # Brain CLI
 brain.db
 
+# Job applications (private)
+jobs/
+
 # Backups
 backups/
 .app-updates

@@ -14,8 +14,24 @@ import {
   Server,
   Activity,
   PieChart as PieChartIcon,
-  BarChart3
+  BarChart3,
+  Briefcase,
+  StickyNote,
+  Plus,
+  Trash2,
+  Edit,
+  ExternalLink,
+  MessageSquare
 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import {
   PieChart,
@@ -59,6 +75,31 @@ interface StatsData {
   category_status: Array<{ category: string; up: number; down: number; total: number }>;
 }
 
+interface Job {
+  id: number;
+  company: string;
+  role: string;
+  url?: string;
+  description?: string;
+  requirements?: string[];
+  status: string;
+  notes?: string;
+  matching_projects?: string[];
+  skill_gaps?: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+interface Note {
+  id: number;
+  title: string;
+  content: string;
+  category: string;
+  resolved: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
@@ -70,6 +111,14 @@ const Admin = () => {
   const [updatingApp, setUpdatingApp] = useState<string | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
   const { toast } = useToast();
+
+  // Jobs & Notes state
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [showJobForm, setShowJobForm] = useState(false);
+  const [showNoteForm, setShowNoteForm] = useState(false);
+  const [newJob, setNewJob] = useState({ company: "", role: "", url: "", description: "", status: "saved" });
+  const [newNote, setNewNote] = useState({ title: "", content: "", category: "claude-review" });
 
   // Check session storage for auth
   useEffect(() => {
@@ -206,6 +255,126 @@ const Admin = () => {
   const getUpdateInfo = (appName: string) => {
     return updates.find(u => u.name === appName);
   };
+
+  // Jobs functions
+  const fetchJobs = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/jobs`);
+      const data = await response.json();
+      setJobs(data.jobs || []);
+    } catch (error) {
+      console.error("Failed to fetch jobs:", error);
+    }
+  };
+
+  const createJob = async () => {
+    if (!newJob.company || !newJob.role) {
+      toast({ title: "Error", description: "Company and role are required", variant: "destructive" });
+      return;
+    }
+    try {
+      const response = await fetch(`${API_BASE}/jobs`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newJob),
+      });
+      if (response.ok) {
+        toast({ title: "Job Saved", description: `${newJob.role} at ${newJob.company}` });
+        setNewJob({ company: "", role: "", url: "", description: "", status: "saved" });
+        setShowJobForm(false);
+        fetchJobs();
+      }
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to save job", variant: "destructive" });
+    }
+  };
+
+  const updateJobStatus = async (jobId: number, status: string) => {
+    try {
+      await fetch(`${API_BASE}/jobs/${jobId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+      fetchJobs();
+    } catch (error) {
+      console.error("Failed to update job:", error);
+    }
+  };
+
+  const deleteJob = async (jobId: number) => {
+    try {
+      await fetch(`${API_BASE}/jobs/${jobId}`, { method: "DELETE" });
+      toast({ title: "Deleted", description: "Job removed" });
+      fetchJobs();
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to delete job", variant: "destructive" });
+    }
+  };
+
+  // Notes functions
+  const fetchNotes = async () => {
+    try {
+      const response = await fetch(`${API_BASE}/notes`);
+      const data = await response.json();
+      setNotes(data.notes || []);
+    } catch (error) {
+      console.error("Failed to fetch notes:", error);
+    }
+  };
+
+  const createNote = async () => {
+    if (!newNote.title || !newNote.content) {
+      toast({ title: "Error", description: "Title and content are required", variant: "destructive" });
+      return;
+    }
+    try {
+      const response = await fetch(`${API_BASE}/notes`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newNote),
+      });
+      if (response.ok) {
+        toast({ title: "Note Saved", description: newNote.title });
+        setNewNote({ title: "", content: "", category: "claude-review" });
+        setShowNoteForm(false);
+        fetchNotes();
+      }
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to save note", variant: "destructive" });
+    }
+  };
+
+  const toggleNoteResolved = async (noteId: number, resolved: boolean) => {
+    try {
+      await fetch(`${API_BASE}/notes/${noteId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resolved: !resolved }),
+      });
+      fetchNotes();
+    } catch (error) {
+      console.error("Failed to update note:", error);
+    }
+  };
+
+  const deleteNote = async (noteId: number) => {
+    try {
+      await fetch(`${API_BASE}/notes/${noteId}`, { method: "DELETE" });
+      toast({ title: "Deleted", description: "Note removed" });
+      fetchNotes();
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to delete note", variant: "destructive" });
+    }
+  };
+
+  // Fetch jobs and notes on auth
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchJobs();
+      fetchNotes();
+    }
+  }, [isAuthenticated]);
 
   // Login screen
   if (!isAuthenticated) {
@@ -461,6 +630,222 @@ const Admin = () => {
             );
           })}
         </div>
+
+        {/* Jobs & Notes Tabs */}
+        <Tabs defaultValue="jobs" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="jobs" className="flex items-center gap-2">
+              <Briefcase className="w-4 h-4" />
+              Jobs ({jobs.length})
+            </TabsTrigger>
+            <TabsTrigger value="notes" className="flex items-center gap-2">
+              <StickyNote className="w-4 h-4" />
+              Notes ({notes.filter(n => !n.resolved).length})
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Jobs Tab */}
+          <TabsContent value="jobs">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Briefcase className="w-5 h-5" />
+                    Job Tracker
+                  </CardTitle>
+                  <Button size="sm" onClick={() => setShowJobForm(!showJobForm)}>
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add Job
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {/* Add Job Form */}
+                {showJobForm && (
+                  <div className="mb-6 p-4 bg-muted/50 rounded-lg space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <Input
+                        placeholder="Company"
+                        value={newJob.company}
+                        onChange={(e) => setNewJob({ ...newJob, company: e.target.value })}
+                      />
+                      <Input
+                        placeholder="Role"
+                        value={newJob.role}
+                        onChange={(e) => setNewJob({ ...newJob, role: e.target.value })}
+                      />
+                    </div>
+                    <Input
+                      placeholder="Job URL (optional)"
+                      value={newJob.url}
+                      onChange={(e) => setNewJob({ ...newJob, url: e.target.value })}
+                    />
+                    <Textarea
+                      placeholder="Paste job description here..."
+                      value={newJob.description}
+                      onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
+                      rows={4}
+                    />
+                    <div className="flex gap-2">
+                      <Button onClick={createJob}>Save Job</Button>
+                      <Button variant="outline" onClick={() => setShowJobForm(false)}>Cancel</Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Jobs List */}
+                <div className="space-y-3">
+                  {jobs.length === 0 ? (
+                    <p className="text-muted-foreground text-center py-8">
+                      No jobs saved yet. Click "Add Job" to start tracking.
+                    </p>
+                  ) : (
+                    jobs.map((job) => (
+                      <div key={job.id} className="flex items-start justify-between p-4 bg-muted/30 rounded-lg">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{job.role}</span>
+                            <span className="text-muted-foreground">at</span>
+                            <span className="font-medium">{job.company}</span>
+                            {job.url && (
+                              <a href={job.url} target="_blank" rel="noopener noreferrer" className="text-primary">
+                                <ExternalLink className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 mt-2">
+                            <Select value={job.status} onValueChange={(v) => updateJobStatus(job.id, v)}>
+                              <SelectTrigger className="w-32 h-8">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="saved">Saved</SelectItem>
+                                <SelectItem value="applied">Applied</SelectItem>
+                                <SelectItem value="interview">Interview</SelectItem>
+                                <SelectItem value="offer">Offer</SelectItem>
+                                <SelectItem value="rejected">Rejected</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <span className="text-xs text-muted-foreground">
+                              Added {new Date(job.created_at).toLocaleDateString()}
+                            </span>
+                          </div>
+                          {job.description && (
+                            <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{job.description}</p>
+                          )}
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => deleteJob(job.id)}>
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </Button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Notes Tab */}
+          <TabsContent value="notes">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="w-5 h-5" />
+                    Notes for Claude
+                  </CardTitle>
+                  <Button size="sm" onClick={() => setShowNoteForm(!showNoteForm)}>
+                    <Plus className="w-4 h-4 mr-1" />
+                    Add Note
+                  </Button>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Save ideas, questions, or things you want Claude to review
+                </p>
+              </CardHeader>
+              <CardContent>
+                {/* Add Note Form */}
+                {showNoteForm && (
+                  <div className="mb-6 p-4 bg-muted/50 rounded-lg space-y-3">
+                    <Input
+                      placeholder="Note title"
+                      value={newNote.title}
+                      onChange={(e) => setNewNote({ ...newNote, title: e.target.value })}
+                    />
+                    <Textarea
+                      placeholder="What's on your mind? Questions for Claude, ideas to explore, things to remember..."
+                      value={newNote.content}
+                      onChange={(e) => setNewNote({ ...newNote, content: e.target.value })}
+                      rows={4}
+                    />
+                    <div className="flex gap-2 items-center">
+                      <Select value={newNote.category} onValueChange={(v) => setNewNote({ ...newNote, category: v })}>
+                        <SelectTrigger className="w-40">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="claude-review">For Claude</SelectItem>
+                          <SelectItem value="idea">Idea</SelectItem>
+                          <SelectItem value="todo">To Do</SelectItem>
+                          <SelectItem value="general">General</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button onClick={createNote}>Save Note</Button>
+                      <Button variant="outline" onClick={() => setShowNoteForm(false)}>Cancel</Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Notes List */}
+                <div className="space-y-3">
+                  {notes.length === 0 ? (
+                    <p className="text-muted-foreground text-center py-8">
+                      No notes yet. Add thoughts, ideas, or questions for your next Claude session.
+                    </p>
+                  ) : (
+                    notes.map((note) => (
+                      <div
+                        key={note.id}
+                        className={`p-4 rounded-lg ${note.resolved ? 'bg-muted/20 opacity-60' : 'bg-muted/30'}`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className={`font-medium ${note.resolved ? 'line-through' : ''}`}>
+                                {note.title}
+                              </span>
+                              <Badge variant={note.category === "claude-review" ? "default" : "secondary"}>
+                                {note.category}
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-2 whitespace-pre-wrap">
+                              {note.content}
+                            </p>
+                            <span className="text-xs text-muted-foreground mt-2 block">
+                              {new Date(note.created_at).toLocaleString()}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleNoteResolved(note.id, note.resolved)}
+                            >
+                              <CheckCircle2 className={`w-4 h-4 ${note.resolved ? 'text-green-500' : 'text-muted-foreground'}`} />
+                            </Button>
+                            <Button variant="ghost" size="sm" onClick={() => deleteNote(note.id)}>
+                              <Trash2 className="w-4 h-4 text-red-500" />
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
 
         {/* Logs */}
         <Card>

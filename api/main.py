@@ -20,6 +20,7 @@ from routes import (
     apps_router,
     tasks_router,
     memory_router,
+    notes_router,
 )
 
 # Create FastAPI app
@@ -46,6 +47,7 @@ app.include_router(skills_router, prefix="/api/skills", tags=["Skills"])
 app.include_router(apps_router, prefix="/api/apps", tags=["Apps"])
 app.include_router(tasks_router, prefix="/api/tasks", tags=["Tasks"])
 app.include_router(memory_router, prefix="/api/memory", tags=["Memory"])
+app.include_router(notes_router, prefix="/api", tags=["Notes & Jobs"])
 
 
 # Prometheus metrics endpoint
@@ -77,6 +79,8 @@ async def root():
             "apps": "/api/apps",
             "tasks": "/api/tasks",
             "memory": "/api/memory/status",
+            "jobs": "/api/jobs",
+            "notes": "/api/notes",
             "docs": "/docs",
             "metrics": "/metrics",
         },
