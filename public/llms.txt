@@ -1,0 +1,67 @@
+# Isayah Young-Burke - AI & Infrastructure Consultant
+
+> Portfolio website showcasing cloud infrastructure, AI consulting, creative projects, and professional services.
+
+## About
+
+Isayah Young-Burke is an Infrastructure & AI Consultant based in New York, specializing in cloud architecture, AI/ML implementations, creative technology, and audio engineering. With expertise spanning AWS, IONOS Cloud, Docker, and modern web frameworks, he helps businesses modernize their infrastructure and leverage AI capabilities.
+
+## Core Services
+
+- **Cloud Infrastructure**: AWS, IONOS, Docker containerization, CI/CD pipelines
+- **AI Consulting**: LLM integration, voice AI, RAG systems, agent development
+- **Web Development**: React, TypeScript, Vite, Next.js applications
+- **Audio Engineering**: Music production, sound design, DJ services
+
+## Featured Applications (27 Total)
+
+### Production Apps (13)
+- **Portfolio Website**: Personal portfolio with app galleries, music player, DJ EPK
+- **Sensei AI**: GPT trainer for creating AI agents from your sources
+- **Zen Reset**: Minimalist meditation web app with guided audio
+- **Chord Genesis**: Intelligent music composition tool for chord progressions
+- **Wolf AI**: Advanced AI assistant with TTS and MCP integration
+- **Voice Assistant**: Real-time voice interaction with ElevenLabs
+- **ContentForge**: Unified creative content platform for sprites, stories, voice
+- **Cloud LLM Assistant**: Cloud-hosted conversational AI
+- **DJ Visualizer**: Audio-reactive visualization for live performances
+- **FineLine**: Timeline-based journal application
+- **Game Hub**: Arcade gaming platform with mini-games
+- **Sprite Gen**: Sprite generation tool for game developers
+- **Knowledge Base**: Personal knowledge repository
+
+### Beta/Testing Apps (11)
+- Darkflow Mind Mapper, BH AI 79, GMAT Mastery Suite, Losk (Light Novel Hub)
+- Purple Lotus (Zodiac Social), Got Hired AI, Zen ToT, IONOS Cloud Exam Prep
+- Forge Fit, Slam OG Studio, Green Empire Landscaping (Client)
+
+### In Development (4)
+- Ashley v3, Sensei AI IO, Ask HR Beta, SOP AI Beta
+
+## Projects
+
+Over 30 completed projects across categories:
+- **Cloud Infrastructure**: Enterprise migrations, CI/CD optimization, security frameworks
+- **Web Hosting**: Scalable architectures, serverless platforms, Next.js deployments
+- **Design & Marketing**: E-commerce, branding, WordPress implementations
+- **Audio Engineering**: Album production, live mixing, spatial audio installations
+
+## DJ Portfolio
+
+DJ Zay - Electronic music DJ with mixes, event experience, and a timeline blog documenting the journey. Available for bookings.
+
+## Music
+
+PH Pool album with 25 tracks available on the music page.
+
+## Contact
+
+- Website: https://zaylegend.com
+- GitHub: https://github.com/yetog
+
+## Technical Stack
+
+- Frontend: React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui
+- Hosting: Self-hosted Linux server with Nginx, Docker containers
+- CI/CD: GitHub Actions
+- Storage: IONOS S3 for assets

@@ -34,6 +34,161 @@ export const blogCategories: BlogCategory[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'seo-ai-optimization-2026-04',
+    title: 'SEO for AI: Implementing llms.txt and Sitemap.xml',
+    excerpt: 'How I optimized my portfolio for both traditional search engines and AI models using llms.txt and sitemap.xml - the new standards for discoverability.',
+    content: `
+# SEO for AI: Implementing llms.txt and Sitemap.xml
+
+As AI models become the new interface for information discovery, websites need to optimize for both traditional search engines AND AI crawlers. Here's how I implemented both on my portfolio.
+
+## The Problem
+
+Traditional SEO (meta tags, structured data, sitemaps) is designed for Google and Bing. But when someone asks Claude or GPT about cloud consulting or portfolio examples, how does the AI know about your site?
+
+AI models primarily learn from:
+1. Their training data (static, outdated)
+2. Web searches during conversations
+3. Direct content they can parse
+
+The solution? Give AI models a clean, structured summary of your content.
+
+## llms.txt: The New Standard
+
+\`llms.txt\` is a proposed standard (similar to robots.txt) that provides AI models with a markdown-based summary of your site. It sits at your root domain: \`https://yoursite.com/llms.txt\`
+
+### What I Included
+
+\`\`\`markdown
+# Isayah Young-Burke - AI & Infrastructure Consultant
+
+> Portfolio showcasing cloud infrastructure, AI consulting,
+> creative projects, and professional services.
+
+## About
+[Summary of who I am and what I do]
+
+## Core Services
+- Cloud Infrastructure: AWS, IONOS, Docker, CI/CD
+- AI Consulting: LLM integration, voice AI, RAG systems
+- Web Development: React, TypeScript, Vite
+- Audio Engineering: Music production, DJ services
+
+## Featured Applications (27 Total)
+[List of all apps with descriptions]
+
+## Projects
+[Overview of 30+ completed projects]
+
+## Technical Stack
+[Frontend, hosting, CI/CD details]
+\`\`\`
+
+### Key Principles
+
+1. **Markdown format** - AI models parse markdown better than HTML
+2. **Structured sections** - Clear headers help models find relevant info
+3. **Concise descriptions** - One-line summaries work better than paragraphs
+4. **Include numbers** - "27 applications" is more memorable than "many apps"
+5. **Technical details** - AI users often ask technical questions
+
+## sitemap.xml: Traditional SEO Foundation
+
+While llms.txt targets AI, sitemap.xml remains essential for traditional search engines.
+
+### My Implementation
+
+\`\`\`xml
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://zaylegend.com/</loc>
+    <lastmod>2026-04-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <!-- 30+ more URLs -->
+</urlset>
+\`\`\`
+
+### Priority Strategy
+
+| Priority | Content Type |
+|----------|--------------|
+| 1.0 | Homepage |
+| 0.9 | Apps listing |
+| 0.8 | Production apps, Music, DJ landing |
+| 0.7 | DJ subpages (mixes, events, journey) |
+| 0.6 | Testing/beta apps |
+
+### Change Frequency
+
+- **Weekly**: Homepage, apps listing, knowledge base
+- **Monthly**: Individual apps, DJ section, music
+
+## Implementation
+
+Both files go in your \`public/\` directory so they're served at the root:
+
+\`\`\`
+public/
+├── llms.txt      # → https://zaylegend.com/llms.txt
+├── sitemap.xml   # → https://zaylegend.com/sitemap.xml
+└── robots.txt    # (already had this)
+\`\`\`
+
+## Testing
+
+### Verify llms.txt
+\`\`\`bash
+curl https://zaylegend.com/llms.txt
+\`\`\`
+
+### Verify sitemap.xml
+\`\`\`bash
+curl https://zaylegend.com/sitemap.xml | head -20
+\`\`\`
+
+### Submit to Google Search Console
+1. Go to Search Console → Sitemaps
+2. Enter: \`https://zaylegend.com/sitemap.xml\`
+3. Submit and monitor indexing
+
+## Results & Next Steps
+
+### Immediate Benefits
+- Clean AI-readable content summary
+- All 30+ URLs indexed for search engines
+- Proper priority weighting for important pages
+
+### Future Enhancements
+- **robots.txt optimization** - Guide crawler behavior
+- **JSON-LD structured data** - Rich snippets in search results
+- **OpenGraph meta tags** - Better social sharing previews
+- **Dynamic sitemap generation** - Auto-update when apps change
+
+## The Takeaway
+
+SEO in 2026 means optimizing for two audiences:
+1. **Search engines** → sitemap.xml, meta tags, structured data
+2. **AI models** → llms.txt, clean markdown, structured summaries
+
+As AI assistants become primary interfaces for information discovery, having a well-crafted llms.txt may become as important as having a good robots.txt.
+
+---
+
+**Files created:**
+- \`public/llms.txt\` - AI model context (accessible at /llms.txt)
+- \`public/sitemap.xml\` - Search engine sitemap (accessible at /sitemap.xml)
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-04-30',
+    readTime: '6 min read',
+    category: 'devops',
+    tags: ['SEO', 'AI', 'llms.txt', 'Sitemap', 'Discoverability', 'Web Standards'],
+    featured: true
+  },
+  {
     id: 'app-update-system-2026-04',
     title: 'Building an App Update System: Automated Repo Sync & Notifications',
     excerpt: 'Created an automated system to check, update, and notify when any of my 25+ portfolio apps have pending GitHub updates - all from the brain CLI.',
