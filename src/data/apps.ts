@@ -20,6 +20,16 @@ export interface App {
 // =============================================================================
 export const finishedApps: App[] = [
   {
+    id: 'portfolio',
+    title: 'Portfolio Website',
+    description: 'Personal portfolio showcasing cloud infrastructure, AI consulting, creative projects, and professional services. Built with React, TypeScript, and Vite, featuring dynamic app galleries, music player, and DJ EPK sections.',
+    image: ASSETS.apps.zenReset,
+    tags: ['React', 'TypeScript', 'Portfolio', 'Vite'],
+    status: 'finished',
+    appUrl: 'https://zaylegend.com',
+    githubUrl: 'https://github.com/yetog/cloud-port',
+  },
+  {
     id: 'sensei-ai',
     title: 'Sensei AI',
     description: 'Your GPT Trainer - Sensei AI helps you train GPT agents using your sources. Import JSON, TXT, MD, CSV and chat with citations for enhanced AI interactions.',
@@ -224,6 +234,36 @@ export const testingApps: App[] = [
     status: 'testing',
     appUrl: 'https://zaylegend.com/ionos-exam',
     githubUrl: 'https://github.com/yetog/IONOS-Cloud-Exam-Prep',
+  },
+  {
+    id: 'forge-fit',
+    title: 'Forge Fit',
+    description: 'AI-powered fitness tracking and workout planning application. Generate personalized workout routines and track your fitness journey.',
+    image: ASSETS.apps.zenReset,
+    tags: ['Fitness', 'AI', 'Health', 'Tracking'],
+    status: 'testing',
+    appUrl: 'https://zaylegend.com/forge-fit',
+    githubUrl: 'https://github.com/yetog/forge-fit',
+  },
+  {
+    id: 'slam-og-studio',
+    title: 'Slam OG Studio',
+    description: 'Web-based Digital Audio Workstation (DAW) for music production. Create beats, mix tracks, and produce music directly in your browser.',
+    image: ASSETS.apps.zenReset,
+    tags: ['Music', 'DAW', 'Production', 'Audio'],
+    status: 'testing',
+    appUrl: 'https://zaylegend.com/slam-og',
+    githubUrl: 'https://github.com/yetog/slam-og-studio',
+  },
+  {
+    id: 'green-empire',
+    title: 'Green Empire Landscaping',
+    description: 'Client website for Long Island landscaping company. Features service pages, location-based SEO, blog content, gallery, and lead generation forms. Built with Python static site generator and Docker deployment.',
+    image: ASSETS.apps.zenReset,
+    tags: ['Client Project', 'SEO', 'Docker', 'Static Site'],
+    status: 'testing',
+    appUrl: 'https://zaylegend.com/green-empire',
+    githubUrl: 'https://github.com/yetog/green-empire-landscaping',
   },
 ];
 
