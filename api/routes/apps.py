@@ -28,7 +28,9 @@ APP_DIRS = {
     # Testing apps
     "ionos-exam": f"{PORTFOLIO_DIR}/apps/IONOS-Cloud-Exam-Prep",
     "forge-fit": f"{PORTFOLIO_DIR}/apps/forge-fit",
-    "green-empire": "/var/www/Green-Empire",
+    # Client projects (separate repos, separate domains)
+    "green-empire-build": f"{PORTFOLIO_DIR}/apps/green-empire",  # Builders - greenempirebuild.com
+    "green-empire-land": "/var/www/Green-Empire",  # Landscaping - greenempireland.com
     "bh-ai-79": f"{PORTFOLIO_DIR}/apps/testing/bh-ai-79",
     "darkflow": f"{PORTFOLIO_DIR}/apps/testing/darkflow-mind-mapper",
     "gmat": f"{PORTFOLIO_DIR}/apps/testing/gmat-mastery-suite",
@@ -36,6 +38,9 @@ APP_DIRS = {
     "losk": f"{PORTFOLIO_DIR}/apps/testing/losk",
     "purple-lotus": f"{PORTFOLIO_DIR}/apps/testing/purple-lotus",
     "zen-tot": f"{PORTFOLIO_DIR}/apps/testing/zen-tot",
+    "slam-og-studio": f"{PORTFOLIO_DIR}/apps/slam-og-studio",
+    "zen-reset": f"{PORTFOLIO_DIR}/apps/zen-reset",
+    "contentforge": f"{PORTFOLIO_DIR}/apps/contentforge",
 }
 
 # App registry
@@ -48,8 +53,8 @@ APPS = {
     "dj-visualizer": {"port": 3005, "category": "finished", "container": "dj-visualizer"},
     "sprite-gen": {"port": 3006, "category": "finished", "container": "spritegen"},
     "voice-assistant": {"port": 3007, "category": "finished", "container": "voice-assistant-frontend"},
-    "knowledge-base": {"port": 3008, "category": "finished", "container": None},
-    "contentforge": {"port": 3009, "category": "finished", "container": None},
+    "knowledge-base": {"port": None, "category": "finished", "container": None},  # Static files via nginx alias
+    "contentforge": {"port": 3009, "category": "finished", "container": "contentforge"},
     "darkflow": {"port": 3010, "category": "testing", "container": "darkflow-mind-mapper"},
     "gmat": {"port": 3012, "category": "testing", "container": "gmat-mastery-suite"},
     "losk": {"port": 3013, "category": "testing", "container": "losk"},
@@ -58,8 +63,11 @@ APPS = {
     "purple-lotus": {"port": 3016, "category": "testing", "container": "purple-lotus"},
     "zen-tot": {"port": 3017, "category": "testing", "container": "zen-tot"},
     "forge-fit": {"port": 3018, "category": "testing", "container": "forge-fit"},
-    "green-empire": {"port": 3019, "category": "testing", "container": "green-empire"},
+    # Client projects (static sites, own domains)
+    "green-empire-build": {"port": None, "category": "finished", "container": None},  # greenempirebuild.com
+    "green-empire-land": {"port": None, "category": "finished", "container": None},  # greenempireland.com
     "ionos-exam": {"port": None, "category": "testing", "container": None},  # Static build, no container
+    "slam-og-studio": {"port": None, "category": "testing", "container": None},  # Static build, Web DAW
 }
 
 
@@ -116,27 +124,25 @@ async def check_all_apps_health():
 @router.get("/stats")
 async def get_stats():
     """Get comprehensive stats for dashboard visualizations."""
+    # Cache port check results to avoid duplicate checks
+    port_status_cache = {}
+
+    def get_port_status(port: int) -> bool:
+        if port not in port_status_cache:
+            port_status_cache[port] = check_port(port)
+        return port_status_cache[port]
+
     # Category distribution
     categories = {}
     for app_name, info in APPS.items():
         cat = info["category"]
         categories[cat] = categories.get(cat, 0) + 1
 
-    # Status distribution
+    # Status distribution and category status in single pass
     up_count = 0
     down_count = 0
     external_count = 0
 
-    for app_name, info in APPS.items():
-        port = info["port"]
-        if port is None:
-            external_count += 1
-        elif check_port(port):
-            up_count += 1
-        else:
-            down_count += 1
-
-    # Apps by category with status
     category_status = {
         "finished": {"up": 0, "down": 0, "total": 0},
         "testing": {"up": 0, "down": 0, "total": 0},
@@ -144,16 +150,22 @@ async def get_stats():
     }
 
     for app_name, info in APPS.items():
-        cat = info["category"]
         port = info["port"]
+        cat = info["category"]
 
         if cat in category_status:
             category_status[cat]["total"] += 1
-            if port:
-                if check_port(port):
-                    category_status[cat]["up"] += 1
-                else:
-                    category_status[cat]["down"] += 1
+
+        if port is None:
+            external_count += 1
+        elif get_port_status(port):
+            up_count += 1
+            if cat in category_status:
+                category_status[cat]["up"] += 1
+        else:
+            down_count += 1
+            if cat in category_status:
+                category_status[cat]["down"] += 1
 
     return {
         "total_apps": len(APPS),
