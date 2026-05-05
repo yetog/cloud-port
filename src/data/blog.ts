@@ -34,6 +34,158 @@ export const blogCategories: BlogCategory[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'green-empire-client-sites-2026-05',
+    title: 'Client Project: Deploying Two Static Sites with Nginx',
+    excerpt: 'How I deployed Green Empire Landscaping and Green Empire Builders as static sites, solving Docker conflicts and path issues along the way.',
+    content: `
+# Client Project: Deploying Two Static Sites with Nginx
+
+This week I deployed two client websites for Green Empire - a landscaping business and a construction/renovation business. Here's how I set them up and the lessons learned along the way.
+
+## The Sites
+
+| Site | Domain | Business |
+|------|--------|----------|
+| Green Empire Landscaping | greenempireland.com | Landscaping services in Long Island |
+| Green Empire Builders | greenempirebuild.com | Construction & renovation in Massapequa |
+
+Both sites are static HTML generated from a Python-based site generator, with 60+ pages each covering services, service areas, blog posts, and more.
+
+## Initial Approach: Docker
+
+I initially deployed the landscaping site as a Docker container:
+
+\`\`\`bash
+docker build -t green-empire:latest .
+docker run -d --name green-empire -p 3019:80 green-empire:latest
+\`\`\`
+
+This worked great - nginx proxied to port 3019, and the site was live.
+
+## The Problem: Docker Tag Conflicts
+
+When I added the builders site, things got complicated. Both repos had similar Dockerfiles using the same image tag (\`green-empire:latest\`). Rebuilding one would overwrite the other, causing the wrong site to appear on the wrong domain.
+
+**Lesson learned:** Always use distinct image tags for different projects.
+
+## The Solution: Static File Serving
+
+Rather than managing Docker tag conflicts, I switched both sites to static file serving directly through nginx. This is simpler for static sites anyway.
+
+### Nginx Configuration
+
+\`\`\`nginx
+# Green Empire Landscaping
+server {
+    server_name greenempireland.com;
+
+    root /var/www/Green-Empire;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ $uri/index.html =404;
+    }
+
+    # Cache static assets
+    location ~* \\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # SSL managed by Certbot
+    listen 443 ssl;
+    ssl_certificate /etc/letsencrypt/live/greenempireland.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/greenempireland.com/privkey.pem;
+}
+
+# Green Empire Builders
+server {
+    server_name greenempirebuild.com;
+
+    root /var/www/zaylegend/apps/green-empire;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ $uri/index.html =404;
+    }
+
+    # Same caching and SSL setup...
+}
+\`\`\`
+
+## Bonus Challenge: Subdirectory Hosting
+
+Before getting the domain, I needed to host the builders site at \`zaylegend.com/green-empire/\` for client preview. This caused issues because the site uses root-relative paths like \`/css/main.css\`.
+
+### Path Rewriting
+
+I used sed to rewrite all paths:
+
+\`\`\`bash
+# Rewrite href, src, and action attributes
+find . -name "*.html" -exec sed -i 's|href="/|href="/green-empire/|g' {} \\;
+find . -name "*.html" -exec sed -i 's|src="/|src="/green-empire/|g' {} \\;
+find . -name "*.html" -exec sed -i 's|action="/|action="/green-empire/|g' {} \\;
+
+# Don't forget inline styles with url()
+find . -name "*.html" -exec sed -i "s|url('/images/|url('/green-empire/images/|g" {} \\;
+
+# And JS redirects
+sed -i "s|'/thank-you.html'|'/green-empire/thank-you.html'|g" js/main.js
+\`\`\`
+
+**Key insight:** The \`<base href="/green-empire/">\` tag only fixes HTML attributes, not CSS \`url()\` references or JavaScript-constructed paths.
+
+## SSL Setup with Certbot
+
+Getting SSL was straightforward:
+
+\`\`\`bash
+sudo certbot --nginx -d greenempirebuild.com -d www.greenempirebuild.com --non-interactive --agree-tos --redirect
+\`\`\`
+
+Certbot automatically:
+- Obtains certificates from Let's Encrypt
+- Configures nginx SSL settings
+- Sets up HTTP → HTTPS redirects
+- Schedules auto-renewal
+
+## Final Architecture
+
+\`\`\`
+greenempireland.com
+  └── nginx (static) → /var/www/Green-Empire/
+
+greenempirebuild.com
+  └── nginx (static) → /var/www/zaylegend/apps/green-empire/
+\`\`\`
+
+Benefits of static over Docker for these sites:
+- **Simpler** - No container management
+- **Faster** - No proxy layer
+- **Easier updates** - Just git pull
+- **No conflicts** - Each site has its own directory
+
+## Key Takeaways
+
+1. **Use distinct Docker tags** if you must use containers
+2. **Static file serving** is simpler for static sites
+3. **Path rewriting** is tricky - check CSS url() and JS paths too
+4. **Certbot** makes SSL trivially easy
+5. **Separate domains** avoid all the subdirectory complexity
+
+Both sites are now live and ready for client review:
+- https://greenempireland.com
+- https://greenempirebuild.com
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-05-05',
+    readTime: '6 min read',
+    category: 'devops',
+    tags: ['Nginx', 'Static Sites', 'SSL', 'Client Work', 'Docker', 'Certbot'],
+    featured: true
+  },
+  {
     id: 'seo-ai-optimization-2026-04',
     title: 'SEO for AI: Implementing llms.txt and Sitemap.xml',
     excerpt: 'How I optimized my portfolio for both traditional search engines and AI models using llms.txt and sitemap.xml - the new standards for discoverability.',
