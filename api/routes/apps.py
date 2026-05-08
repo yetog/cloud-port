@@ -43,6 +43,7 @@ APP_DIRS = {
     "zen-reset": f"{PORTFOLIO_DIR}/apps/zen-reset",
     "contentforge": f"{PORTFOLIO_DIR}/apps/contentforge",
     "daily-brief": f"{PORTFOLIO_DIR}/apps/testing/daily-brief",
+    "questful-living": f"{PORTFOLIO_DIR}/apps/testing/questful-living",
 }
 
 # App registry
@@ -72,6 +73,7 @@ APPS = {
     "slam-og-studio": {"port": None, "category": "testing", "container": None},  # Static build, Web DAW
     "narrative-navigator": {"port": None, "category": "testing", "container": None},  # Static build, Content Calendar
     "daily-brief": {"port": None, "category": "testing", "container": None},  # Static build, Gentle Future Platform Hub
+    "questful-living": {"port": None, "category": "testing", "container": None},  # Static build, Life RPG gamification
 }
 
 
