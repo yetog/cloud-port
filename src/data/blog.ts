@@ -34,6 +34,483 @@ export const blogCategories: BlogCategory[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'dreamcatcher-platform-pitch-2026-05',
+    title: 'DreamCatcher Platform Pitch: From Dream Journal to Personal OS',
+    excerpt: 'A presentation deck for building a connected consciousness platform - where dreams, journals, meditation, and fitness all share intelligence.',
+    content: `
+# DreamCatcher Platform Pitch
+
+*From Dream Journal to Personal Operating System*
+
+---
+
+## The Vision
+
+**What if your dreams could talk to your journal?**
+
+We started with a dream recorder. But dreams don't exist in isolation:
+- They connect to your **daily experiences**
+- They reflect your **emotional state**
+- They reveal **patterns** you can't see
+
+**The opportunity:** Build a platform where dreams, journals, meditation, and fitness all connect — creating insights no single app could generate alone.
+
+---
+
+## The Problem: Wellness Apps Are Silos
+
+\`\`\`
+┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐
+│ Headspace│  │  Day One│  │ Strava  │  │  Sleep  │
+│         │  │         │  │         │  │  Cycle  │
+│ Meditate│  │ Journal │  │ Fitness │  │  Dreams │
+└─────────┘  └─────────┘  └─────────┘  └─────────┘
+     ↓            ↓            ↓            ↓
+   Data        Data         Data         Data
+   Lost        Lost         Lost         Lost
+\`\`\`
+
+**Users juggle 5+ apps** that never talk to each other.
+
+- Your fitness app doesn't know you slept badly
+- Your journal doesn't know about your recurring dream symbols
+- Your meditation app doesn't know you're stressed from work
+- **No one sees the full picture**
+
+---
+
+## The Solution: A Connected Consciousness Platform
+
+\`\`\`
+┌─────────────────────────────────────────────────────┐
+│                    DAILY BRIEF                       │
+│            Your unified morning dashboard            │
+│   ┌─────────────────────────────────────────────┐   │
+│   │  "Your dreams featured WATER 3x this week.  │   │
+│   │   You also logged stress about finances.    │   │
+│   │   These often connect. Journal about it?"   │   │
+│   └─────────────────────────────────────────────┘   │
+├─────────────────────────────────────────────────────┤
+│                                                      │
+│   🌙 Dreams    📝 Journal    🧘 Meditate    💪 Fit  │
+│                                                      │
+│      All connected. All learning from each other.   │
+└─────────────────────────────────────────────────────┘
+\`\`\`
+
+**One platform. Multiple focused apps. Shared intelligence.**
+
+---
+
+## DreamCatcher Core: The Killer Feature
+
+\`\`\`
+🎤  "I was in a dark forest, and there was
+     a door glowing with light..."
+            ↓
+     WHISPER TRANSCRIBE
+            ↓
+   JUNGIAN ANALYSIS
+   ├── Symbols: Forest (unconscious), Door (change)
+   ├── Archetype: The Journey
+   └── Theme: Transformation awaits
+            ↓
+     GENERATE DREAMSCAPE
+            ↓
+   [AI-Generated Dream Image]
+   "Dark forest with glowing doorway,
+    ethereal, surreal, soft lighting"
+\`\`\`
+
+**Record → Transcribe → Analyze → Visualize**
+All in under 2 minutes.
+
+---
+
+## Platform Architecture
+
+\`\`\`
+                    ┌─────────────────┐
+                    │   DAILY BRIEF   │
+                    │   Morning Hub   │
+                    └────────┬────────┘
+                             │
+    ┌────────────────────────┼────────────────────────┐
+    │                        │                        │
+    ▼                        ▼                        ▼
+┌───────────────┐  ┌───────────────┐  ┌───────────────┐
+│  DREAMCATCHER │  │   FINELINE    │  │   ZEN RESET   │
+│               │  │               │  │               │
+│  🌙 Dreams    │◄─►│  📝 Journal   │◄─►│  🧘 Meditate  │
+│  Symbols      │  │  Mood         │  │  Breathwork   │
+│  Images       │  │  Voice Notes  │  │  Calm Score   │
+└───────┬───────┘  └───────┬───────┘  └───────┬───────┘
+        │                  │                  │
+        └──────────────────┼──────────────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │   SHARED SERVICES   │
+                ├─────────────────────┤
+                │ • Auth (Supabase)   │
+                │ • AI (Claude)       │
+                │ • Voice (11Labs)    │
+                │ • Storage (S3)      │
+                │ • Knowledge Graph   │
+                └─────────────────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │   UNIFIED DATABASE  │
+                │    (PostgreSQL)     │
+                └─────────────────────┘
+\`\`\`
+
+**Key Insight:** Apps stay independent. Platform adds connective tissue.
+
+---
+
+## The Magic: Cross-App Insights
+
+\`\`\`
+┌─────────────────────────────────────────────────────┐
+│  💡 INSIGHT: Pattern Detected                        │
+├─────────────────────────────────────────────────────┤
+│                                                      │
+│  "You've dreamed about WATER 4 times this month.    │
+│                                                      │
+│   Looking at your journal, you mentioned:            │
+│   • Financial stress (May 2, May 5, May 8)          │
+│   • Feeling 'overwhelmed' (May 3, May 7)            │
+│                                                      │
+│   In Jungian psychology, water often represents      │
+│   emotions and the unconscious processing stress.    │
+│                                                      │
+│   Your meditation frequency dropped 40% this week.   │
+│   This might be a good time to reconnect."           │
+│                                                      │
+│   [Start Calming Meditation]  [Journal About This]  │
+│                                                      │
+└─────────────────────────────────────────────────────┘
+\`\`\`
+
+**No single app can do this.**
+Only a connected platform sees the full picture.
+
+---
+
+## A Day in the Life
+
+\`\`\`
+6:30 AM  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         │
+         │  🌙 Wake up, remember dream
+         │     → Tap "Capture Dream" on phone
+         │     → Whisper into mic for 60 seconds
+         │     → AI transcribes & analyzes
+         │     → See dreamscape image
+         │
+7:00 AM  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         │
+         │  ☀️ Open Daily Brief
+         │     → "Good morning. Your dream featured BRIDGE."
+         │     → "You're in a transition period. Journal prompt ready."
+         │     → See mood trend, streak status
+         │
+7:15 AM  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         │
+         │  📝 Quick journal entry in FineLine
+         │     → Respond to dream-inspired prompt
+         │     → Log mood: 7/10
+         │     → Auto-connected to dream in knowledge graph
+         │
+7:30 AM  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+         │
+         │  🧘 10-min meditation (suggested by platform)
+         │     → Completes morning ritual
+         │     → Streak: 15 days
+         │
+         ▼
+      Day proceeds with clarity and intention
+\`\`\`
+
+---
+
+## MVP Scope
+
+**Phase 1: DreamCatcher Core**
+- Web-based audio recording
+- Whisper transcription
+- Jungian symbol analysis (175 symbols)
+- Single dreamscape image generation
+- Basic dream list view
+
+**Phase 2: FineLine Integration**
+- Dreams appear in timeline
+- Mood correlation
+- Dream-to-journal prompts
+- Shared database
+
+**Phase 3: Daily Brief**
+- Morning overview
+- Cross-app insights
+- Streak tracking
+- Quick actions
+
+---
+
+## FineLine as DreamCatcher UI (Optional)
+
+FineLine already has a timeline interface with mood tracking. Dreams could appear alongside journal entries:
+
+\`\`\`
+● 7:23 AM — Morning Entry
+  Mood: 😊 7/10
+  "Feeling refreshed after vivid dream..."
+  Tags: #dream #morning #reflection
+
+● 6:45 AM — 🌙 Dream Captured
+  "Dark forest, glowing door..."
+  Symbols: Forest, Door, Light
+  [View Dreamscape →]
+
+● 11:30 PM — Night Check-in
+  Mood: 😐 5/10
+  "Long day, stressed about deadline..."
+\`\`\`
+
+**User chooses:** Mark's standalone UI or FineLine as journal layer. Both available.
+
+---
+
+## Business Model
+
+| Feature | Free | Premium ($9/mo) |
+|---------|------|-----------------|
+| Dream capture | 5/month | Unlimited |
+| Transcription | Basic | Enhanced |
+| Analysis | Simple | Deep Jungian |
+| Dreamscape images | 1/dream | 5/dream + styles |
+| Journal entries | Unlimited | Unlimited |
+| Cross-app insights | Basic | AI-powered |
+| Knowledge graph | View only | Full edit |
+| Export | None | Full data |
+
+**Expansion:**
+- Therapist/coach dashboard (B2B)
+- Dream interpretation API
+- Guided programs (30-day dream work)
+
+---
+
+## Why We Win
+
+| App | Does | Doesn't Do |
+|-----|------|------------|
+| **Reflectly** | Journal + mood | Dreams, analysis |
+| **Dream Moods** | Dream dictionary | Recording, AI, journal |
+| **Capture** | Voice journal | Dream analysis, symbols |
+| **Headspace** | Meditation | Dreams, journal, connection |
+| **LUCID** | Sleep tracking | Dream content, meaning |
+
+**Our Edge:**
+1. **Jungian depth** — Real psychological framework
+2. **Voice-first** — Capture dreams before they fade
+3. **Visual output** — See your dream, not just read about it
+4. **Connected platform** — Dreams + journal + meditation + fitness
+5. **Your data** — Privacy-first, exportable, no ads
+
+---
+
+## The Bigger Picture
+
+\`\`\`
+            ┌─────────────────────────┐
+            │                         │
+            │   A Personal Operating  │
+            │   System for the        │
+            │   Conscious Self        │
+            │                         │
+            └─────────────────────────┘
+                      │
+       ┌──────────────┼──────────────┐
+       │              │              │
+       ▼              ▼              ▼
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│   DREAMS    │ │    BODY     │ │    MIND     │
+│             │ │             │ │             │
+│ Unconscious │ │  Physical   │ │  Conscious  │
+│  messages   │ │   state     │ │  thoughts   │
+└─────────────┘ └─────────────┘ └─────────────┘
+       │              │              │
+       └──────────────┼──────────────┘
+                      │
+                      ▼
+            ┌─────────────────────────┐
+            │                         │
+            │   Integrated insights   │
+            │   that help you become  │
+            │   who you truly are     │
+            │                         │
+            └─────────────────────────┘
+\`\`\`
+
+*"The privilege of a lifetime is to become who you truly are."* — Carl Jung
+
+---
+
+## Next Steps
+
+1. Review DreamCatcher codebase together
+2. Agree on MVP feature scope
+3. Decide: Standalone vs FineLine integration
+4. Set up shared Supabase project
+5. Deploy first working version
+6. Test with ourselves for 1 week
+7. Expand to 10 beta users
+
+**The infrastructure is ready. The vision is clear. Let's make dreams visible.**
+
+---
+
+**Full blueprint:** See \`/docs/GENTLE_FUTURE_PLATFORM_BLUEPRINT.md\` for technical details including database schema, API design, and deployment architecture.
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-05-08',
+    readTime: '12 min read',
+    category: 'insights',
+    tags: ['AI', 'Dreams', 'Psychology', 'Platform', 'Vision', 'Pitch'],
+    featured: true
+  },
+  {
+    id: 'dreamcatcher-vision-2026-05',
+    title: 'DreamCatcher: Building an AI-Powered Dream Journal',
+    excerpt: 'Exploring the vision for a dream capture device with Jungian analysis, AI visualization, and immersive replay. From hardware capture to building dreamscapes.',
+    content: `
+# DreamCatcher: Building an AI-Powered Dream Journal
+
+What if you could capture your dreams the moment you wake up, then explore them as immersive visual worlds? This is the vision behind DreamCatcher - a project exploring the intersection of hardware, AI, and depth psychology.
+
+## The Inspiration
+
+During a conversation with my friend Mark, he showed me a device he's been working on - a small ESP32-based recorder you can tap to capture dreams immediately upon waking. The hardware is elegant: a 1.46" round touchscreen, I2S microphone, and WiFi sync to a Mac app.
+
+But what excited me most wasn't the hardware - it was the potential for what comes after capture.
+
+## The Core Insight
+
+Most dream journals are passive - you write, maybe tag some themes, and that's it. But dreams are experiential. They're visual, emotional, and spatial. What if we could:
+
+1. **Capture** - Record the dream before it fades
+2. **Analyze** - Extract symbols and archetypes using Jungian psychology
+3. **Visualize** - Generate dreamscape images from the narrative
+4. **Immerse** - Let users walk through their dreams in 3D/VR
+
+This creates a complete loop from unconscious experience to conscious exploration.
+
+## Why Jungian Analysis?
+
+Mark's prototype already includes analysis based on Robert Johnson's *Inner Work* and *The Book of Symbols* (ARAS/Taschen). The system identifies:
+
+- **175 archetypal symbols** (water, snake, house, bridge, etc.)
+- **9 Jungian archetypes** (Shadow, Anima/Animus, Self, Persona, Trickster, etc.)
+- **Universal themes** (Transformation, Pursuit, Loss, Discovery)
+
+This isn't just keyword matching - it's depth psychology applied to personal narratives.
+
+## The Technical Vision
+
+### Phase 1: Capture + Transcribe
+\`\`\`
+Device → Audio → Whisper → Transcript → Analysis
+\`\`\`
+
+### Phase 2: Visualize
+\`\`\`
+Transcript → Key scenes → SDXL/Flux → Dreamscape images
+\`\`\`
+
+### Phase 3: Immerse
+\`\`\`
+Images → NeRF/Gaussian Splats → 3D scenes → WebXR walkthrough
+\`\`\`
+
+## The "Shark Boy, Lava Girl" Effect
+
+Remember how captivating that movie was because everything centered on the power of dreams? We want to create that feeling - but for *your* dreams.
+
+Imagine waking up, tapping a button, describing what you saw, and an hour later being able to *walk through* a 3D representation of your dream world. That's the vision.
+
+## Competitive Landscape
+
+| Product | Captures | Analyzes | Visualizes | Immerses |
+|---------|:--------:|:--------:|:----------:|:--------:|
+| Shadow (defunct) | ✓ | - | - | - |
+| Lucid | ✓ | - | - | - |
+| Dreamboard | ✓ | Basic | - | - |
+| **DreamCatcher** | ✓ | Jungian | AI Images | VR |
+
+Nobody is doing the full loop. That's the opportunity.
+
+## Integration with Zen Reset
+
+I already have a meditation app (Zen Reset). These could work hand-in-hand:
+
+- **Pre-sleep:** Guided meditation to encourage dream recall
+- **Morning:** Tap to capture, auto-sync
+- **Throughout day:** Explore your dream journal
+- **Night cycle repeats**
+
+A complete consciousness-tracking system.
+
+## The Lucid Dreaming Angle
+
+Many people struggle with lucid dreaming. By repeatedly exposing them to visual representations of their dream spaces, we might help them:
+
+1. **Recognize patterns** - "Oh, I often dream about water"
+2. **Build familiarity** - The dream space becomes less foreign
+3. **Trigger awareness** - "Wait, I've seen this scene before..."
+
+This could be a genuine tool for developing lucid dreaming skills.
+
+## Next Steps
+
+1. Get Mark's prototype running locally (fix dependencies)
+2. Add Whisper transcription to the existing app
+3. Integrate SDXL image generation (Replicate API)
+4. Test with real users, iterate on the analysis
+5. Explore 3D scene generation (Luma AI, Three.js)
+
+## The Bottom Line
+
+This isn't just a dream journal - it's a portal to the unconscious. By combining:
+- **Hardware** (instant capture)
+- **AI** (transcription + visualization)
+- **Psychology** (Jungian analysis)
+- **XR** (immersive replay)
+
+We can build something that helps people understand themselves better through their dreams.
+
+*Baller idea indeed.*
+
+---
+
+**Tech Stack:**
+- Device: ESP32-S3 with touchscreen + I2S mic
+- Transcription: OpenAI Whisper
+- Analysis: Custom Jungian analyzer (175 symbols, 9 archetypes)
+- Visualization: Stable Diffusion XL / Flux
+- 3D: Luma AI, Three.js, WebXR
+- Frontend: Electron + React (desktop), potential React Native (mobile)
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-05-08',
+    readTime: '8 min read',
+    category: 'insights',
+    tags: ['AI', 'Dreams', 'Psychology', 'VR', 'Hardware', 'Vision'],
+    featured: true
+  },
+  {
     id: 'green-empire-client-sites-2026-05',
     title: 'Client Project: Deploying Two Static Sites with Nginx',
     excerpt: 'How I deployed Green Empire Landscaping and Green Empire Builders as static sites, solving Docker conflicts and path issues along the way.',
