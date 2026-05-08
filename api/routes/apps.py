@@ -39,8 +39,10 @@ APP_DIRS = {
     "purple-lotus": f"{PORTFOLIO_DIR}/apps/testing/purple-lotus",
     "zen-tot": f"{PORTFOLIO_DIR}/apps/testing/zen-tot",
     "slam-og-studio": f"{PORTFOLIO_DIR}/apps/slam-og-studio",
+    "narrative-navigator": f"{PORTFOLIO_DIR}/apps/testing/narrative-navigator",
     "zen-reset": f"{PORTFOLIO_DIR}/apps/zen-reset",
     "contentforge": f"{PORTFOLIO_DIR}/apps/contentforge",
+    "daily-brief": f"{PORTFOLIO_DIR}/apps/testing/daily-brief",
 }
 
 # App registry
@@ -51,10 +53,10 @@ APPS = {
     "fineline": {"port": 3003, "category": "finished", "container": "fineline"},
     "game-hub": {"port": 3004, "category": "finished", "container": "game-hub"},
     "dj-visualizer": {"port": 3005, "category": "finished", "container": "dj-visualizer"},
-    "sprite-gen": {"port": 3006, "category": "finished", "container": "spritegen"},
+    "sprite-gen": {"port": 3006, "category": "testing", "container": "spritegen"},
     "voice-assistant": {"port": 3007, "category": "finished", "container": "voice-assistant-frontend"},
-    "knowledge-base": {"port": None, "category": "finished", "container": None},  # Static files via nginx alias
-    "contentforge": {"port": 3009, "category": "finished", "container": "contentforge"},
+    "knowledge-base": {"port": None, "category": "testing", "container": None},  # Static files via nginx alias
+    "contentforge": {"port": 3009, "category": "testing", "container": "contentforge"},
     "darkflow": {"port": 3010, "category": "testing", "container": "darkflow-mind-mapper"},
     "gmat": {"port": 3012, "category": "testing", "container": "gmat-mastery-suite"},
     "losk": {"port": 3013, "category": "testing", "container": "losk"},
@@ -68,6 +70,8 @@ APPS = {
     "green-empire-land": {"port": None, "category": "finished", "container": None},  # greenempireland.com
     "ionos-exam": {"port": None, "category": "testing", "container": None},  # Static build, no container
     "slam-og-studio": {"port": None, "category": "testing", "container": None},  # Static build, Web DAW
+    "narrative-navigator": {"port": None, "category": "testing", "container": None},  # Static build, Content Calendar
+    "daily-brief": {"port": None, "category": "testing", "container": None},  # Static build, Gentle Future Platform Hub
 }
 
 
