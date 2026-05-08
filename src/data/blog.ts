@@ -34,6 +34,211 @@ export const blogCategories: BlogCategory[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'gentle-future-ecosystem-2026-05',
+    title: 'Gentle Future: A Personal Operating System for Consciousness',
+    excerpt: 'Introducing the Gentle Future platform - 7 connected apps for dreams, journaling, meditation, fitness, and self-knowledge. Live links and roadmap.',
+    content: `
+# Gentle Future: A Personal Operating System for Consciousness
+
+*Where dreams, journals, meditation, and fitness all connect*
+
+---
+
+## The Platform
+
+Gentle Future is a connected ecosystem of wellness and consciousness apps. Each app works independently but shares data through a unified backend, creating insights no single app could generate alone.
+
+**Philosophy:** Orchestrate, don't consolidate. Keep each app focused while creating emergent value through connections.
+
+---
+
+## The Apps
+
+### Morning Flow (Hub) - COMING SOON
+**Role:** Daily ritual hub - minimal, guided morning experience
+**URL:** \`/\` (future: gentlefuture.app)
+**Status:** 🟡 In Development
+
+The central entry point. Instead of a dashboard showing everything at once, Morning Flow guides you through a calm, step-by-step morning ritual:
+1. Loading screen with gentle animations
+2. Greeting with today's date
+3. Dream summary (if captured)
+4. Mood check-in
+5. Today's AI-generated focus
+6. App launcher
+
+---
+
+### Questful Living (Profile)
+**Role:** Profile, stats, achievements, settings
+**URL:** [/questful](https://zaylegend.com/questful/)
+**Status:** 🟢 Live
+
+Your character page. Tracks your journey across all apps:
+- Level & XP progression
+- Skill trees (Mindfulness, Self-Awareness, Vitality, etc.)
+- Achievement badges
+- Streak tracking
+- Settings & preferences
+
+*Gamification meets consciousness work.*
+
+---
+
+### DreamCatcher (Dreams)
+**Role:** Dream capture, transcription, Jungian analysis, visualization
+**URL:** \`/dreams\` (coming soon)
+**Status:** 🟡 MVP In Development
+
+The killer feature. Record dreams by voice, get AI transcription, Jungian symbol analysis (175 archetypes), and AI-generated dreamscape images.
+
+**Flow:** Record → Transcribe → Analyze → Visualize
+
+---
+
+### FineLine (Journal)
+**Role:** Daily journal, mood tracking, voice notes
+**URL:** [/fineline](https://zaylegend.com/fineline/)
+**Status:** 🟢 Live
+
+Timeline-based journal with:
+- Mood tracking (1-10 scale)
+- Voice note support
+- Tags and categories
+- Subconscious section (gratitude, affirmations, goals)
+- Dream integration (planned)
+
+---
+
+### Zen Reset (Meditation)
+**Role:** Guided meditation, breathwork, ambient soundscapes
+**URL:** [/zen-reset](https://zaylegend.com/zen-reset/)
+**Status:** 🟢 Live
+
+Meditation companion with:
+- Guided sessions
+- Breathwork exercises
+- Ambient sound mixer
+- Session tracking
+- Calm score
+
+---
+
+### Forge Fit (Fitness)
+**Role:** Workout tracking, nutrition, body metrics
+**URL:** [/forge-fit](https://zaylegend.com/forge-fit/)
+**Status:** 🟢 Live
+
+Fitness tracker with:
+- Workout logging
+- Exercise library
+- Body measurements
+- Sleep quality tracking
+- Energy level correlation
+
+---
+
+### Zen TOT (Knowledge)
+**Role:** Personal knowledge graph, AI assistant, note connections
+**URL:** [/zen-tot](https://zaylegend.com/zen-tot/)
+**Status:** 🟢 Live
+
+Knowledge management with:
+- D3.js force-directed graph visualization
+- AI assistant with voice
+- Multi-type notes
+- Connection mapping
+- Cross-domain insights
+
+---
+
+## Architecture
+
+\`\`\`
+┌─────────────────────────────────────────────────────────┐
+│                   GENTLE FUTURE                          │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│            ┌─────────────────────┐                      │
+│            │    MORNING FLOW     │ ← Daily Ritual       │
+│            │       (Hub)         │                      │
+│            └──────────┬──────────┘                      │
+│                       │                                  │
+│    ┌──────────────────┼──────────────────┐              │
+│    │                  │                  │              │
+│    ▼                  ▼                  ▼              │
+│ ┌────────┐  ┌──────────────────────┐  ┌────────┐       │
+│ │QUESTFUL│  │       APPS           │  │SUPABASE│       │
+│ │LIVING  │  │                      │  │        │       │
+│ │        │  │ 🌙 DreamCatcher      │  │ Auth   │       │
+│ │Profile │  │ 📝 FineLine          │  │ Data   │       │
+│ │Stats   │  │ 🧘 Zen Reset         │  │ Sync   │       │
+│ │Achieve │  │ 💪 Forge Fit         │  │        │       │
+│ │        │  │ 🧠 Zen TOT           │  │        │       │
+│ └────────┘  └──────────────────────┘  └────────┘       │
+│                                                          │
+└─────────────────────────────────────────────────────────┘
+\`\`\`
+
+---
+
+## Live Links
+
+| App | Status | Link |
+|-----|--------|------|
+| Questful Living | 🟢 Live | [zaylegend.com/questful](https://zaylegend.com/questful/) |
+| FineLine | 🟢 Live | [zaylegend.com/fineline](https://zaylegend.com/fineline/) |
+| Zen Reset | 🟢 Live | [zaylegend.com/zen-reset](https://zaylegend.com/zen-reset/) |
+| Forge Fit | 🟢 Live | [zaylegend.com/forge-fit](https://zaylegend.com/forge-fit/) |
+| Zen TOT | 🟢 Live | [zaylegend.com/zen-tot](https://zaylegend.com/zen-tot/) |
+| Daily Brief (v1) | 🟡 Beta | [zaylegend.com/daily-brief](https://zaylegend.com/daily-brief/) |
+| Morning Flow | 🔴 Planned | Coming Soon |
+| DreamCatcher | 🟡 MVP | In Development |
+
+---
+
+## Documentation
+
+- [Platform Blueprint](/docs/GENTLE_FUTURE_PLATFORM_BLUEPRINT.md) - Full technical architecture
+- [Morning Flow Plan](/docs/MORNING_FLOW_PLAN.md) - Hub design and UX flow
+- [DreamCatcher MVP Plan](/docs/DREAMCATCHER_MVP_PLAN.md) - Dream app implementation
+- [Platform Pitch Deck](/blog/dreamcatcher-platform-pitch-2026-05) - Presentation for stakeholders
+
+---
+
+## The Vision
+
+> "The privilege of a lifetime is to become who you truly are." — Carl Jung
+
+Gentle Future is a Personal Operating System for consciousness. By connecting dreams, thoughts, body, and mind, we create a complete picture of the self - and insights that help you grow.
+
+**Not a dashboard. A ritual.**
+**Not data. Wisdom.**
+**Not apps. A journey.**
+
+---
+
+## Get Involved
+
+This is an active project. If you're interested in:
+- Beta testing
+- Contributing
+- Partnership
+
+Reach out via the contact page.
+
+---
+
+*Built with consciousness by Isayah Young-Burke & Mark*
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-05-08',
+    readTime: '6 min read',
+    category: 'docs',
+    tags: ['Gentle Future', 'Platform', 'Dreams', 'Wellness', 'Apps', 'Consciousness'],
+    featured: true
+  },
+  {
     id: 'dreamcatcher-platform-pitch-2026-05',
     title: 'DreamCatcher Platform Pitch: From Dream Journal to Personal OS',
     excerpt: 'A presentation deck for building a connected consciousness platform - where dreams, journals, meditation, and fitness all share intelligence.',
