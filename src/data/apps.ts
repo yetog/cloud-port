@@ -80,26 +80,6 @@ export const finishedApps: App[] = [
     githubUrl: 'https://github.com/yetog/voice-agent-11',
   },
   {
-    id: 'contentforge',
-    title: 'ContentForge',
-    description: 'Unified creative content platform combining AI sprite generation, story creation, voice synthesis, and presentation generation. Go from story concept to complete multimedia presentation seamlessly.',
-    image: ASSETS.apps.zenReset,
-    tags: ['AI', 'Creative', 'Multimedia', 'Content'],
-    status: 'finished',
-    appUrl: 'https://zaylegend.com/contentforge',
-    githubUrl: 'https://github.com/yetog/contentforge',
-  },
-  {
-    id: 'cloud-llm-assistant',
-    title: 'Cloud LLM Assistant',
-    description: 'An intelligent AI assistant powered by advanced language models, hosted on cloud infrastructure for scalable conversational AI experiences.',
-    image: ASSETS.apps.cloudLlmAssistant,
-    tags: ['AI', 'Cloud', 'Assistant'],
-    status: 'finished',
-    appUrl: 'https://ashley-v3.streamlit.app/',
-    githubUrl: 'https://github.com/zaylegend/ashley-v3',
-  },
-  {
     id: 'dj-visualizer',
     title: 'DJ Visualizer',
     description: 'An immersive audio-reactive visualization platform for DJs and music enthusiasts. Features real-time audio analysis, dynamic visual effects, and customizable display modes for live performances.',
@@ -130,12 +110,48 @@ export const finishedApps: App[] = [
     githubUrl: 'https://github.com/yetog/playful-space-arcade',
   },
   {
+    id: 'goat-landscaping',
+    title: 'GOAT Landscaping',
+    description: 'Client website for Massapequa Park, NY landscaping company. Features 7 service pages, 15 service area locations, blog content, and lead capture forms. Python static site generator with nginx deployment.',
+    image: ASSETS.apps.zenReset,
+    tags: ['Client Project', 'SEO', 'Static Site', 'Landscaping'],
+    status: 'finished',
+    appUrl: 'https://goatlandscapeli.com',
+    githubUrl: 'https://github.com/yetog/GOAT-Landscaping-main',
+  },
+];
+
+// =============================================================================
+// TESTING APPS - Beta/experimental, work in progress
+// =============================================================================
+export const testingApps: App[] = [
+  {
+    id: 'contentforge',
+    title: 'ContentForge',
+    description: 'Unified creative content platform combining AI sprite generation, story creation, voice synthesis, and presentation generation. Go from story concept to complete multimedia presentation seamlessly.',
+    image: ASSETS.apps.zenReset,
+    tags: ['AI', 'Creative', 'Multimedia', 'Content'],
+    status: 'testing',
+    appUrl: 'https://zaylegend.com/contentforge',
+    githubUrl: 'https://github.com/yetog/contentforge',
+  },
+  {
+    id: 'cloud-llm-assistant',
+    title: 'Cloud LLM Assistant',
+    description: 'An intelligent AI assistant powered by advanced language models, hosted on cloud infrastructure for scalable conversational AI experiences.',
+    image: ASSETS.apps.cloudLlmAssistant,
+    tags: ['AI', 'Cloud', 'Assistant'],
+    status: 'testing',
+    appUrl: 'https://ashley-v3.streamlit.app/',
+    githubUrl: 'https://github.com/zaylegend/ashley-v3',
+  },
+  {
     id: 'sprite-gen',
     title: 'Sprite Gen',
     description: 'A powerful sprite generation tool for game developers and digital artists. Create pixel-perfect sprites, animations, and game assets with advanced algorithms and customizable parameters.',
     image: ASSETS.apps.spriteGen,
     tags: ['Game Dev', 'Graphics', 'Tools'],
-    status: 'finished',
+    status: 'testing',
     appUrl: 'https://zaylegend.com/spritegen',
     githubUrl: 'https://github.com/yetog/spritegen',
   },
@@ -145,16 +161,10 @@ export const finishedApps: App[] = [
     description: 'A comprehensive personal knowledge repository covering technology, business, philosophy, and life insights. Organized collection of research, notes, and learnings across diverse topics.',
     image: ASSETS.apps.zenReset,
     tags: ['Knowledge', 'Documentation', 'Reference'],
-    status: 'finished',
+    status: 'testing',
     appUrl: 'https://zaylegend.com/knowledge-base',
     githubUrl: 'https://github.com/yetog/knowledge-base',
-  }
-];
-
-// =============================================================================
-// TESTING APPS - Beta/experimental, work in progress
-// =============================================================================
-export const testingApps: App[] = [
+  },
   {
     id: 'darkflow-mind-mapper',
     title: 'Darkflow Mind Mapper',

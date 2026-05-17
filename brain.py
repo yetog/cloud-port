@@ -59,8 +59,8 @@ APPS = {
     "dj-visualizer":    (3005, "finished", "dj-visualizer"),
     "sprite-gen":       (3006, "finished", "spritegen"),
     "voice-assistant":  (3007, "finished", "voice-assistant-frontend"),
-    "knowledge-base":   (3008, "finished", None),  # Not containerized
-    "contentforge":     (3009, "finished", None),
+    "knowledge-base":   (None, "finished", None),  # Static files via nginx alias
+    "contentforge":     (3009, "finished", "contentforge"),
     "sensei-ai":        (None, "finished", None),  # External
     "wolf-ai":          (None, "finished", None),  # External
     "cloud-llm":        (None, "finished", None),  # External
