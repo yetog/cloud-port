@@ -42,3 +42,7 @@ jobs/
 backups/
 .app-updates
 .app-updates.log
+migration/
+migration_package_20260517.tar.gz
+greenridge-assets/
+task-manager/

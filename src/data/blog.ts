@@ -34,6 +34,112 @@ export const blogCategories: BlogCategory[] = [
 
 export const blogPosts: BlogPost[] = [
   {
+    id: 'greenridge-launch-2026-05-24',
+    title: 'Client Launch: GreenRidge Landscape & Design',
+    excerpt: 'Launched a California luxury landscaping website in 30 minutes during DJ set breakdown. Optimized images, cleaned copy, streamlined workflow with GitHub PAT.',
+    content: `
+# Client Launch: GreenRidge Landscape & Design
+
+*30 minutes well spent while the crew packed up*
+
+---
+
+## The Session
+
+Just finished a DJ set and while waiting for my crew to break down, I knocked out a full client website launch. GreenRidge Landscape & Design is now live at [greenridgelandscapedesign.com](https://greenridgelandscapedesign.com).
+
+This is the 3rd website for client Ariel - we've built a solid workflow together.
+
+---
+
+## What We Built
+
+**Client:** GreenRidge Landscape & Design
+**Location:** San Jose, CA (South Bay Area)
+**Services:** Landscaping, Patios, Pavers, Driveways, Outdoor Living
+**Live URL:** [greenridgelandscapedesign.com](https://greenridgelandscapedesign.com)
+
+### Design Direction
+- California luxury outdoor living vibe
+- Light and airy (cream background #F5F0E8)
+- Warm stone accents (#C8B89A)
+- Less contractor-heavy, more lifestyle-oriented
+
+---
+
+## Technical Wins
+
+### Image Optimization
+The client sent photos totaling **170MB** - way too heavy for web. Compressed everything down to **3MB** without visible quality loss:
+- PNG → JPG conversion
+- Resized to 1200x1200 max
+- Quality 80-85%
+- Individual images: 3-11MB → 150-330KB
+
+### Workflow Improvements
+Finally set up a **GitHub Personal Access Token** on the server. No more SSH key juggling - I can push to any repo instantly now.
+
+Also configured **Gmail SMTP via msmtp** so the server can send emails directly. Useful for notifications and file transfers.
+
+### Content Cleanup
+Template had remnants from a previous client (Long Island references). Did a full audit:
+- Replaced Nassau/Suffolk → Santa Clara/San Mateo
+- Fixed climate zones (Zone 7 → Zone 9-10)
+- Removed em dashes for cleaner typography
+- Swapped wrong logo
+
+---
+
+## The Stack
+
+| Component | Tech |
+|-----------|------|
+| Generator | Python (generate.py) |
+| Config | site.config.json |
+| Styling | Custom CSS with variables |
+| Server | Nginx + SSL (Let's Encrypt) |
+| Repo | github.com/yetog/greenridgelandscapedesign.com |
+
+---
+
+## Commits
+
+\`\`\`
+24b0697 docs: Add session log and email setup plans
+930d632 fix: Replace Green Empire logo and remove NY references
+5bb4f3d feat: Complete GreenRidge site setup with optimizations
+3e2a1a1 Initial commit: GreenRidge Landscape & Design website
+\`\`\`
+
+---
+
+## What's Next
+
+- [ ] Client review and feedback
+- [ ] Set up Zapier webhook for contact form
+- [ ] Add social media links
+- [ ] Consider Cloudflare Email Routing for custom domain email
+
+---
+
+## Reflection
+
+This is why I love infrastructure work. A full professional website launched in 30 minutes because the systems are in place:
+- Template ready to clone
+- Deployment automated
+- SSL one command away
+- Git workflow streamlined
+
+The DJ set was fire too.
+`,
+    author: 'Isayah Young-Burke',
+    date: '2026-05-24',
+    readTime: '4 min read',
+    category: 'sessions',
+    tags: ['client-work', 'web-development', 'nginx', 'ssl', 'workflow'],
+    featured: true
+  },
+  {
     id: 'gentle-future-ecosystem-2026-05',
     title: 'Gentle Future: A Personal Operating System for Consciousness',
     excerpt: 'Introducing the Gentle Future platform - 7 connected apps for dreams, journaling, meditation, fitness, and self-knowledge. Live links and roadmap.',
