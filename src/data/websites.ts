@@ -9,6 +9,7 @@ export interface Website {
   tags: string[];
   status: 'live' | 'development';
   siteUrl: string;
+  apiName: string;  // Maps to APP_DIRS key for updates
   clientName?: string;
   location?: string;
   launchDate?: string;
@@ -26,6 +27,7 @@ export const websites: Website[] = [
     tags: ['Landscaping', 'California', 'SEO', 'Lead Gen'],
     status: 'live',
     siteUrl: 'https://greenridgelandscapedesign.com',
+    apiName: 'greenridge',
     clientName: 'Ariel',
     location: 'San Jose, CA',
     launchDate: '2026-05-24',
@@ -38,6 +40,7 @@ export const websites: Website[] = [
     tags: ['Landscaping', 'New York', 'SEO', 'Lead Gen'],
     status: 'live',
     siteUrl: 'https://greenempireland.com',
+    apiName: 'green-empire-land',
     clientName: 'Green Empire',
     location: 'Long Island, NY',
     launchDate: '2026-04-01',
@@ -50,6 +53,7 @@ export const websites: Website[] = [
     tags: ['Construction', 'Builders', 'Portfolio'],
     status: 'live',
     siteUrl: 'https://greenempirebuild.com',
+    apiName: 'green-empire-build',
     clientName: 'Green Empire',
     location: 'Long Island, NY',
     launchDate: '2026-03-15',
@@ -62,6 +66,7 @@ export const websites: Website[] = [
     tags: ['Landscaping', 'New York', 'Lead Gen'],
     status: 'live',
     siteUrl: 'https://goatlandscapeli.com',
+    apiName: 'goat-landscaping',
     clientName: 'GOAT Landscaping',
     location: 'Long Island, NY',
     launchDate: '2026-02-20',

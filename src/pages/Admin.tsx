@@ -125,6 +125,11 @@ const Admin = () => {
   const [newJob, setNewJob] = useState({ company: "", role: "", url: "", description: "", status: "saved" });
   const [newNote, setNewNote] = useState({ title: "", content: "", category: "claude-review" });
 
+  // Website updates state
+  const [websiteUpdates, setWebsiteUpdates] = useState<Record<string, UpdateInfo>>({});
+  const [updatingWebsite, setUpdatingWebsite] = useState<string | null>(null);
+  const [checkingWebsiteUpdates, setCheckingWebsiteUpdates] = useState(false);
+
   // Check session storage for auth
   useEffect(() => {
     const auth = sessionStorage.getItem("admin_auth");
@@ -371,6 +376,66 @@ const Admin = () => {
     } catch (error) {
       toast({ title: "Error", description: "Failed to delete note", variant: "destructive" });
     }
+  };
+
+  // Website update functions
+  const checkWebsiteUpdates = async () => {
+    setCheckingWebsiteUpdates(true);
+    addLog("Checking websites for updates...");
+    const updatesMap: Record<string, UpdateInfo> = {};
+
+    for (const site of websites) {
+      try {
+        const response = await fetch(`${API_BASE}/apps/${site.apiName}/updates`);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.commits_behind > 0) {
+            updatesMap[site.apiName] = data;
+          }
+        }
+      } catch (error) {
+        console.error(`Failed to check updates for ${site.apiName}:`, error);
+      }
+    }
+
+    setWebsiteUpdates(updatesMap);
+    const updateCount = Object.keys(updatesMap).length;
+    addLog(`Found ${updateCount} website(s) with pending updates`);
+
+    if (updateCount > 0) {
+      toast({ title: "Website Updates", description: `${updateCount} site(s) have updates available` });
+    } else {
+      toast({ title: "All Sites Current", description: "No pending updates for websites" });
+    }
+    setCheckingWebsiteUpdates(false);
+  };
+
+  const deployWebsite = async (apiName: string, title: string) => {
+    setUpdatingWebsite(apiName);
+    addLog(`Deploying updates to ${title}...`);
+
+    try {
+      const response = await fetch(`${API_BASE}/apps/${apiName}/update`, { method: "POST" });
+      const data = await response.json();
+
+      if (data.success) {
+        addLog(`Deploy complete for ${title}`);
+        toast({ title: "Deploy Complete", description: `${title} has been updated` });
+        // Remove from updates list
+        setWebsiteUpdates(prev => {
+          const newUpdates = { ...prev };
+          delete newUpdates[apiName];
+          return newUpdates;
+        });
+      } else {
+        addLog(`Deploy failed for ${title}: ${data.output?.slice(-200)}`);
+        toast({ title: "Deploy Failed", description: "Check logs for details", variant: "destructive" });
+      }
+    } catch (error) {
+      addLog(`Error deploying ${title}: ${error}`);
+      toast({ title: "Error", description: `Failed to deploy ${title}`, variant: "destructive" });
+    }
+    setUpdatingWebsite(null);
   };
 
   // Fetch jobs and notes on auth
@@ -658,17 +723,35 @@ const Admin = () => {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <Globe className="w-5 h-5 text-cyan-500" />
-                    Client Websites
-                  </CardTitle>
-                  <Badge variant="outline" className="text-cyan-500 border-cyan-500">
-                    {websites.filter(w => w.status === 'live').length} Live
-                  </Badge>
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Globe className="w-5 h-5 text-cyan-500" />
+                      Client Websites
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Websites built for clients - pull updates from GitHub repos
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {Object.keys(websiteUpdates).length > 0 && (
+                      <Badge variant="destructive">
+                        {Object.keys(websiteUpdates).length} updates
+                      </Badge>
+                    )}
+                    <Badge variant="outline" className="text-cyan-500 border-cyan-500">
+                      {websites.filter(w => w.status === 'live').length} Live
+                    </Badge>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={checkWebsiteUpdates}
+                      disabled={checkingWebsiteUpdates}
+                    >
+                      <RefreshCw className={`w-4 h-4 mr-1 ${checkingWebsiteUpdates ? 'animate-spin' : ''}`} />
+                      {checkingWebsiteUpdates ? 'Checking...' : 'Check Updates'}
+                    </Button>
+                  </div>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Websites built for clients - separate from portfolio apps
-                </p>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -709,15 +792,36 @@ const Admin = () => {
                           <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>
                         ))}
                       </div>
-                      <a
-                        href={site.siteUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                        {site.siteUrl.replace('https://', '')}
-                      </a>
+                      {/* Update indicator */}
+                      {websiteUpdates[site.apiName] && (
+                        <div className="flex items-center gap-2 mb-3 p-2 bg-yellow-500/10 border border-yellow-500/30 rounded">
+                          <AlertCircle className="w-4 h-4 text-yellow-500" />
+                          <span className="text-xs text-yellow-400">
+                            {websiteUpdates[site.apiName].commits_behind} commit(s) behind
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between">
+                        <a
+                          href={site.siteUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                          {site.siteUrl.replace('https://', '')}
+                        </a>
+                        <Button
+                          size="sm"
+                          variant={websiteUpdates[site.apiName] ? "default" : "outline"}
+                          onClick={() => deployWebsite(site.apiName, site.title)}
+                          disabled={updatingWebsite === site.apiName}
+                          className={websiteUpdates[site.apiName] ? "bg-cyan-600 hover:bg-cyan-700" : ""}
+                        >
+                          <Download className={`w-4 h-4 mr-1 ${updatingWebsite === site.apiName ? 'animate-bounce' : ''}`} />
+                          {updatingWebsite === site.apiName ? 'Deploying...' : websiteUpdates[site.apiName] ? 'Deploy' : 'Pull'}
+                        </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
