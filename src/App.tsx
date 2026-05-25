@@ -16,6 +16,7 @@ const ProjectDetail = lazy(() => import("./pages/ProjectDetail"));
 const Apps = lazy(() => import("./pages/Apps"));
 const Music = lazy(() => import("./pages/Music"));
 const Services = lazy(() => import("./pages/Services"));
+const Websites = lazy(() => import("./pages/Websites"));
 const Blog = lazy(() => import("./pages/Blog"));
 const BlogPost = lazy(() => import("./pages/BlogPost"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -56,6 +57,7 @@ const App = () => (
                   <Route path="/apps" element={<Apps />} />
                   <Route path="/music" element={<Music />} />
                   <Route path="/services" element={<Services />} />
+                  <Route path="/websites" element={<Websites />} />
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/blog/:postId" element={<BlogPost />} />
                   <Route path="/projects/:projectId" element={<ProjectDetail />} />
