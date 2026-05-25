@@ -21,8 +21,13 @@ import {
   Trash2,
   Edit,
   ExternalLink,
-  MessageSquare
+  MessageSquare,
+  Globe,
+  MapPin,
+  Calendar,
+  User
 } from "lucide-react";
+import { websites, Website } from "../data/websites";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -631,9 +636,13 @@ const Admin = () => {
           })}
         </div>
 
-        {/* Jobs & Notes Tabs */}
-        <Tabs defaultValue="jobs" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+        {/* Jobs, Notes & Websites Tabs */}
+        <Tabs defaultValue="websites" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="websites" className="flex items-center gap-2">
+              <Globe className="w-4 h-4" />
+              Websites ({websites.length})
+            </TabsTrigger>
             <TabsTrigger value="jobs" className="flex items-center gap-2">
               <Briefcase className="w-4 h-4" />
               Jobs ({jobs.length})
@@ -643,6 +652,78 @@ const Admin = () => {
               Notes ({notes.filter(n => !n.resolved).length})
             </TabsTrigger>
           </TabsList>
+
+          {/* Websites Tab */}
+          <TabsContent value="websites">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <Globe className="w-5 h-5 text-cyan-500" />
+                    Client Websites
+                  </CardTitle>
+                  <Badge variant="outline" className="text-cyan-500 border-cyan-500">
+                    {websites.filter(w => w.status === 'live').length} Live
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Websites built for clients - separate from portfolio apps
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {websites.map((site) => (
+                    <div key={site.id} className="p-4 bg-muted/30 rounded-lg border border-border/50 hover:border-cyan-500/50 transition-colors">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <Globe className="w-5 h-5 text-cyan-400" />
+                          <span className="font-medium">{site.title}</span>
+                        </div>
+                        <Badge className={site.status === 'live' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30'}>
+                          {site.status === 'live' ? 'Live' : 'Dev'}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{site.description}</p>
+                      <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mb-3">
+                        {site.clientName && (
+                          <span className="flex items-center gap-1">
+                            <User className="w-3 h-3" />
+                            {site.clientName}
+                          </span>
+                        )}
+                        {site.location && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {site.location}
+                          </span>
+                        )}
+                        {site.launchDate && (
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3" />
+                            {new Date(site.launchDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-1 mb-3">
+                        {site.tags.map((tag, i) => (
+                          <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>
+                        ))}
+                      </div>
+                      <a
+                        href={site.siteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-sm text-cyan-400 hover:text-cyan-300 transition-colors"
+                      >
+                        <ExternalLink className="w-4 h-4" />
+                        {site.siteUrl.replace('https://', '')}
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Jobs Tab */}
           <TabsContent value="jobs">
