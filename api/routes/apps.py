@@ -32,6 +32,7 @@ APP_DIRS = {
     "green-empire-build": f"{PORTFOLIO_DIR}/apps/green-empire",  # Builders - greenempirebuild.com
     "green-empire-land": "/var/www/Green-Empire",  # Landscaping - greenempireland.com
     "goat-landscaping": "/var/www/goatlandscapeli.com/html",  # GOAT Landscaping - goatlandscapeli.com
+    "greenridge": "/var/www/greenridgelandscapedesign",  # GreenRidge Landscape - greenridgelandscapedesign.com
     "bh-ai-79": f"{PORTFOLIO_DIR}/apps/testing/bh-ai-79",
     "darkflow": f"{PORTFOLIO_DIR}/apps/testing/darkflow-mind-mapper",
     "gmat": f"{PORTFOLIO_DIR}/apps/testing/gmat-mastery-suite",
@@ -71,6 +72,7 @@ APPS = {
     "green-empire-build": {"port": None, "category": "finished", "container": None},  # greenempirebuild.com
     "green-empire-land": {"port": None, "category": "finished", "container": None},  # greenempireland.com
     "goat-landscaping": {"port": None, "category": "finished", "container": None},  # goatlandscapeli.com
+    "greenridge": {"port": None, "category": "finished", "container": None},  # greenridgelandscapedesign.com
     "ionos-exam": {"port": None, "category": "testing", "container": None},  # Static build, no container
     "slam-og-studio": {"port": None, "category": "testing", "container": None},  # Static build, Web DAW
     "narrative-navigator": {"port": None, "category": "testing", "container": None},  # Static build, Content Calendar
