@@ -403,3 +403,94 @@ async def update_app(app_name: str):
         raise HTTPException(status_code=504, detail="Update timed out (5 min limit)")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/{app_name}/push")
+async def push_app(app_name: str):
+    """Push local changes to GitHub for an app."""
+    app_dir = APP_DIRS.get(app_name)
+    if not app_dir:
+        raise HTTPException(status_code=404, detail=f"App '{app_name}' not tracked")
+
+    if not os.path.exists(f"{app_dir}/.git"):
+        raise HTTPException(status_code=400, detail=f"App '{app_name}' is not a git repository")
+
+    try:
+        # Check for uncommitted changes
+        status_result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            capture_output=True, text=True, cwd=app_dir, timeout=10
+        )
+
+        has_changes = bool(status_result.stdout.strip())
+
+        if has_changes:
+            # Add all changes
+            subprocess.run(
+                ["git", "add", "-A"],
+                capture_output=True, cwd=app_dir, timeout=10
+            )
+
+            # Commit with timestamp
+            from datetime import datetime
+            commit_msg = f"Update from dashboard - {datetime.now().strftime('%Y-%m-%d %H:%M')}"
+            subprocess.run(
+                ["git", "commit", "-m", commit_msg],
+                capture_output=True, cwd=app_dir, timeout=30
+            )
+
+        # Get current branch
+        branch_result = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            capture_output=True, text=True, cwd=app_dir, timeout=10
+        )
+        branch = branch_result.stdout.strip() or "main"
+
+        # Push to origin
+        push_result = subprocess.run(
+            ["git", "push", "origin", branch],
+            capture_output=True, text=True, cwd=app_dir, timeout=60
+        )
+
+        output = push_result.stdout + push_result.stderr
+        success = push_result.returncode == 0 or "Everything up-to-date" in output
+
+        return {
+            "name": app_name,
+            "success": success,
+            "had_changes": has_changes,
+            "output": output[-1000:],
+        }
+    except subprocess.TimeoutExpired:
+        raise HTTPException(status_code=504, detail="Push timed out")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{app_name}/status")
+async def get_app_git_status(app_name: str):
+    """Get git status for an app (uncommitted changes)."""
+    app_dir = APP_DIRS.get(app_name)
+    if not app_dir:
+        raise HTTPException(status_code=404, detail=f"App '{app_name}' not tracked")
+
+    if not os.path.exists(f"{app_dir}/.git"):
+        raise HTTPException(status_code=400, detail=f"App '{app_name}' is not a git repository")
+
+    try:
+        # Get status
+        status_result = subprocess.run(
+            ["git", "status", "--porcelain"],
+            capture_output=True, text=True, cwd=app_dir, timeout=10
+        )
+
+        changes = status_result.stdout.strip().split('\n') if status_result.stdout.strip() else []
+
+        return {
+            "name": app_name,
+            "has_changes": len(changes) > 0,
+            "change_count": len(changes),
+            "changes": changes[:20],  # First 20 changes
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -2566,6 +2566,593 @@ For each app in the apps directory:
     category: 'scripts',
     tags: ['Bash', 'Docker', 'Mass Operations', 'DevOps'],
     downloadUrl: '/downloads/scripts/rebuild-all-apps.sh'
+  },
+  // ============ MCP & API TUTORIALS ============
+  {
+    id: 'mcp-servers-guide-2026-05',
+    title: 'Building MCP Servers: Give Claude Custom Tools',
+    excerpt: 'Learn how to build Model Context Protocol servers that let Claude directly interact with your systems - server management, databases, APIs, and more.',
+    content: `
+# Building MCP Servers: Give Claude Custom Tools
+
+*From conversation to action - let Claude call your code directly*
+
+---
+
+## What is MCP?
+
+Model Context Protocol (MCP) lets you create custom tools that Claude can use. Instead of Claude telling you to run a command, Claude can run it directly through your MCP server.
+
+**Before MCP:**
+\`\`\`
+You: "Check server status"
+Claude: "Run this command: brain status"
+You: *runs command, copies output*
+Claude: "Based on that output..."
+\`\`\`
+
+**With MCP:**
+\`\`\`
+You: "Check server status"
+Claude: *calls server_status tool*
+Claude: "Your server is at 15% disk, 23 containers running..."
+\`\`\`
+
+---
+
+## MCP Server Structure
+
+An MCP server has two main parts:
+
+### 1. Tool Definitions (\`list_tools\`)
+Tell Claude what tools exist and what parameters they accept:
+
+\`\`\`python
+@server.list_tools()
+async def list_tools():
+    return [
+        Tool(
+            name="server_status",
+            description="Get current server status",
+            inputSchema={
+                "type": "object",
+                "properties": {},
+                "required": []
+            }
+        ),
+        Tool(
+            name="send_email",
+            description="Send an email",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "to": {"type": "string"},
+                    "subject": {"type": "string"},
+                    "body": {"type": "string"}
+                },
+                "required": ["to", "subject", "body"]
+            }
+        )
+    ]
+\`\`\`
+
+### 2. Tool Handlers (\`call_tool\`)
+Execute the actual logic when Claude calls a tool:
+
+\`\`\`python
+@server.call_tool()
+async def call_tool(name: str, arguments: dict):
+    if name == "server_status":
+        disk = subprocess.getoutput("df -h / | tail -1")
+        memory = subprocess.getoutput("free -h | awk '/Mem:/ {print $3\"/\"$2}'")
+        return [TextContent(type="text", text=f"Disk: {disk}\\nMemory: {memory}")]
+
+    elif name == "send_email":
+        # Send the email
+        subprocess.run(["shadow-mail", "send",
+            arguments["to"],
+            arguments["subject"],
+            arguments["body"]
+        ])
+        return [TextContent(type="text", text="Email sent")]
+\`\`\`
+
+---
+
+## Input Schema Types
+
+Define what parameters your tools accept:
+
+\`\`\`python
+# String
+{"type": "string", "description": "Recipient email"}
+
+# Integer with default
+{"type": "integer", "description": "Line count", "default": 20}
+
+# Boolean
+{"type": "boolean", "description": "Include stopped containers"}
+
+# Enum (limited choices)
+{"type": "string", "enum": ["status", "apps", "task list"]}
+\`\`\`
+
+---
+
+## Complete Example: Shadow Server
+
+Here's a real MCP server for server management:
+
+\`\`\`python
+#!/usr/bin/env python3
+from mcp.server import Server
+from mcp.server.stdio import stdio_server
+from mcp.types import Tool, TextContent
+import subprocess
+
+server = Server("shadow-server")
+
+@server.list_tools()
+async def list_tools():
+    return [
+        Tool(
+            name="server_status",
+            description="Get server status",
+            inputSchema={"type": "object", "properties": {}}
+        ),
+        Tool(
+            name="docker_list",
+            description="List Docker containers",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "all": {"type": "boolean", "default": False}
+                }
+            }
+        ),
+        Tool(
+            name="run_brain",
+            description="Run brain CLI command",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "command": {
+                        "type": "string",
+                        "enum": ["status", "apps", "apps health"]
+                    }
+                },
+                "required": ["command"]
+            }
+        )
+    ]
+
+@server.call_tool()
+async def call_tool(name: str, arguments: dict):
+    if name == "server_status":
+        result = subprocess.getoutput("brain status")
+        return [TextContent(type="text", text=result)]
+
+    elif name == "docker_list":
+        flag = "-a" if arguments.get("all") else ""
+        result = subprocess.getoutput(f"docker ps {flag}")
+        return [TextContent(type="text", text=result)]
+
+    elif name == "run_brain":
+        cmd = arguments.get("command", "status")
+        result = subprocess.getoutput(f"brain {cmd}")
+        return [TextContent(type="text", text=result)]
+
+async def main():
+    async with stdio_server() as (read, write):
+        await server.run(read, write, server.create_initialization_options())
+
+if __name__ == "__main__":
+    import asyncio
+    asyncio.run(main())
+\`\`\`
+
+---
+
+## Adding to Claude Code
+
+Edit \`~/.claude.json\`:
+
+\`\`\`json
+{
+  "mcpServers": {
+    "shadow-server": {
+      "command": "python3",
+      "args": ["/var/www/zaylegend/mcp-servers/shadow-server/server.py"]
+    }
+  }
+}
+\`\`\`
+
+Restart Claude Code. Your tools are now available.
+
+---
+
+## Security Best Practices
+
+1. **Whitelist commands** - Never accept arbitrary shell commands
+2. **Validate inputs** - Check all parameters before using
+3. **Use enums** - Limit choices to known-safe options
+4. **Log everything** - Track what tools are called and when
+5. **Separate concerns** - Different servers for different access levels
+
+---
+
+## Ideas for MCP Tools
+
+| Category | Tools |
+|----------|-------|
+| **Server** | Status, restart services, check logs |
+| **Database** | Query, backup, health check |
+| **Git** | Status, pull, commit, push |
+| **Docker** | List, restart, logs, prune |
+| **Email** | Send, check inbox, search |
+| **Files** | Read, write, search, backup |
+| **APIs** | Call external services, webhooks |
+
+---
+
+## MCP vs REST API
+
+| Feature | MCP | REST API |
+|---------|-----|----------|
+| **Who calls it** | Claude directly | Any HTTP client |
+| **Protocol** | stdio / SSE | HTTP |
+| **Discovery** | Tool definitions | OpenAPI docs |
+| **Best for** | AI assistant tools | External integrations |
+
+**Use MCP when:** You want Claude to have direct access
+**Use API when:** External apps/scripts need access
+
+---
+
+## Resources
+
+- [MCP Documentation](https://modelcontextprotocol.io/docs)
+- [Python SDK](https://github.com/modelcontextprotocol/python-sdk)
+- Shadow Server: \`/var/www/zaylegend/mcp-servers/shadow-server/\`
+
+---
+
+## What's Next
+
+Now that you understand MCP, try building:
+1. A database query tool
+2. A deployment trigger
+3. A notification sender
+4. A file manager
+
+The key is starting simple - one tool at a time - and expanding from there.
+
+*MCP turns Claude from assistant to operator.*
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-05-24',
+    readTime: '10 min read',
+    category: 'tutorial',
+    tags: ['MCP', 'Claude', 'AI', 'Python', 'Tools', 'Automation'],
+    featured: true
+  },
+  {
+    id: 'fastapi-rest-api-guide-2026-05',
+    title: 'Building REST APIs with FastAPI: A Practical Guide',
+    excerpt: 'Create powerful REST APIs for your server with FastAPI - auto-generated docs, type validation, and easy deployment.',
+    content: `
+# Building REST APIs with FastAPI
+
+*From script to service - expose your tools to the world*
+
+---
+
+## Why FastAPI?
+
+FastAPI is a modern Python framework that makes building APIs fast and fun:
+
+- **Auto-generated docs** - Swagger UI out of the box
+- **Type validation** - Pydantic models catch errors early
+- **Async support** - Handle concurrent requests efficiently
+- **Fast** - One of the fastest Python frameworks
+
+---
+
+## Basic Structure
+
+\`\`\`python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI(title="Shadow API", version="1.0.0")
+
+# Define response model
+class StatusResponse(BaseModel):
+    disk: str
+    memory: str
+    containers: int
+
+# Create endpoint
+@app.get("/status", response_model=StatusResponse)
+async def get_status():
+    return StatusResponse(
+        disk="55G/388G",
+        memory="4G/16G",
+        containers=23
+    )
+\`\`\`
+
+Run: \`uvicorn api:app --reload\`
+Docs: \`http://localhost:8000/docs\`
+
+---
+
+## Request Types
+
+### GET - Retrieve data
+\`\`\`python
+@app.get("/apps")
+async def list_apps():
+    return {"apps": ["portfolio", "zen-reset", "chord-genesis"]}
+
+# With path parameter
+@app.get("/apps/{name}")
+async def get_app(name: str):
+    return {"name": name, "status": "running"}
+
+# With query parameter
+@app.get("/docker")
+async def docker_list(all: bool = False):
+    return {"include_stopped": all}
+\`\`\`
+
+### POST - Create/Execute
+\`\`\`python
+class EmailRequest(BaseModel):
+    to: str
+    subject: str
+    body: str
+
+@app.post("/email")
+async def send_email(email: EmailRequest):
+    # Send the email
+    return {"success": True, "sent_to": email.to}
+\`\`\`
+
+### Error Handling
+\`\`\`python
+from fastapi import HTTPException
+
+@app.post("/brain")
+async def run_brain(command: str):
+    allowed = ["status", "apps", "task list"]
+    if command not in allowed:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Command not allowed. Use: {allowed}"
+        )
+    return {"output": subprocess.getoutput(f"brain {command}")}
+\`\`\`
+
+---
+
+## Complete Example: Shadow API
+
+\`\`\`python
+#!/usr/bin/env python3
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import subprocess
+from datetime import datetime
+
+app = FastAPI(title="Shadow API", version="1.0.0")
+
+# ============ MODELS ============
+
+class StatusResponse(BaseModel):
+    timestamp: str
+    disk: str
+    memory: str
+    docker_containers: int
+    nginx: str
+
+class EmailRequest(BaseModel):
+    to: str
+    subject: str
+    body: str
+
+class BrainCommand(BaseModel):
+    command: str
+
+# ============ ENDPOINTS ============
+
+@app.get("/")
+async def root():
+    return {
+        "name": "Shadow API",
+        "endpoints": ["/status", "/apps", "/docker", "/email"]
+    }
+
+@app.get("/status", response_model=StatusResponse)
+async def get_status():
+    return StatusResponse(
+        timestamp=datetime.now().isoformat(),
+        disk=subprocess.getoutput("df -h / | tail -1 | awk '{print $3\"/\"$2}'"),
+        memory=subprocess.getoutput("free -h | awk '/Mem:/ {print $3\"/\"$2}'"),
+        docker_containers=int(subprocess.getoutput("docker ps -q | wc -l")),
+        nginx=subprocess.getoutput("systemctl is-active nginx")
+    )
+
+@app.get("/apps/health")
+async def apps_health():
+    result = subprocess.getoutput("brain apps health")
+    return {"output": result}
+
+@app.get("/docker")
+async def docker_list(all: bool = False):
+    flag = "-a" if all else ""
+    result = subprocess.getoutput(f"docker ps {flag} --format '{{.Names}}|{{.Status}}'")
+    containers = []
+    for line in result.strip().split('\\n'):
+        if '|' in line:
+            name, status = line.split('|', 1)
+            containers.append({"name": name, "status": status})
+    return {"containers": containers}
+
+@app.post("/email")
+async def send_email(email: EmailRequest):
+    result = subprocess.run(
+        ["shadow-mail", "send", email.to, email.subject, email.body],
+        capture_output=True, text=True
+    )
+    return {"success": result.returncode == 0}
+
+@app.post("/brain")
+async def run_brain(cmd: BrainCommand):
+    allowed = ["status", "apps", "apps health", "task list"]
+    if cmd.command not in allowed:
+        raise HTTPException(status_code=400, detail=f"Use: {allowed}")
+    return {"output": subprocess.getoutput(f"brain {cmd.command}")}
+
+@app.get("/logs/{log_name}")
+async def read_log(log_name: str, lines: int = 20):
+    log_map = {
+        "shadow-mail": "/var/log/shadow-mail.log",
+        "maintenance": "/var/log/server-maintenance.log"
+    }
+    if log_name not in log_map:
+        raise HTTPException(status_code=404, detail="Unknown log")
+    result = subprocess.getoutput(f"tail -{lines} {log_map[log_name]}")
+    return {"lines": result.split('\\n')}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+\`\`\`
+
+---
+
+## Testing Your API
+
+\`\`\`bash
+# Get status
+curl http://localhost:8000/status
+
+# List Docker containers
+curl "http://localhost:8000/docker?all=true"
+
+# Send email
+curl -X POST http://localhost:8000/email \\
+  -H "Content-Type: application/json" \\
+  -d '{"to": "test@example.com", "subject": "Hello", "body": "Test"}'
+
+# Run brain command
+curl -X POST http://localhost:8000/brain \\
+  -H "Content-Type: application/json" \\
+  -d '{"command": "status"}'
+\`\`\`
+
+---
+
+## Auto-Generated Docs
+
+FastAPI creates interactive documentation automatically:
+
+- **Swagger UI:** http://localhost:8000/docs
+- **ReDoc:** http://localhost:8000/redoc
+
+You can test endpoints directly in the browser!
+
+---
+
+## Deployment Options
+
+### 1. Direct Run
+\`\`\`bash
+python api.py
+# or
+uvicorn api:app --host 0.0.0.0 --port 8000
+\`\`\`
+
+### 2. Systemd Service
+\`\`\`ini
+[Unit]
+Description=Shadow API
+After=network.target
+
+[Service]
+User=www-data
+WorkingDirectory=/var/www/zaylegend/mcp-servers/shadow-api
+ExecStart=/usr/bin/uvicorn api:app --host 0.0.0.0 --port 8000
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+\`\`\`
+
+### 3. Behind Nginx
+\`\`\`nginx
+location /api/ {
+    proxy_pass http://127.0.0.1:8000/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+\`\`\`
+
+---
+
+## MCP vs API - When to Use Which
+
+| Scenario | Use |
+|----------|-----|
+| Claude needs direct access | MCP |
+| External apps need access | API |
+| Scripts calling your server | API |
+| Webhooks from services | API |
+| AI-powered automation | MCP |
+| Dashboard data | API |
+
+**Pro tip:** Build both! Same logic, different interfaces.
+
+---
+
+## Security Checklist
+
+- [ ] Add authentication (API keys, JWT)
+- [ ] Rate limiting
+- [ ] Input validation (Pydantic does this)
+- [ ] CORS configuration
+- [ ] HTTPS (via nginx)
+- [ ] Log all requests
+- [ ] Don't expose secrets
+
+---
+
+## Next Steps
+
+1. Add authentication
+2. Connect to your database
+3. Build a dashboard frontend
+4. Set up webhooks
+5. Add rate limiting
+
+---
+
+## Resources
+
+- [FastAPI Docs](https://fastapi.tiangolo.com/)
+- [Pydantic Docs](https://docs.pydantic.dev/)
+- Shadow API: \`/var/www/zaylegend/mcp-servers/shadow-api/\`
+
+*APIs turn your scripts into services.*
+    `,
+    author: 'Isayah Young-Burke',
+    date: '2026-05-24',
+    readTime: '12 min read',
+    category: 'tutorial',
+    tags: ['FastAPI', 'REST API', 'Python', 'Backend', 'Web Development'],
+    featured: true
   }
 ];
 

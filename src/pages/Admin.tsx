@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   RefreshCw,
   Download,
+  Upload,
   Power,
   CheckCircle2,
   XCircle,
@@ -127,7 +128,9 @@ const Admin = () => {
 
   // Website updates state
   const [websiteUpdates, setWebsiteUpdates] = useState<Record<string, UpdateInfo>>({});
+  const [websiteLocalChanges, setWebsiteLocalChanges] = useState<Record<string, number>>({});
   const [updatingWebsite, setUpdatingWebsite] = useState<string | null>(null);
+  const [pushingWebsite, setPushingWebsite] = useState<string | null>(null);
   const [checkingWebsiteUpdates, setCheckingWebsiteUpdates] = useState(false);
 
   // Check session storage for auth
@@ -381,32 +384,45 @@ const Admin = () => {
   // Website update functions
   const checkWebsiteUpdates = async () => {
     setCheckingWebsiteUpdates(true);
-    addLog("Checking websites for updates...");
+    addLog("Checking websites for updates and local changes...");
     const updatesMap: Record<string, UpdateInfo> = {};
+    const localChangesMap: Record<string, number> = {};
 
     for (const site of websites) {
       try {
-        const response = await fetch(`${API_BASE}/apps/${site.apiName}/updates`);
-        if (response.ok) {
-          const data = await response.json();
+        // Check for remote updates
+        const updateResponse = await fetch(`${API_BASE}/apps/${site.apiName}/updates`);
+        if (updateResponse.ok) {
+          const data = await updateResponse.json();
           if (data.commits_behind > 0) {
             updatesMap[site.apiName] = data;
           }
         }
+
+        // Check for local changes
+        const statusResponse = await fetch(`${API_BASE}/apps/${site.apiName}/status`);
+        if (statusResponse.ok) {
+          const statusData = await statusResponse.json();
+          if (statusData.change_count > 0) {
+            localChangesMap[site.apiName] = statusData.change_count;
+          }
+        }
       } catch (error) {
-        console.error(`Failed to check updates for ${site.apiName}:`, error);
+        console.error(`Failed to check ${site.apiName}:`, error);
       }
     }
 
     setWebsiteUpdates(updatesMap);
-    const updateCount = Object.keys(updatesMap).length;
-    addLog(`Found ${updateCount} website(s) with pending updates`);
+    setWebsiteLocalChanges(localChangesMap);
 
-    if (updateCount > 0) {
-      toast({ title: "Website Updates", description: `${updateCount} site(s) have updates available` });
-    } else {
-      toast({ title: "All Sites Current", description: "No pending updates for websites" });
-    }
+    const updateCount = Object.keys(updatesMap).length;
+    const localCount = Object.keys(localChangesMap).length;
+    addLog(`Found ${updateCount} site(s) with remote updates, ${localCount} with local changes`);
+
+    toast({
+      title: "Scan Complete",
+      description: `${updateCount} remote updates, ${localCount} local changes`
+    });
     setCheckingWebsiteUpdates(false);
   };
 
@@ -436,6 +452,37 @@ const Admin = () => {
       toast({ title: "Error", description: `Failed to deploy ${title}`, variant: "destructive" });
     }
     setUpdatingWebsite(null);
+  };
+
+  const pushWebsite = async (apiName: string, title: string) => {
+    setPushingWebsite(apiName);
+    addLog(`Pushing local changes for ${title} to GitHub...`);
+
+    try {
+      const response = await fetch(`${API_BASE}/apps/${apiName}/push`, { method: "POST" });
+      const data = await response.json();
+
+      if (data.success) {
+        addLog(`Push complete for ${title}${data.had_changes ? ' (committed changes)' : ' (no changes)'}`);
+        toast({
+          title: "Push Complete",
+          description: data.had_changes ? `${title} changes pushed to GitHub` : "Already up to date"
+        });
+        // Remove from local changes list
+        setWebsiteLocalChanges(prev => {
+          const newChanges = { ...prev };
+          delete newChanges[apiName];
+          return newChanges;
+        });
+      } else {
+        addLog(`Push failed for ${title}: ${data.output?.slice(-200)}`);
+        toast({ title: "Push Failed", description: "Check logs for details", variant: "destructive" });
+      }
+    } catch (error) {
+      addLog(`Error pushing ${title}: ${error}`);
+      toast({ title: "Error", description: `Failed to push ${title}`, variant: "destructive" });
+    }
+    setPushingWebsite(null);
   };
 
   // Fetch jobs and notes on auth
@@ -792,13 +839,25 @@ const Admin = () => {
                           <Badge key={i} variant="secondary" className="text-xs">{tag}</Badge>
                         ))}
                       </div>
-                      {/* Update indicator */}
-                      {websiteUpdates[site.apiName] && (
-                        <div className="flex items-center gap-2 mb-3 p-2 bg-yellow-500/10 border border-yellow-500/30 rounded">
-                          <AlertCircle className="w-4 h-4 text-yellow-500" />
-                          <span className="text-xs text-yellow-400">
-                            {websiteUpdates[site.apiName].commits_behind} commit(s) behind
-                          </span>
+                      {/* Update indicators */}
+                      {(websiteUpdates[site.apiName] || websiteLocalChanges[site.apiName]) && (
+                        <div className="space-y-2 mb-3">
+                          {websiteUpdates[site.apiName] && (
+                            <div className="flex items-center gap-2 p-2 bg-yellow-500/10 border border-yellow-500/30 rounded">
+                              <Download className="w-4 h-4 text-yellow-500" />
+                              <span className="text-xs text-yellow-400">
+                                {websiteUpdates[site.apiName].commits_behind} commit(s) to pull
+                              </span>
+                            </div>
+                          )}
+                          {websiteLocalChanges[site.apiName] && (
+                            <div className="flex items-center gap-2 p-2 bg-blue-500/10 border border-blue-500/30 rounded">
+                              <Upload className="w-4 h-4 text-blue-500" />
+                              <span className="text-xs text-blue-400">
+                                {websiteLocalChanges[site.apiName]} local change(s) to push
+                              </span>
+                            </div>
+                          )}
                         </div>
                       )}
                       <div className="flex items-center justify-between">
@@ -811,16 +870,28 @@ const Admin = () => {
                           <ExternalLink className="w-4 h-4" />
                           {site.siteUrl.replace('https://', '')}
                         </a>
-                        <Button
-                          size="sm"
-                          variant={websiteUpdates[site.apiName] ? "default" : "outline"}
-                          onClick={() => deployWebsite(site.apiName, site.title)}
-                          disabled={updatingWebsite === site.apiName}
-                          className={websiteUpdates[site.apiName] ? "bg-cyan-600 hover:bg-cyan-700" : ""}
-                        >
-                          <Download className={`w-4 h-4 mr-1 ${updatingWebsite === site.apiName ? 'animate-bounce' : ''}`} />
-                          {updatingWebsite === site.apiName ? 'Deploying...' : websiteUpdates[site.apiName] ? 'Deploy' : 'Pull'}
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant={websiteLocalChanges[site.apiName] ? "default" : "outline"}
+                            onClick={() => pushWebsite(site.apiName, site.title)}
+                            disabled={pushingWebsite === site.apiName}
+                            className={websiteLocalChanges[site.apiName] ? "bg-blue-600 hover:bg-blue-700" : ""}
+                          >
+                            <Upload className={`w-4 h-4 mr-1 ${pushingWebsite === site.apiName ? 'animate-bounce' : ''}`} />
+                            {pushingWebsite === site.apiName ? 'Pushing...' : 'Push'}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant={websiteUpdates[site.apiName] ? "default" : "outline"}
+                            onClick={() => deployWebsite(site.apiName, site.title)}
+                            disabled={updatingWebsite === site.apiName}
+                            className={websiteUpdates[site.apiName] ? "bg-cyan-600 hover:bg-cyan-700" : ""}
+                          >
+                            <Download className={`w-4 h-4 mr-1 ${updatingWebsite === site.apiName ? 'animate-bounce' : ''}`} />
+                            {updatingWebsite === site.apiName ? 'Pulling...' : 'Pull'}
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}
