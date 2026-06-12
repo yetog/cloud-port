@@ -25,11 +25,12 @@ TO_EMAIL = "isayahy@gmail.com"
 
 # Directories to track
 TRACKED_REPOS = [
-    "/var/www/zaylegend",
-    "/var/www/greenridgelandscapedesign",
-    "/var/www/Green-Empire",
-    "/var/www/zaylegend/apps/green-empire",
-    "/var/www/goatlandscapeli.com/html",
+    ("/var/www/zaylegend", "ZayLegend Portfolio"),
+    ("/var/www/greenridgelandscapedesign", "GreenRidge"),
+    ("/var/www/Green-Empire", "Green Empire Land"),
+    ("/var/www/zaylegend/apps/green-empire", "Green Empire Builders"),
+    ("/var/www/goatlandscapeli.com/html", "GOAT Landscaping"),
+    ("/var/www/saltbae", "Saltbae Email Blaster"),
 ]
 
 
@@ -48,226 +49,368 @@ def get_git_commits(repo_path, since_days=1):
     """Get git commits from the last N days."""
     since = (datetime.now() - timedelta(days=since_days)).strftime("%Y-%m-%d")
     commits = run_cmd(
-        f'git log --since="{since}" --oneline --no-merges 2>/dev/null',
+        f'git log --since="{since}" --format="%h|%s|%an" --no-merges 2>/dev/null',
         cwd=repo_path
     )
-    return commits if commits else "No commits"
-
-
-def get_git_stats(repo_path, since_days=1):
-    """Get git stats (files changed, insertions, deletions)."""
-    since = (datetime.now() - timedelta(days=since_days)).strftime("%Y-%m-%d")
-    stats = run_cmd(
-        f'git log --since="{since}" --shortstat --oneline 2>/dev/null | tail -1',
-        cwd=repo_path
-    )
-    return stats if stats else "No changes"
+    return commits if commits else ""
 
 
 def get_system_status():
     """Get current system status."""
-    disk = run_cmd("df -h / | tail -1 | awk '{print $5 \" used (\" $4 \" free)\"}'")
-    memory = run_cmd("free -h | grep Mem | awk '{print $3 \"/\" $2 \" used\"}'")
+    disk = run_cmd("df -h / | tail -1 | awk '{print $5}'")
+    disk_free = run_cmd("df -h / | tail -1 | awk '{print $4}'")
+    memory = run_cmd("free -h | grep Mem | awk '{print $3}'")
+    memory_total = run_cmd("free -h | grep Mem | awk '{print $2}'")
     docker_running = run_cmd("docker ps --format '{{.Names}}' 2>/dev/null | wc -l")
-    uptime = run_cmd("uptime -p")
+    uptime = run_cmd("uptime -p | sed 's/up //'")
+    load = run_cmd("uptime | awk -F'load average:' '{print $2}' | awk '{print $1}' | tr -d ','")
 
     return {
-        "disk": disk,
-        "memory": memory,
-        "docker_containers": docker_running,
-        "uptime": uptime
+        "disk_used": disk,
+        "disk_free": disk_free,
+        "memory_used": memory,
+        "memory_total": memory_total,
+        "docker_containers": docker_running.strip(),
+        "uptime": uptime,
+        "load": load
     }
 
 
-def get_nginx_sites():
-    """Get active nginx sites."""
-    sites = run_cmd("ls /etc/nginx/conf.d/*.conf 2>/dev/null | wc -l")
-    return sites
-
-
-def get_ssl_status():
+def get_ssl_certs():
     """Get SSL certificate status."""
-    certs = run_cmd("sudo certbot certificates 2>/dev/null | grep -E 'Certificate Name|Expiry Date' | head -20")
-    return certs if certs else "Unable to check certificates"
+    certs_raw = run_cmd("sudo certbot certificates 2>/dev/null")
+    certs = []
+    current_cert = {}
+
+    for line in certs_raw.split('\n'):
+        if 'Certificate Name:' in line:
+            if current_cert:
+                certs.append(current_cert)
+            current_cert = {'name': line.split(':')[1].strip()}
+        elif 'Expiry Date:' in line:
+            # Extract date and days remaining
+            parts = line.split('(VALID:')
+            if len(parts) > 1:
+                days = parts[1].replace(')', '').replace('days', '').strip()
+                current_cert['days'] = days
+
+    if current_cert:
+        certs.append(current_cert)
+
+    return certs
 
 
-def generate_report(report_type="daily"):
-    """Generate the work report."""
+def generate_html_report(report_type="daily"):
+    """Generate the HTML work report."""
     since_days = 1 if report_type == "daily" else 7
     period = "24 hours" if report_type == "daily" else "7 days"
+    period_label = "Daily" if report_type == "daily" else "Weekly"
 
     # Get system status
     sys_status = get_system_status()
+    ssl_certs = get_ssl_certs()
 
-    # Build report
-    report_lines = [
-        f"# {'Daily' if report_type == 'daily' else 'Weekly'} Work Report",
-        f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-        f"**Period:** Last {period}",
-        "",
-        "---",
-        "",
-        "## System Status",
-        f"- **Uptime:** {sys_status['uptime']}",
-        f"- **Disk:** {sys_status['disk']}",
-        f"- **Memory:** {sys_status['memory']}",
-        f"- **Docker Containers:** {sys_status['docker_containers']} running",
-        f"- **Nginx Sites:** {get_nginx_sites()} configured",
-        "",
-        "---",
-        "",
-        "## Git Activity",
-        ""
-    ]
-
+    # Collect git activity
+    repo_activity = []
     total_commits = 0
-    for repo in TRACKED_REPOS:
-        repo_name = Path(repo).name
-        if not Path(repo).exists():
+
+    for repo_path, repo_name in TRACKED_REPOS:
+        if not Path(repo_path).exists():
             continue
 
-        commits = get_git_commits(repo, since_days)
-        commit_count = len([c for c in commits.split('\n') if c and c != "No commits"])
-        total_commits += commit_count
+        commits_raw = get_git_commits(repo_path, since_days)
+        commits = []
+        if commits_raw:
+            for line in commits_raw.split('\n'):
+                if '|' in line:
+                    parts = line.split('|')
+                    if len(parts) >= 3:
+                        commits.append({
+                            'hash': parts[0],
+                            'message': parts[1],
+                            'author': parts[2]
+                        })
+                        total_commits += 1
 
-        report_lines.append(f"### {repo_name}")
-        if commits and commits != "No commits":
-            for line in commits.split('\n')[:10]:  # Limit to 10 commits
-                if line:
-                    report_lines.append(f"- `{line}`")
-        else:
-            report_lines.append("- No commits")
-        report_lines.append("")
+        repo_activity.append({
+            'name': repo_name,
+            'path': repo_path,
+            'commits': commits
+        })
 
-    report_lines.extend([
-        f"**Total Commits:** {total_commits}",
-        "",
-        "---",
-        "",
-        "## SSL Certificates",
-        "```",
-        get_ssl_status(),
-        "```",
-        "",
-        "---",
-        "",
-        "*Report generated automatically by Shadow Infrastructure*"
-    ])
-
-    return "\n".join(report_lines), total_commits
-
-
-def markdown_to_html(md_text):
-    """Simple markdown to HTML conversion."""
-    html = md_text
-
-    # Headers
-    html = html.replace("# ", "<h1>").replace("\n## ", "</h1>\n<h2>").replace("\n### ", "</h2>\n<h3>")
-
-    # Code blocks
-    html = html.replace("```\n", "<pre>").replace("\n```", "</pre>")
-
-    # Inline code
-    import re
-    html = re.sub(r'`([^`]+)`', r'<code>\1</code>', html)
-
-    # Bold
-    html = re.sub(r'\*\*([^*]+)\*\*', r'<strong>\1</strong>', html)
-
-    # Lists
-    lines = html.split('\n')
-    in_list = False
-    result = []
-    for line in lines:
-        if line.startswith('- '):
-            if not in_list:
-                result.append('<ul>')
-                in_list = True
-            result.append(f'<li>{line[2:]}</li>')
-        else:
-            if in_list:
-                result.append('</ul>')
-                in_list = False
-            result.append(line)
-    if in_list:
-        result.append('</ul>')
-    html = '\n'.join(result)
-
-    # Horizontal rules
-    html = html.replace('---', '<hr>')
-
-    # Wrap in basic styling
-    styled_html = f"""<!DOCTYPE html>
+    # Build HTML
+    html = f"""<!DOCTYPE html>
 <html>
 <head>
 <style>
 body {{
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     line-height: 1.6;
-    color: #e0e0e0;
-    background-color: #1a1a1a;
+    color: #333;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
+    background-color: #f5f5f5;
 }}
-h1 {{
+.header {{
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: white;
+    padding: 30px;
+    margin: -20px -20px 30px -20px;
+    border-radius: 0 0 10px 10px;
+}}
+.header h1 {{
     color: #ff4444;
-    border-bottom: 2px solid #ff4444;
-    padding-bottom: 10px;
+    margin: 0;
+    font-size: 28px;
+}}
+.header p {{
+    margin: 10px 0 0 0;
+    opacity: 0.9;
+    color: #ccc;
 }}
 h2 {{
-    color: #ff6666;
+    color: #1a1a1a;
     margin-top: 30px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #ff4444;
 }}
 h3 {{
-    color: #ff8888;
+    color: #444;
+    margin-top: 20px;
+}}
+table {{
+    border-collapse: collapse;
+    width: 100%;
+    margin: 15px 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}}
+th, td {{
+    border: 1px solid #eee;
+    padding: 12px;
+    text-align: left;
+}}
+th {{
+    background-color: #1a1a1a;
+    color: white;
+}}
+tr:nth-child(even) {{
+    background-color: #f9f9f9;
+}}
+.highlight {{
+    background-color: #fff3f3;
+    padding: 15px;
+    border-left: 4px solid #ff4444;
+    margin: 15px 0;
+    border-radius: 0 8px 8px 0;
+}}
+.metric-grid {{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}}
+.metric-card {{
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}}
+.metric-value {{
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff4444;
+}}
+.metric-label {{
+    color: #666;
+    font-size: 12px;
+    text-transform: uppercase;
+    margin-top: 5px;
 }}
 code {{
     background-color: #2d2d2d;
-    color: #ff4444;
+    color: #ff6666;
     padding: 2px 6px;
     border-radius: 3px;
-    font-family: 'Monaco', 'Consolas', monospace;
+    font-size: 0.9em;
 }}
-pre {{
-    background-color: #2d2d2d;
-    color: #cccccc;
+.commit-list {{
+    background: white;
+    border-radius: 8px;
     padding: 15px;
-    border-radius: 5px;
-    overflow-x: auto;
-    border-left: 3px solid #ff4444;
+    margin: 10px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }}
-ul {{
-    padding-left: 20px;
+.commit-item {{
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
 }}
-li {{
-    margin: 5px 0;
+.commit-item:last-child {{
+    border-bottom: none;
 }}
-hr {{
-    border: none;
-    border-top: 1px solid #444;
-    margin: 20px 0;
+.commit-hash {{
+    color: #ff4444;
+    font-family: monospace;
+    font-size: 0.9em;
 }}
-strong {{
-    color: #ffffff;
+.commit-message {{
+    color: #333;
+}}
+.no-activity {{
+    color: #999;
+    font-style: italic;
+}}
+.ssl-good {{
+    color: #22c55e;
+}}
+.ssl-warning {{
+    color: #f59e0b;
+}}
+.ssl-danger {{
+    color: #ef4444;
+}}
+.footer {{
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #ddd;
+    color: #666;
+    font-size: 0.9em;
+    text-align: center;
+}}
+.footer a {{
+    color: #ff4444;
 }}
 </style>
 </head>
 <body>
-{html}
-</body>
-</html>"""
 
-    return styled_html
+<div class="header">
+    <h1>Shadow {period_label} Report</h1>
+    <p>{datetime.now().strftime('%B %d, %Y')} &bull; Last {period}</p>
+</div>
+
+<div class="highlight">
+    <strong>Summary:</strong> {total_commits} commit{'s' if total_commits != 1 else ''} across {len([r for r in repo_activity if r['commits']])} repositories in the last {period}.
+</div>
+
+<h2>System Status</h2>
+<div class="metric-grid">
+    <div class="metric-card">
+        <div class="metric-value">{sys_status['uptime']}</div>
+        <div class="metric-label">Uptime</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-value">{sys_status['disk_used']}</div>
+        <div class="metric-label">Disk Used ({sys_status['disk_free']} free)</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-value">{sys_status['memory_used']}</div>
+        <div class="metric-label">Memory ({sys_status['memory_total']} total)</div>
+    </div>
+    <div class="metric-card">
+        <div class="metric-value">{sys_status['docker_containers']}</div>
+        <div class="metric-label">Docker Containers</div>
+    </div>
+</div>
+
+<h2>Git Activity</h2>
+"""
+
+    # Add repo activity
+    for repo in repo_activity:
+        html += f'<h3>{repo["name"]}</h3>\n'
+        if repo['commits']:
+            html += '<div class="commit-list">\n'
+            for commit in repo['commits'][:10]:  # Limit to 10
+                html += f'''<div class="commit-item">
+    <span class="commit-hash">{commit['hash']}</span>
+    <span class="commit-message">{commit['message']}</span>
+</div>\n'''
+            html += '</div>\n'
+        else:
+            html += '<p class="no-activity">No commits in this period</p>\n'
+
+    # SSL Certificates
+    html += '\n<h2>SSL Certificates</h2>\n<table>\n<tr><th>Domain</th><th>Days Remaining</th><th>Status</th></tr>\n'
+
+    for cert in ssl_certs:
+        try:
+            days = int(cert.get('days', '0').strip())
+            if days > 30:
+                status_class = 'ssl-good'
+                status_text = 'OK'
+            elif days > 14:
+                status_class = 'ssl-warning'
+                status_text = 'Renewing Soon'
+            else:
+                status_class = 'ssl-danger'
+                status_text = 'Urgent'
+        except:
+            days = '?'
+            status_class = 'ssl-warning'
+            status_text = 'Unknown'
+
+        html += f'<tr><td>{cert.get("name", "Unknown")}</td><td>{days} days</td><td class="{status_class}">{status_text}</td></tr>\n'
+
+    html += '</table>\n'
+
+    # Footer
+    html += f'''
+<div class="footer">
+    <p>Generated by <strong>Shadow Infrastructure</strong><br>
+    <a href="https://zaylegend.com">zaylegend.com</a></p>
+</div>
+
+</body>
+</html>'''
+
+    return html, total_commits
+
+
+def generate_text_report(report_type="daily"):
+    """Generate plain text fallback."""
+    since_days = 1 if report_type == "daily" else 7
+    period = "24 hours" if report_type == "daily" else "7 days"
+
+    lines = [
+        f"Shadow {report_type.title()} Report",
+        f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+        f"Period: Last {period}",
+        "",
+        "=" * 50,
+        ""
+    ]
+
+    total_commits = 0
+    for repo_path, repo_name in TRACKED_REPOS:
+        if not Path(repo_path).exists():
+            continue
+
+        commits = get_git_commits(repo_path, since_days)
+        if commits:
+            lines.append(f"{repo_name}:")
+            for line in commits.split('\n')[:5]:
+                if '|' in line:
+                    parts = line.split('|')
+                    lines.append(f"  - {parts[0]} {parts[1]}")
+                    total_commits += 1
+            lines.append("")
+
+    lines.append(f"Total: {total_commits} commits")
+    return "\n".join(lines), total_commits
 
 
 def send_report(report_type="daily"):
     """Generate and send the work report."""
-    md_report, commit_count = generate_report(report_type)
-    html_report = markdown_to_html(md_report)
+    html_report, commit_count = generate_html_report(report_type)
+    text_report, _ = generate_text_report(report_type)
 
     # Create email
-    subject = f"{'Daily' if report_type == 'daily' else 'Weekly'} Work Report - {datetime.now().strftime('%Y-%m-%d')}"
+    subject = f"Shadow {'Daily' if report_type == 'daily' else 'Weekly'} Report - {datetime.now().strftime('%b %d, %Y')}"
     if commit_count > 0:
         subject += f" ({commit_count} commits)"
 
@@ -276,7 +419,7 @@ def send_report(report_type="daily"):
     msg["From"] = f"Shadow <{SMTP_USER}>"
     msg["To"] = TO_EMAIL
 
-    msg.attach(MIMEText(md_report, "plain"))
+    msg.attach(MIMEText(text_report, "plain"))
     msg.attach(MIMEText(html_report, "html"))
 
     # Send
