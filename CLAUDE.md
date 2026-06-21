@@ -1,7 +1,7 @@
 # CLAUDE.md - Portfolio Infrastructure Context
 
 > This file helps Claude understand the portfolio infrastructure for optimal assistance.
-> Last Updated: 2026-04-15
+> Last Updated: 2026-06-21
 
 ---
 
@@ -157,6 +157,24 @@ Active development, not yet deployed:
 - `.github/workflows/deploy.yml`
 - Builds on push to main
 - Deploys via SSH (needs secrets: SERVER_HOST, SERVER_USER, SERVER_SSH_KEY)
+
+### Email (Gmail SMTP)
+**IMPORTANT:** Use this method to send emails from the server.
+```bash
+# Simple email
+./scripts/send-email.py user@example.com "Subject" "Message body"
+
+# From stdin (for longer messages)
+echo "Long message here" | ./scripts/send-email.py user@example.com "Subject" --stdin
+
+# HTML email
+./scripts/send-email.py user@example.com "Subject" --html /path/to/email.html
+
+# Work reports (automated)
+./scripts/send-work-report.py daily   # Daily git activity report
+./scripts/send-work-report.py weekly  # Weekly summary
+```
+**Config:** Uses Gmail app password stored in script. Credentials: `isayahy@gmail.com`
 
 ---
 
