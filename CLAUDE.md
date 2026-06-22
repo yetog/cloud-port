@@ -1,7 +1,7 @@
 # CLAUDE.md - Portfolio Infrastructure Context
 
 > This file helps Claude understand the portfolio infrastructure for optimal assistance.
-> Last Updated: 2026-06-21
+> Last Updated: 2026-06-22
 
 ---
 
@@ -34,12 +34,26 @@
 │   ├── data/              # Content data (projects, apps, skills, music)
 │   └── config/            # Asset URLs (IONOS S3)
 ├── apps/
-│   ├── [finished apps]/   # 12 production apps
-│   ├── testing/           # 8 beta apps
-│   └── upgrades/          # 4 apps being enhanced
+│   ├── production/        # 9 finished apps (ports 3000-3009)
+│   ├── staging/           # 14 testing apps (ports 3010-3019)
+│   ├── development/       # 4 apps being enhanced
+│   └── misc/              # Research/experimental
+├── scripts/
+│   ├── deploy/            # Deployment scripts
+│   ├── build/             # Build scripts
+│   ├── backup/            # Backup scripts
+│   ├── security/          # Security scanning
+│   ├── email/             # Email automation
+│   ├── maintenance/       # Server maintenance
+│   ├── setup/             # Initial setup
+│   ├── s3/                # S3/cloud storage
+│   └── agents/            # AI agent tools
+├── storage/
+│   ├── knowledge/         # Persistent knowledge base
+│   ├── sessions/          # Session synthesis logs
+│   └── ledger/            # MCP cross-session state
+├── personas/              # AI agent personas
 ├── telos/                 # Personal context (mission, goals, beliefs)
-├── scripts/               # Automation (deploy, backup, context)
-├── sessions/              # Session logs
 ├── docs/                  # Documentation
 ├── .github/workflows/     # CI/CD pipelines
 ├── dist/                  # Production build
@@ -140,41 +154,61 @@ Active development, not yet deployed:
 
 ## Scripts & Automation
 
-### Deployment
+Scripts are organized into subdirectories by function:
+
+### scripts/deploy/
 ```bash
-./scripts/deploy.sh          # Pull from GitHub, build, deploy
-./scripts/github-backup.sh   # Push + create backup branch
-./scripts/backup.sh          # Local backup with rotation
+./scripts/deploy/deploy.sh              # Pull from GitHub, build, deploy
+./scripts/deploy/deploy-testing-app.sh  # Deploy new testing app
+./scripts/deploy/deploy-with-docker.sh  # Docker deployment
+./scripts/deploy/verify-deployment.sh   # Verify deployment success
 ```
 
-### Session Context
+### scripts/backup/
 ```bash
-./scripts/session-context.sh  # Shows status on login
-# Auto-runs on SSH login (added to ~/.bashrc)
+./scripts/backup/backup.sh          # Local backup with rotation
+./scripts/backup/github-backup.sh   # Push + create backup branch
+./scripts/backup/daily-backup.sh    # Automated daily backup
+```
+
+### scripts/security/
+```bash
+./scripts/security/scan-secrets.sh   # Gitleaks secret scanning
+./scripts/security/security-cron.sh  # Monthly security audit
+```
+
+### scripts/email/
+```bash
+# Simple email
+./scripts/email/send-email.py user@example.com "Subject" "Message body"
+
+# From stdin (for longer messages)
+echo "Long message here" | ./scripts/email/send-email.py user@example.com "Subject" --stdin
+
+# Work reports (automated)
+./scripts/email/send-work-report.py daily   # Daily git activity report
+./scripts/email/send-work-report.py weekly  # Weekly summary
+```
+**Config:** Uses Gmail app password. Credentials: `isayahy@gmail.com`
+
+### scripts/maintenance/
+```bash
+./scripts/maintenance/session-context.sh  # Shows status on login
+./scripts/maintenance/update-app.sh       # Update single app
+./scripts/maintenance/update-all-apps.sh  # Update all apps
+./scripts/maintenance/monitor-alerts.sh   # System monitoring
+```
+
+### scripts/agents/
+```bash
+./scripts/agents/capture-insight.sh   # Capture learnings to knowledge base
+./scripts/agents/install-personas.sh  # Install AI personas
 ```
 
 ### CI/CD (GitHub Actions)
 - `.github/workflows/deploy.yml`
 - Builds on push to main
 - Deploys via SSH (needs secrets: SERVER_HOST, SERVER_USER, SERVER_SSH_KEY)
-
-### Email (Gmail SMTP)
-**IMPORTANT:** Use this method to send emails from the server.
-```bash
-# Simple email
-./scripts/send-email.py user@example.com "Subject" "Message body"
-
-# From stdin (for longer messages)
-echo "Long message here" | ./scripts/send-email.py user@example.com "Subject" --stdin
-
-# HTML email
-./scripts/send-email.py user@example.com "Subject" --html /path/to/email.html
-
-# Work reports (automated)
-./scripts/send-work-report.py daily   # Daily git activity report
-./scripts/send-work-report.py weekly  # Weekly summary
-```
-**Config:** Uses Gmail app password stored in script. Credentials: `isayahy@gmail.com`
 
 ---
 
@@ -215,8 +249,8 @@ Located in `/telos/` directory:
 ### Add a New Testing App
 **Use the deployment script** (recommended):
 ```bash
-./scripts/deploy-testing-app.sh <folder-name> <url-slug> <port>
-# Example: ./scripts/deploy-testing-app.sh my-new-app my-app 3020
+./scripts/deploy/deploy-testing-app.sh <folder-name> <url-slug> <port>
+# Example: ./scripts/deploy/deploy-testing-app.sh my-new-app my-app 3020
 ```
 
 **CRITICAL: Full Infrastructure Checklist**
@@ -265,7 +299,7 @@ Edit `src/data/skills.ts` or `src/components/About.tsx`.
 npm run build              # Build locally
 git add -A && git commit   # Commit changes
 git push origin main       # Push to GitHub
-# Or use: ./scripts/deploy.sh
+# Or use: ./scripts/deploy/deploy.sh
 ```
 
 ---
@@ -318,8 +352,8 @@ git push origin main       # Push to GitHub
 | **Development** | |
 | Dev server | `npm run dev` |
 | Build | `npm run build` |
-| Deploy | `brain deploy` or `./scripts/deploy.sh` |
-| Backup | `brain backup` or `./scripts/backup.sh` |
+| Deploy | `brain deploy` or `./scripts/deploy/deploy.sh` |
+| Backup | `brain backup` or `./scripts/backup/backup.sh` |
 | **Git** | |
 | Push to GitHub | `git push origin main` |
 | **Infrastructure** | |
@@ -356,6 +390,26 @@ git push origin main       # Push to GitHub
 16. **Base Path Fix:** Fixed blank page issue for subdirectory apps (vite base + router basename)
 17. **Deploy Key Setup:** Configured server SSH key for pushing to IONOS repo
 18. **APP_DIRS Expansion:** Now tracking 19 apps for git updates (was 10)
+
+### Session 2026-06-22
+19. **Scripts Reorganization:** Organized 36 scripts into 9 subdirectories
+20. **Apps Reorganization:** Split apps/ into production/, staging/, development/, misc/
+21. **MCP Ledger Setup:** 14 insights captured for cross-session memory
+22. **Container Health Fixes:** Fixed voice-assistant and bh-ai containers
+23. **Tool Installation:** Added gitleaks, jq, sqlite3
+24. **zaylegend-agents Repo:** New repo for AI personas and knowledge base
+
+---
+
+## Cross-Session Memory (MCP Ledger)
+
+14 insights stored in MCP ledger. Query with:
+```bash
+ledger_search_insights "keyword"
+ledger_list_insights --repository_name zaylegend
+```
+
+Categories: infrastructure, tools, architecture, automation
 
 ---
 

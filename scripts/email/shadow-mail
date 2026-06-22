@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# Shadow Mail - Simple email interface
+#
+# Usage:
+#   shadow-mail send <to> <subject> <body>
+#   shadow-mail check
+#   shadow-mail watch
+#   shadow-mail inbox
+#
+
+SCRIPTS_DIR="/var/www/zaylegend/scripts"
+FROM="Shadow <isayahy@gmail.com>"
+
+send_email() {
+    local to="$1"
+    local subject="$2"
+    local body="$3"
+
+    if [[ -z "$to" || -z "$subject" ]]; then
+        echo "Usage: shadow-mail send <to> <subject> [body]"
+        echo "  If body is omitted, reads from stdin"
+        return 1
+    fi
+
+    if [[ -z "$body" ]]; then
+        echo "Enter message (Ctrl+D when done):"
+        body=$(cat)
+    fi
+
+    cat <<EOF | msmtp "$to"
+From: $FROM
+To: $to
+Subject: $subject
+
+$body
+
+- Shadow
+EOF
+
+    if [[ $? -eq 0 ]]; then
+        echo "Sent to $to"
+    else
+        echo "Failed to send"
+        return 1
+    fi
+}
+
+case "$1" in
+    send)
+        send_email "$2" "$3" "$4"
+        ;;
+    check)
+        python3 "$SCRIPTS_DIR/check-mail.py"
+        ;;
+    watch)
+        python3 "$SCRIPTS_DIR/check-mail.py" --watch
+        ;;
+    inbox)
+        python3 "$SCRIPTS_DIR/check-mail.py" --list
+        ;;
+    read)
+        cat ~/inbox-messages.txt 2>/dev/null | tail -100
+        ;;
+    *)
+        echo "Shadow Mail"
+        echo ""
+        echo "Commands:"
+        echo "  shadow-mail send <to> <subject> [body]  - Send an email"
+        echo "  shadow-mail check                       - Check for new mail"
+        echo "  shadow-mail watch                       - Poll continuously"
+        echo "  shadow-mail inbox                       - List unread (last 24h)"
+        echo "  shadow-mail read                        - View received messages"
+        echo ""
+        echo "Examples:"
+        echo "  shadow-mail send user@example.com 'Hello' 'How are you?'"
+        echo "  echo 'Message body' | shadow-mail send user@example.com 'Subject'"
+        ;;
+esac

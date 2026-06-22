@@ -221,7 +221,7 @@ def cmd_status():
 def cmd_deploy():
     """Deploy latest changes"""
     print(color("\n Deploying Portfolio...\n", Colors.BOLD + Colors.CYAN))
-    deploy_script = f"{SCRIPTS_DIR}/deploy.sh"
+    deploy_script = f"{SCRIPTS_DIR}/deploy/deploy.sh"
     if os.path.exists(deploy_script):
         subprocess.run(deploy_script, shell=True, cwd=PORTFOLIO_DIR)
     else:
@@ -231,7 +231,7 @@ def cmd_deploy():
 def cmd_backup():
     """Run local backup"""
     print(color("\n Running Backup...\n", Colors.BOLD + Colors.CYAN))
-    backup_script = f"{SCRIPTS_DIR}/backup.sh"
+    backup_script = f"{SCRIPTS_DIR}/backup/backup.sh"
     if os.path.exists(backup_script):
         subprocess.run(backup_script, shell=True, cwd=PORTFOLIO_DIR)
     else:
@@ -349,7 +349,7 @@ def cmd_apps_restart(app_name):
 def cmd_apps_check():
     """Check for app updates from repos"""
     print(color("\n Checking for App Updates...\n", Colors.BOLD + Colors.CYAN))
-    check_script = f"{SCRIPTS_DIR}/check-app-updates.sh"
+    check_script = f"{SCRIPTS_DIR}/maintenance/check-app-updates.sh"
     if os.path.exists(check_script):
         subprocess.run(check_script, shell=True, cwd=PORTFOLIO_DIR)
     else:
@@ -359,7 +359,7 @@ def cmd_apps_check():
 def cmd_apps_update(app_name):
     """Update a specific app from its repo"""
     print(color(f"\n Updating {app_name}...\n", Colors.BOLD + Colors.CYAN))
-    update_script = f"{SCRIPTS_DIR}/update-app.sh"
+    update_script = f"{SCRIPTS_DIR}/maintenance/update-app.sh"
     if os.path.exists(update_script):
         subprocess.run(f"{update_script} {app_name}", shell=True, cwd=PORTFOLIO_DIR)
     else:
@@ -369,7 +369,7 @@ def cmd_apps_update(app_name):
 def cmd_apps_update_all():
     """Update all apps with pending changes"""
     print(color("\n Updating All Apps...\n", Colors.BOLD + Colors.CYAN))
-    update_script = f"{SCRIPTS_DIR}/update-all-apps.sh"
+    update_script = f"{SCRIPTS_DIR}/maintenance/update-all-apps.sh"
     if os.path.exists(update_script):
         subprocess.run(update_script, shell=True, cwd=PORTFOLIO_DIR)
     else:

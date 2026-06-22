@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "portfolio-ledger": {
+      "command": "node",
+      "args": [
+        "/var/www/zaylegend/ai-insights/mcp-server/dist/index.js",
+        "--storage-dir",
+        "/var/www/zaylegend/storage/ledger"
+      ],
+      "description": "Project Ledger for tracking work packages, insights, and cross-session memory"
+    }
+  }
+}
