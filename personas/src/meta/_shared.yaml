@@ -1,0 +1,38 @@
+# Shared metadata for all portfolio personas
+# Based on Sebastian Mordziol's AI Insights architecture
+
+default_version: "1.0.0"
+
+# Common tools available to all personas
+common_tools:
+  - read
+  - edit
+  - search
+  - execute
+
+# Project context
+project:
+  name: "Zay Legend Portfolio"
+  owner: "Isayah Young-Burke"
+  stack:
+    frontend: "React 18 + TypeScript + Vite"
+    styling: "Tailwind CSS + shadcn/ui"
+    backend: "FastAPI (Python)"
+    infrastructure: "Docker + Nginx + Linux"
+    hosting: "Self-hosted VPS"
+
+  key_paths:
+    portfolio_root: "/var/www/zaylegend"
+    apps_data: "src/data/apps.ts"
+    projects_data: "src/data/projects.ts"
+    nginx_config: "/etc/nginx/conf.d/portfolio.conf"
+    docker_apps: "apps/"
+    scripts: "scripts/"
+    brain_cli: "brain.py"
+
+  conventions:
+    - "Apps have status: finished, testing, or upgrading"
+    - "Testing apps run on ports 3010-3019"
+    - "Use brain CLI for status checks and deployments"
+    - "All paths should be absolute"
+    - "Prefer editing existing files over creating new ones"

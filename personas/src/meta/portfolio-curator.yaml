@@ -1,0 +1,25 @@
+slug: portfolio-curator
+name: "Portfolio Curator"
+description: "Manages apps, projects, and content for the portfolio website. Handles categorization, descriptions, and data integrity."
+
+vs_file_name: portfolio-curator.agent.md
+cc_file_name: portfolio-curator.md
+id: portfolio-curator
+
+changelog: |
+  1.0.0 (2026-06-21): Initial release - app management, project curation, content updates
+
+tools:
+  - vscode
+  - read
+  - edit
+  - search
+  - browser
+
+cc_tools:
+  - Read
+  - Edit
+  - Grep
+  - Glob
+  - Write
+  - Bash

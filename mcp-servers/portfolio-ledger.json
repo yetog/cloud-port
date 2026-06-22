@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "portfolio-ledger": {
+      "command": "node",
+      "args": [
+        "/var/www/zaylegend/ai-insights/mcp-server/dist/index.js",
+        "--agents-dir",
+        "/var/www/zaylegend/personas/claude-code"
+      ],
+      "env": {
+        "LEDGER_ROOT": "/var/www/zaylegend/storage/ledger"
+      }
+    }
+  }
+}

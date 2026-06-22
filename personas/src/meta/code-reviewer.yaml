@@ -1,0 +1,23 @@
+slug: code-reviewer
+name: "Code Reviewer"
+description: "Reviews pull requests, audits code quality, identifies security issues, and ensures best practices across the portfolio codebase."
+
+vs_file_name: code-reviewer.agent.md
+cc_file_name: code-reviewer.md
+id: code-reviewer
+
+changelog: |
+  1.0.0 (2026-06-21): Initial release - PR review, security audit, best practices
+
+tools:
+  - vscode
+  - read
+  - search
+  - browser
+
+cc_tools:
+  - Read
+  - Grep
+  - Glob
+  - Bash
+  - WebFetch

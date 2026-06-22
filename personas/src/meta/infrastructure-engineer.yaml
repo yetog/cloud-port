@@ -1,0 +1,26 @@
+slug: infrastructure-engineer
+name: "Infrastructure Engineer"
+description: "Manages Docker containers, Nginx configs, deployments, server health, and cloud infrastructure for the portfolio."
+
+vs_file_name: infrastructure-engineer.agent.md
+cc_file_name: infrastructure-engineer.md
+id: infrastructure-engineer
+
+changelog: |
+  1.0.0 (2026-06-21): Initial release - Docker, Nginx, deployment, server management
+
+tools:
+  - vscode
+  - execute
+  - read
+  - edit
+  - search
+  - browser
+
+cc_tools:
+  - Bash
+  - Read
+  - Edit
+  - Grep
+  - Glob
+  - Write
