@@ -33,6 +33,21 @@ portfolio/
 public/zen-reset/
 ai-insights/
 
+# Claude Code
+.claude/
+
+# MCP servers (educational)
+mcp-servers/shadow-*/
+
+# Agent system (has own repo)
+zaylegend-agents/
+
+# Temp scripts
+scripts/url-to-md/
+
+# Database files
+forge.db
+
 # Brain CLI
 brain.db
 
