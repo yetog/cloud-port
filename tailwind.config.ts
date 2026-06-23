@@ -122,6 +122,10 @@ export default {
         "scale-up": {
           "0%": { transform: "scale(0.95)", opacity: "0" },
           "100%": { transform: "scale(1)", opacity: "1" }
+        },
+        "spin-slow": {
+          "from": { transform: "rotate(0deg)" },
+          "to": { transform: "rotate(360deg)" }
         }
       },
       animation: {
@@ -132,7 +136,8 @@ export default {
         "pulse-glow": "pulse-glow 2s ease-in-out infinite",
         "slide-in-up": "slide-in-up 0.4s ease-out forwards",
         "shimmer": "shimmer 2s linear infinite",
-        "scale-up": "scale-up 0.3s ease-out forwards"
+        "scale-up": "scale-up 0.3s ease-out forwards",
+        "spin-slow": "spin-slow 3s linear infinite"
       },
       boxShadow: {
         'apple': '0 4px 30px rgba(0, 0, 0, 0.1)',

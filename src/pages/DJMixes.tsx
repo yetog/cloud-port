@@ -4,6 +4,7 @@ import { ArrowLeft, Play, Pause, Headphones, Clock, Volume2, VolumeX } from 'luc
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { djMixes, djProfile, vibeColors, DJMix } from '../data/dj';
+import SpinningVinyl from '../components/SpinningVinyl';
 
 const MixPlayer = ({
   currentMix,
@@ -56,15 +57,13 @@ const MixPlayer = ({
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-xl border-t border-border/50 p-4 z-50">
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-        {/* Mix Info */}
+        {/* Mix Info with Spinning Vinyl */}
         <div className="flex items-center gap-4 flex-1 min-w-0">
-          <div className="w-14 h-14 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-            {currentMix.coverUrl ? (
-              <img src={currentMix.coverUrl} alt={currentMix.title} className="w-full h-full object-cover rounded-lg" />
-            ) : (
-              <Headphones className="w-8 h-8 text-purple-400" />
-            )}
-          </div>
+          <SpinningVinyl
+            isPlaying={isPlaying}
+            coverUrl={currentMix.coverUrl}
+            size="sm"
+          />
           <div className="min-w-0">
             <p className="font-semibold truncate">{currentMix.title}</p>
             <p className="text-sm text-muted-foreground truncate">{djProfile.name}</p>

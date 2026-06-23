@@ -26,6 +26,12 @@ export interface DJEvent {
   description: string;
   date?: string;
   imageUrl?: string;
+  // New fields for immersive experience
+  photos?: string[];           // Gallery of photos from this event
+  videoUrl?: string;           // Video clip from the event
+  linkedMixId?: string;        // ID of the mix from this night
+  highlights?: string[];       // Key moments/highlights
+  setlist?: string[];          // Songs played (optional)
 }
 
 export interface JourneyPost {
@@ -123,14 +129,32 @@ export const djEvents: DJEvent[] = [
     type: 'Residency',
     description: 'Live crowd mixing, multi-genre transitions. Resident DJ for creative events.',
     imageUrl: `${S3_DJ_URL}/events/spin.jpg`,
+    linkedMixId: 'art-battle-set',
+    photos: [
+      // Add photos when ready: `${S3_DJ_URL}/events/spin/photo1.jpg`
+    ],
+    highlights: [
+      'High-energy crowd interaction',
+      'Multi-genre transitions',
+      'Live art + music fusion'
+    ],
   },
   {
     id: 'queen-delaware',
     venue: 'Queen',
     location: 'Delaware',
     type: 'Live Set',
-    description: 'Full setup performance, house + funk blend.',
+    description: 'Full setup performance, house + funk blend. First successful gig after the learning curve.',
+    date: 'Late January 2026',
     imageUrl: `${S3_DJ_URL}/events/queen.jpg`,
+    photos: [
+      // Add photos when ready
+    ],
+    highlights: [
+      'Full 2-hour set',
+      'House + funk fusion',
+      'First venue success'
+    ],
   },
   {
     id: 'frankie-bradleys',
@@ -138,7 +162,17 @@ export const djEvents: DJEvent[] = [
     location: 'Philadelphia',
     type: 'Live Set',
     description: 'Wine & Waffles event. Real venue, real crowd, high-energy set with great feedback.',
+    date: 'Late March 2026',
     imageUrl: `${S3_DJ_URL}/events/frankie-bradleys.jpg`,
+    videoUrl: `${S3_DJ_URL}/events/frankie-bradleys/clip.mp4`,
+    photos: [
+      // Add photos when ready
+    ],
+    highlights: [
+      'Booked off a practice video',
+      'Real venue experience',
+      'Great crowd energy'
+    ],
   },
   {
     id: 'private-events',
@@ -147,6 +181,14 @@ export const djEvents: DJEvent[] = [
     type: 'Private',
     description: 'Adaptable sets for house parties and private gatherings. Collaborative DJ environment.',
     imageUrl: `${S3_DJ_URL}/events/private.jpg`,
+    photos: [
+      // Add photos when ready
+    ],
+    highlights: [
+      'Adaptable vibes',
+      'Intimate settings',
+      'Collaborative sessions'
+    ],
   },
 ];
 
@@ -596,6 +638,15 @@ export const getPostByPhase = (phase: JourneyPost['phase']): JourneyPost[] => {
 
 export const getPostsByTag = (tag: string): JourneyPost[] => {
   return journeyPosts.filter(post => post.tags.includes(tag));
+};
+
+export const getMixById = (id: string): DJMix | undefined => {
+  return djMixes.find(mix => mix.id === id);
+};
+
+export const getEventMix = (event: DJEvent): DJMix | undefined => {
+  if (!event.linkedMixId) return undefined;
+  return getMixById(event.linkedMixId);
 };
 
 // Phase colors for UI

@@ -1,7 +1,13 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Play, Calendar, MapPin, Headphones, Mail, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Play, Calendar, MapPin, Headphones, Mail, ChevronRight, Camera } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { djProfile, djMixes, djEvents, journeyPosts, getFeaturedMix, vibeColors } from '../data/dj';
+import SpinningVinyl from '../components/SpinningVinyl';
+
+// S3 paths for hero media - update these when you upload content
+const S3_DJ_URL = 'https://s3.us-central-1.ionoscloud.com/portfoliowebsite/dj';
+const heroVideo = ''; // `${S3_DJ_URL}/hero/dj-hero.mp4` when ready
+const heroImage = ''; // `${S3_DJ_URL}/hero/dj-hero.jpg` when ready
 
 const DJ = () => {
   const featuredMix = getFeaturedMix();
@@ -25,12 +31,45 @@ const DJ = () => {
           </Link>
         </div>
 
-        {/* Hero Section */}
-        <section className="container mx-auto px-4 py-20 text-center">
-          <div className="max-w-4xl mx-auto">
-            {/* Avatar/Visual */}
-            <div className="w-40 h-40 mx-auto mb-8 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-full flex items-center justify-center ring-4 ring-purple-500/20">
-              <Headphones className="w-20 h-20 text-purple-400" />
+        {/* Hero Section with Video Background Support */}
+        <section className="relative container mx-auto px-4 py-20 text-center overflow-hidden">
+          {/* Video Background (when available) */}
+          {heroVideo && (
+            <div className="absolute inset-0 -z-10">
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover opacity-30"
+                poster={heroImage}
+              >
+                <source src={heroVideo} type="video/mp4" />
+              </video>
+              <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+            </div>
+          )}
+
+          {/* Static Image Background (fallback when no video) */}
+          {!heroVideo && heroImage && (
+            <div className="absolute inset-0 -z-10">
+              <img
+                src={heroImage}
+                alt="DJ Zay"
+                className="w-full h-full object-cover opacity-30"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background" />
+            </div>
+          )}
+
+          <div className="max-w-4xl mx-auto relative z-10">
+            {/* Spinning Vinyl Visual */}
+            <div className="flex justify-center mb-8">
+              <SpinningVinyl
+                isPlaying={true}
+                size="xl"
+                className="opacity-90"
+              />
             </div>
 
             {/* Name & Tagline */}
@@ -55,8 +94,14 @@ const DJ = () => {
                   Listen to Mixes
                 </Button>
               </Link>
-              <Link to="/dj/booking">
+              <Link to="/dj/events">
                 <Button size="lg" variant="outline" className="border-purple-500/50 hover:bg-purple-500/10 px-8">
+                  <Camera className="mr-2 h-5 w-5" />
+                  View Events
+                </Button>
+              </Link>
+              <Link to="/dj/booking">
+                <Button size="lg" variant="outline" className="border-pink-500/50 hover:bg-pink-500/10 px-8">
                   <Mail className="mr-2 h-5 w-5" />
                   Book Me
                 </Button>
@@ -73,17 +118,19 @@ const DJ = () => {
                 <Play className="w-6 h-6 text-purple-400" />
                 Featured Mix
               </h2>
-              <div className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-purple-500/30 transition-all">
-                <div className="flex flex-col md:flex-row gap-6">
-                  <div className="w-full md:w-48 h-48 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                    {featuredMix.coverUrl ? (
-                      <img src={featuredMix.coverUrl} alt={featuredMix.title} className="w-full h-full object-cover rounded-xl" />
-                    ) : (
-                      <Headphones className="w-16 h-16 text-purple-400" />
-                    )}
+              <div className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-2xl p-6 hover:border-purple-500/30 transition-all group">
+                <div className="flex flex-col md:flex-row gap-6 items-center">
+                  {/* Spinning Vinyl for Featured Mix */}
+                  <div className="flex-shrink-0">
+                    <SpinningVinyl
+                      isPlaying={false}
+                      coverUrl={featuredMix.coverUrl}
+                      size="lg"
+                      className="group-hover:animate-spin-slow"
+                    />
                   </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
+                  <div className="flex-1 text-center md:text-left">
+                    <div className="flex items-center gap-2 mb-2 justify-center md:justify-start">
                       <span className={`text-xs px-2 py-1 rounded-full ${vibeColors[featuredMix.vibe]}`}>
                         {featuredMix.vibe}
                       </span>
