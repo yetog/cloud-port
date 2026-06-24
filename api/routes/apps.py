@@ -15,51 +15,66 @@ PORTFOLIO_DIR = "/var/www/zaylegend"
 SCRIPTS_DIR = f"{PORTFOLIO_DIR}/scripts"
 
 # App directory mappings for git operations
+# Organized by category: production, staging, development, misc, client
 APP_DIRS = {
-    # Finished apps
-    "dj-visualizer": f"{PORTFOLIO_DIR}/apps/dj-visualizer",
-    "chord-genesis": f"{PORTFOLIO_DIR}/apps/chord-genesis",
-    "fineline": f"{PORTFOLIO_DIR}/apps/fineline",
-    "game-hub": f"{PORTFOLIO_DIR}/apps/game-hub",
-    "sprite-gen": f"{PORTFOLIO_DIR}/apps/spritegen",
-    "voice-assistant": f"{PORTFOLIO_DIR}/apps/voice-assistant",
-    "knowledge-base": f"{PORTFOLIO_DIR}/apps/knowledge-base",
-    "contentforge": f"{PORTFOLIO_DIR}/apps/contentforge",
-    # Testing apps
-    "ionos-exam": f"{PORTFOLIO_DIR}/apps/IONOS-Cloud-Exam-Prep",
-    "forge-fit": f"{PORTFOLIO_DIR}/apps/forge-fit",
-    # Client projects (separate repos, separate domains)
-    "green-empire-build": f"{PORTFOLIO_DIR}/apps/green-empire",  # Builders - greenempirebuild.com
-    "green-empire-land": "/var/www/Green-Empire",  # Landscaping - greenempireland.com
-    "goat-landscaping": "/var/www/goatlandscapeli.com/html",  # GOAT Landscaping - goatlandscapeli.com
-    "greenridge": "/var/www/greenridgelandscapedesign",  # GreenRidge Landscape - greenridgelandscapedesign.com
-    "bh-ai-79": f"{PORTFOLIO_DIR}/apps/testing/bh-ai-79",
-    "darkflow": f"{PORTFOLIO_DIR}/apps/testing/darkflow-mind-mapper",
-    "gmat": f"{PORTFOLIO_DIR}/apps/testing/gmat-mastery-suite",
-    "got-hired": f"{PORTFOLIO_DIR}/apps/testing/got-hired-ai",
-    "losk": f"{PORTFOLIO_DIR}/apps/testing/losk",
-    "purple-lotus": f"{PORTFOLIO_DIR}/apps/testing/purple-lotus",
-    "zen-tot": f"{PORTFOLIO_DIR}/apps/testing/zen-tot",
-    "slam-og-studio": f"{PORTFOLIO_DIR}/apps/slam-og-studio",
-    "narrative-navigator": f"{PORTFOLIO_DIR}/apps/testing/narrative-navigator",
-    "zen-reset": f"{PORTFOLIO_DIR}/apps/zen-reset",
-    "contentforge": f"{PORTFOLIO_DIR}/apps/contentforge",
-    "daily-brief": f"{PORTFOLIO_DIR}/apps/testing/daily-brief",
-    "questful-living": f"{PORTFOLIO_DIR}/apps/testing/questful-living",
+    # === PRODUCTION APPS (finished, deployed) ===
+    "dj-visualizer": f"{PORTFOLIO_DIR}/apps/production/dj-visualizer",
+    "chord-genesis": f"{PORTFOLIO_DIR}/apps/production/chord-genesis",
+    "fineline": f"{PORTFOLIO_DIR}/apps/production/fineline",
+    "game-hub": f"{PORTFOLIO_DIR}/apps/production/game-hub",
+    "sprite-gen": f"{PORTFOLIO_DIR}/apps/production/spritegen",
+    "voice-assistant": f"{PORTFOLIO_DIR}/apps/production/voice-assistant",
+    "knowledge-base": f"{PORTFOLIO_DIR}/apps/production/knowledge-base",
+    "contentforge": f"{PORTFOLIO_DIR}/apps/production/contentforge",
+    "zen-reset": f"{PORTFOLIO_DIR}/apps/production/zen-reset",
+
+    # === STAGING APPS (testing, beta) ===
+    "ionos-exam": f"{PORTFOLIO_DIR}/apps/staging/IONOS-Cloud-Exam-Prep",
+    "bh-ai-79": f"{PORTFOLIO_DIR}/apps/staging/bh-ai-79",
+    "darkflow": f"{PORTFOLIO_DIR}/apps/staging/darkflow-mind-mapper",
+    "gmat": f"{PORTFOLIO_DIR}/apps/staging/gmat-mastery-suite",
+    "got-hired": f"{PORTFOLIO_DIR}/apps/staging/got-hired-ai",
+    "losk": f"{PORTFOLIO_DIR}/apps/staging/losk",
+    "purple-lotus": f"{PORTFOLIO_DIR}/apps/staging/purple-lotus",
+    "zen-tot": f"{PORTFOLIO_DIR}/apps/staging/zen-tot",
+    "forge-fit": f"{PORTFOLIO_DIR}/apps/staging/forge-fit",
+    "narrative-navigator": f"{PORTFOLIO_DIR}/apps/staging/narrative-navigator",
+    "daily-brief": f"{PORTFOLIO_DIR}/apps/staging/daily-brief",
+    "questful-living": f"{PORTFOLIO_DIR}/apps/staging/questful-living",
+    "green-empire-build": f"{PORTFOLIO_DIR}/apps/staging/green-empire",
+
+    # === DEVELOPMENT APPS (in progress, not deployed) ===
+    "ashley-v3": f"{PORTFOLIO_DIR}/apps/development/Ashley-v3",
+    "sensei-ai-io": f"{PORTFOLIO_DIR}/apps/development/sensei-ai-io",
+    "ask-hr-beta": f"{PORTFOLIO_DIR}/apps/development/ask-hr-beta",
+    "sop-ai-beta": f"{PORTFOLIO_DIR}/apps/development/sop-ai-beta",
+
+    # === MISC (research, experimental) ===
+    "slam-og-studio": f"{PORTFOLIO_DIR}/apps/misc/slam-og-studio",
+    "daw-research": f"{PORTFOLIO_DIR}/apps/misc/daw-research",
+
+    # === CLIENT PROJECTS (separate repos/domains) ===
+    "dover-church": f"{PORTFOLIO_DIR}/apps/dover-church-rebuild-project",
+    "green-empire-land": "/var/www/Green-Empire",
+    "goat-landscaping": "/var/www/goatlandscapeli.com/html",
+    "greenridge": "/var/www/greenridgelandscapedesign",
 }
 
-# App registry
+# App registry for health checks and dashboard
 APPS = {
+    # === PRODUCTION (finished) ===
     "portfolio": {"port": 8080, "category": "finished", "container": None},
     "zen-reset": {"port": 8081, "category": "finished", "container": "zen-reset-new"},
     "chord-genesis": {"port": 3001, "category": "finished", "container": "chord-genesis"},
     "fineline": {"port": 3003, "category": "finished", "container": "fineline"},
     "game-hub": {"port": 3004, "category": "finished", "container": "game-hub"},
     "dj-visualizer": {"port": 3005, "category": "finished", "container": "dj-visualizer"},
-    "sprite-gen": {"port": 3006, "category": "testing", "container": "spritegen"},
+    "sprite-gen": {"port": 3006, "category": "finished", "container": "spritegen"},
     "voice-assistant": {"port": 3007, "category": "finished", "container": "voice-assistant-frontend"},
-    "knowledge-base": {"port": None, "category": "testing", "container": None},  # Static files via nginx alias
-    "contentforge": {"port": 3009, "category": "testing", "container": "contentforge"},
+    "knowledge-base": {"port": 3008, "category": "finished", "container": None},  # Static via nginx
+    "contentforge": {"port": 3009, "category": "finished", "container": "contentforge"},
+
+    # === STAGING (testing) ===
     "darkflow": {"port": 3010, "category": "testing", "container": "darkflow-mind-mapper"},
     "gmat": {"port": 3012, "category": "testing", "container": "gmat-mastery-suite"},
     "losk": {"port": 3013, "category": "testing", "container": "losk"},
@@ -68,16 +83,24 @@ APPS = {
     "purple-lotus": {"port": 3016, "category": "testing", "container": "purple-lotus"},
     "zen-tot": {"port": 3017, "category": "testing", "container": "zen-tot"},
     "forge-fit": {"port": 3018, "category": "testing", "container": "forge-fit"},
-    # Client projects (static sites, own domains)
-    "green-empire-build": {"port": None, "category": "finished", "container": None},  # greenempirebuild.com
-    "green-empire-land": {"port": None, "category": "finished", "container": None},  # greenempireland.com
-    "goat-landscaping": {"port": None, "category": "finished", "container": None},  # goatlandscapeli.com
-    "greenridge": {"port": None, "category": "finished", "container": None},  # greenridgelandscapedesign.com
-    "ionos-exam": {"port": None, "category": "testing", "container": None},  # Static build, no container
-    "slam-og-studio": {"port": None, "category": "testing", "container": None},  # Static build, Web DAW
-    "narrative-navigator": {"port": None, "category": "testing", "container": None},  # Static build, Content Calendar
-    "daily-brief": {"port": None, "category": "testing", "container": None},  # Static build, Gentle Future Platform Hub
-    "questful-living": {"port": None, "category": "testing", "container": None},  # Static build, Life RPG gamification
+    "ionos-exam": {"port": None, "category": "testing", "container": None},  # Static
+    "narrative-navigator": {"port": None, "category": "testing", "container": None},
+    "daily-brief": {"port": None, "category": "testing", "container": None},
+    "questful-living": {"port": None, "category": "testing", "container": None},
+    "slam-og-studio": {"port": None, "category": "testing", "container": None},
+
+    # === DEVELOPMENT (upgrading) ===
+    "ashley-v3": {"port": None, "category": "upgrading", "container": None},
+    "sensei-ai-io": {"port": None, "category": "upgrading", "container": None},
+    "ask-hr-beta": {"port": None, "category": "upgrading", "container": None},
+    "sop-ai-beta": {"port": None, "category": "upgrading", "container": None},
+
+    # === CLIENT PROJECTS ===
+    "dover-church": {"port": None, "category": "client", "container": None},
+    "green-empire-build": {"port": None, "category": "client", "container": None},
+    "green-empire-land": {"port": None, "category": "client", "container": None},
+    "goat-landscaping": {"port": None, "category": "client", "container": None},
+    "greenridge": {"port": None, "category": "client", "container": None},
 }
 
 
@@ -101,6 +124,7 @@ async def list_apps():
             "port": info["port"],
             "category": info["category"],
             "container": info["container"],
+            "has_git": name in APP_DIRS,
         })
 
     return {
@@ -112,21 +136,25 @@ async def list_apps():
 @router.get("/health")
 async def check_all_apps_health():
     """Check health of all apps."""
-    results = {"up": [], "down": []}
+    results = {"up": [], "down": [], "external": []}
 
     for name, info in APPS.items():
         port = info["port"]
+        app_info = {"name": name, "port": port, "category": info["category"]}
+
         if port:
             is_up = check_port(port)
-            app_info = {"name": name, "port": port, "category": info["category"]}
             if is_up:
                 results["up"].append(app_info)
             else:
                 results["down"].append(app_info)
+        else:
+            results["external"].append(app_info)
 
     return {
         "up_count": len(results["up"]),
         "down_count": len(results["down"]),
+        "external_count": len(results["external"]),
         **results,
     }
 
@@ -134,7 +162,6 @@ async def check_all_apps_health():
 @router.get("/stats")
 async def get_stats():
     """Get comprehensive stats for dashboard visualizations."""
-    # Cache port check results to avoid duplicate checks
     port_status_cache = {}
 
     def get_port_status(port: int) -> bool:
@@ -148,7 +175,7 @@ async def get_stats():
         cat = info["category"]
         categories[cat] = categories.get(cat, 0) + 1
 
-    # Status distribution and category status in single pass
+    # Status distribution
     up_count = 0
     down_count = 0
     external_count = 0
@@ -157,6 +184,7 @@ async def get_stats():
         "finished": {"up": 0, "down": 0, "total": 0},
         "testing": {"up": 0, "down": 0, "total": 0},
         "upgrading": {"up": 0, "down": 0, "total": 0},
+        "client": {"up": 0, "down": 0, "total": 0},
     }
 
     for app_name, info in APPS.items():
@@ -179,10 +207,12 @@ async def get_stats():
 
     return {
         "total_apps": len(APPS),
+        "tracked_for_updates": len(APP_DIRS),
         "category_distribution": [
             {"name": "Finished", "value": categories.get("finished", 0), "color": "#10b981"},
             {"name": "Testing", "value": categories.get("testing", 0), "color": "#f59e0b"},
             {"name": "Upgrading", "value": categories.get("upgrading", 0), "color": "#8b5cf6"},
+            {"name": "Client", "value": categories.get("client", 0), "color": "#3b82f6"},
         ],
         "status_distribution": {
             "up": up_count,
@@ -190,9 +220,10 @@ async def get_stats():
             "external": external_count,
         },
         "category_status": [
-            {"category": "Finished", "up": category_status["finished"]["up"], "down": category_status["finished"]["down"], "total": category_status["finished"]["total"]},
-            {"category": "Testing", "up": category_status["testing"]["up"], "down": category_status["testing"]["down"], "total": category_status["testing"]["total"]},
-            {"category": "Upgrading", "up": category_status["upgrading"]["up"], "down": category_status["upgrading"]["down"], "total": category_status["upgrading"]["total"]},
+            {"category": "Finished", **category_status["finished"]},
+            {"category": "Testing", **category_status["testing"]},
+            {"category": "Upgrading", **category_status["upgrading"]},
+            {"category": "Client", **category_status["client"]},
         ],
     }
 
@@ -212,6 +243,8 @@ async def get_app_info(app_name: str):
         "category": app_info["category"],
         "container": app_info["container"],
         "status": "up" if is_up else "down" if is_up is not None else "external",
+        "has_git": app_name in APP_DIRS,
+        "directory": APP_DIRS.get(app_name),
     }
 
 
@@ -271,8 +304,13 @@ async def restart_app(app_name: str):
 async def check_all_updates():
     """Check all apps for available updates."""
     updates = []
+    errors = []
 
     for app_name, app_dir in APP_DIRS.items():
+        if not os.path.exists(app_dir):
+            errors.append({"name": app_name, "error": "Directory not found"})
+            continue
+
         if not os.path.exists(f"{app_dir}/.git"):
             continue
 
@@ -297,6 +335,13 @@ async def check_all_updates():
             )
             commits_behind = int(behind_result.stdout.strip() or "0")
 
+            # Check commits ahead (local changes not pushed)
+            ahead_result = subprocess.run(
+                ["git", "rev-list", "--count", f"origin/{branch}..HEAD"],
+                capture_output=True, text=True, cwd=app_dir, timeout=10
+            )
+            commits_ahead = int(ahead_result.stdout.strip() or "0")
+
             # Get latest commit message
             msg_result = subprocess.run(
                 ["git", "log", f"origin/{branch}", "-1", "--format=%s"],
@@ -304,19 +349,24 @@ async def check_all_updates():
             )
             latest_msg = msg_result.stdout.strip()[:60]
 
-            if commits_behind > 0:
+            if commits_behind > 0 or commits_ahead > 0:
                 updates.append({
                     "name": app_name,
                     "commits_behind": commits_behind,
+                    "commits_ahead": commits_ahead,
                     "latest_commit": latest_msg,
                     "branch": branch,
+                    "can_pull": commits_behind > 0,
+                    "can_push": commits_ahead > 0,
                 })
         except Exception as e:
+            errors.append({"name": app_name, "error": str(e)})
             continue
 
     return {
         "total_updates": len(updates),
         "apps_with_updates": updates,
+        "errors": errors if errors else None,
     }
 
 
@@ -326,6 +376,9 @@ async def check_app_updates(app_name: str):
     app_dir = APP_DIRS.get(app_name)
     if not app_dir:
         raise HTTPException(status_code=404, detail=f"App '{app_name}' not tracked for updates")
+
+    if not os.path.exists(app_dir):
+        raise HTTPException(status_code=404, detail=f"Directory not found: {app_dir}")
 
     if not os.path.exists(f"{app_dir}/.git"):
         raise HTTPException(status_code=400, detail=f"App '{app_name}' is not a git repository")
@@ -351,19 +404,35 @@ async def check_app_updates(app_name: str):
         )
         commits_behind = int(behind_result.stdout.strip() or "0")
 
-        # Get commit log
-        log_result = subprocess.run(
+        # Check commits ahead
+        ahead_result = subprocess.run(
+            ["git", "rev-list", "--count", f"origin/{branch}..HEAD"],
+            capture_output=True, text=True, cwd=app_dir, timeout=10
+        )
+        commits_ahead = int(ahead_result.stdout.strip() or "0")
+
+        # Get pending commit logs (both directions)
+        behind_log = subprocess.run(
             ["git", "log", f"HEAD..origin/{branch}", "--oneline"],
             capture_output=True, text=True, cwd=app_dir, timeout=10
         )
-        commits = log_result.stdout.strip().split('\n') if log_result.stdout.strip() else []
+        ahead_log = subprocess.run(
+            ["git", "log", f"origin/{branch}..HEAD", "--oneline"],
+            capture_output=True, text=True, cwd=app_dir, timeout=10
+        )
+
+        commits_to_pull = behind_log.stdout.strip().split('\n') if behind_log.stdout.strip() else []
+        commits_to_push = ahead_log.stdout.strip().split('\n') if ahead_log.stdout.strip() else []
 
         return {
             "name": app_name,
             "branch": branch,
             "commits_behind": commits_behind,
+            "commits_ahead": commits_ahead,
             "has_updates": commits_behind > 0,
-            "pending_commits": commits[:10],  # Limit to 10
+            "has_local_commits": commits_ahead > 0,
+            "pending_pulls": commits_to_pull[:10],
+            "pending_pushes": commits_to_push[:10],
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -376,28 +445,29 @@ async def update_app(app_name: str):
     if not app_dir:
         raise HTTPException(status_code=404, detail=f"App '{app_name}' not tracked for updates")
 
-    update_script = f"{SCRIPTS_DIR}/update-app.sh"
+    if not os.path.exists(app_dir):
+        raise HTTPException(status_code=404, detail=f"Directory not found: {app_dir}")
+
+    update_script = f"{SCRIPTS_DIR}/maintenance/update-app.sh"
     if not os.path.exists(update_script):
         raise HTTPException(status_code=500, detail="Update script not found")
 
     try:
-        # Pass the actual directory path to avoid script finding wrong directory
         result = subprocess.run(
             [update_script, app_dir],
             capture_output=True,
             text=True,
-            timeout=300,  # 5 min timeout for builds
+            timeout=300,
             cwd=PORTFOLIO_DIR
         )
 
-        # Parse output for status
         output = result.stdout + result.stderr
         success = result.returncode == 0 or "Update complete" in output
 
         return {
             "name": app_name,
             "success": success,
-            "output": output[-2000:],  # Last 2000 chars
+            "output": output[-2000:],
         }
     except subprocess.TimeoutExpired:
         raise HTTPException(status_code=504, detail="Update timed out (5 min limit)")
@@ -412,6 +482,9 @@ async def push_app(app_name: str):
     if not app_dir:
         raise HTTPException(status_code=404, detail=f"App '{app_name}' not tracked")
 
+    if not os.path.exists(app_dir):
+        raise HTTPException(status_code=404, detail=f"Directory not found: {app_dir}")
+
     if not os.path.exists(f"{app_dir}/.git"):
         raise HTTPException(status_code=400, detail=f"App '{app_name}' is not a git repository")
 
@@ -422,9 +495,9 @@ async def push_app(app_name: str):
             capture_output=True, text=True, cwd=app_dir, timeout=10
         )
 
-        has_changes = bool(status_result.stdout.strip())
+        has_uncommitted = bool(status_result.stdout.strip())
 
-        if has_changes:
+        if has_uncommitted:
             # Add all changes
             subprocess.run(
                 ["git", "add", "-A"],
@@ -446,10 +519,14 @@ async def push_app(app_name: str):
         )
         branch = branch_result.stdout.strip() or "main"
 
-        # Push to origin
+        # Push to origin (use deploy key if available)
+        env = os.environ.copy()
+        env["GIT_SSH_COMMAND"] = "ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes -o StrictHostKeyChecking=no"
+
         push_result = subprocess.run(
             ["git", "push", "origin", branch],
-            capture_output=True, text=True, cwd=app_dir, timeout=60
+            capture_output=True, text=True, cwd=app_dir, timeout=60,
+            env=env
         )
 
         output = push_result.stdout + push_result.stderr
@@ -458,7 +535,8 @@ async def push_app(app_name: str):
         return {
             "name": app_name,
             "success": success,
-            "had_changes": has_changes,
+            "had_uncommitted_changes": has_uncommitted,
+            "branch": branch,
             "output": output[-1000:],
         }
     except subprocess.TimeoutExpired:
@@ -469,28 +547,46 @@ async def push_app(app_name: str):
 
 @router.get("/{app_name}/status")
 async def get_app_git_status(app_name: str):
-    """Get git status for an app (uncommitted changes)."""
+    """Get git status for an app (uncommitted changes, ahead/behind)."""
     app_dir = APP_DIRS.get(app_name)
     if not app_dir:
         raise HTTPException(status_code=404, detail=f"App '{app_name}' not tracked")
+
+    if not os.path.exists(app_dir):
+        raise HTTPException(status_code=404, detail=f"Directory not found: {app_dir}")
 
     if not os.path.exists(f"{app_dir}/.git"):
         raise HTTPException(status_code=400, detail=f"App '{app_name}' is not a git repository")
 
     try:
-        # Get status
+        # Get uncommitted changes
         status_result = subprocess.run(
             ["git", "status", "--porcelain"],
             capture_output=True, text=True, cwd=app_dir, timeout=10
         )
-
         changes = status_result.stdout.strip().split('\n') if status_result.stdout.strip() else []
+
+        # Get branch
+        branch_result = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            capture_output=True, text=True, cwd=app_dir, timeout=10
+        )
+        branch = branch_result.stdout.strip() or "main"
+
+        # Get remote URL
+        remote_result = subprocess.run(
+            ["git", "remote", "get-url", "origin"],
+            capture_output=True, text=True, cwd=app_dir, timeout=10
+        )
+        remote_url = remote_result.stdout.strip()
 
         return {
             "name": app_name,
-            "has_changes": len(changes) > 0,
-            "change_count": len(changes),
-            "changes": changes[:20],  # First 20 changes
+            "branch": branch,
+            "remote_url": remote_url,
+            "has_uncommitted_changes": len(changes) > 0,
+            "uncommitted_count": len(changes),
+            "uncommitted_files": changes[:20],
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -26,6 +26,10 @@ Commands:
   memory status       Show memory system status
   memory test         Test memory operations
   memory clear <sid>  Clear memory for a session
+  ai sync             Sync Claude Code sessions to memory
+  ai sync --full      Full re-sync all sessions
+  ai status           Show AI session sync status
+  ai search <query>   Search past AI conversations
   metrics status      Show observability stack status
   metrics urls        Show Prometheus/Grafana URLs
   help                Show this help message
@@ -1056,6 +1060,46 @@ def cmd_memory_clear(session_id):
 
     print()
 
+# ============ AI SESSION COMMANDS ============
+
+def cmd_ai(subcommand=None, *args):
+    """Manage AI session memory"""
+    if subcommand == "sync":
+        full_sync = "--full" in args
+        cmd_ai_sync(full_sync)
+    elif subcommand == "status":
+        cmd_ai_status()
+    elif subcommand == "search" and args:
+        query = " ".join([a for a in args if not a.startswith("--")])
+        cmd_ai_search(query)
+    else:
+        print("Usage: brain ai [sync|sync --full|status|search <query>]")
+
+def cmd_ai_sync(full_sync=False):
+    """Sync Claude Code sessions to memory"""
+    sync_script = f"{SCRIPTS_DIR}/agents/sync-claude-sessions.py"
+    if os.path.exists(sync_script):
+        flag = "--full" if full_sync else ""
+        subprocess.run(f"{sync_script} {flag}", shell=True, cwd=PORTFOLIO_DIR)
+    else:
+        print(color("Error: sync-claude-sessions.py not found", Colors.RED))
+
+def cmd_ai_status():
+    """Show AI session sync status"""
+    sync_script = f"{SCRIPTS_DIR}/agents/sync-claude-sessions.py"
+    if os.path.exists(sync_script):
+        subprocess.run(f"{sync_script} --status", shell=True, cwd=PORTFOLIO_DIR)
+    else:
+        print(color("Error: sync-claude-sessions.py not found", Colors.RED))
+
+def cmd_ai_search(query):
+    """Search past AI conversations"""
+    sync_script = f"{SCRIPTS_DIR}/agents/sync-claude-sessions.py"
+    if os.path.exists(sync_script):
+        subprocess.run(f"{sync_script} --search \"{query}\"", shell=True, cwd=PORTFOLIO_DIR)
+    else:
+        print(color("Error: sync-claude-sessions.py not found", Colors.RED))
+
 # ============ METRICS/OBSERVABILITY COMMANDS ============
 
 def cmd_metrics(subcommand=None, *args):
@@ -1159,6 +1203,10 @@ def main():
         subcommand = sys.argv[2] if len(sys.argv) > 2 else None
         args = sys.argv[3:] if len(sys.argv) > 3 else []
         cmd_metrics(subcommand, *args)
+    elif command == "ai":
+        subcommand = sys.argv[2] if len(sys.argv) > 2 else None
+        args = sys.argv[3:] if len(sys.argv) > 3 else []
+        cmd_ai(subcommand, *args)
     elif command in ["help", "--help", "-h"]:
         cmd_help()
     else:
