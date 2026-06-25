@@ -9,21 +9,22 @@ import httpx
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
-# Load .env file if present (before reading ELEVENLABS_API_KEY)
-_env_file = Path(__file__).parent.parent / ".env"
-if _env_file.exists():
-    with open(_env_file) as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#") and "=" in line:
-                key, value = line.split("=", 1)
-                if value and key not in os.environ:
-                    os.environ[key] = value
-
 router = APIRouter()
 
-# API key loaded from environment variable (never exposed to frontend)
-ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
+_env_file = Path(__file__).parent.parent / ".env"
+
+
+def get_api_key() -> str:
+    """Read API key fresh from .env file each time."""
+    if _env_file.exists():
+        with open(_env_file) as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, value = line.split("=", 1)
+                    if key == "ELEVENLABS_API_KEY" and value:
+                        return value
+    return os.getenv("ELEVENLABS_API_KEY", "")
 
 
 class SoundGenerationRequest(BaseModel):
@@ -38,7 +39,9 @@ async def generate_sound(request: SoundGenerationRequest):
     Proxy to ElevenLabs Sound Generation API.
     API key stays server-side.
     """
-    if not ELEVENLABS_API_KEY:
+    api_key = get_api_key()
+
+    if not api_key:
         raise HTTPException(
             status_code=500,
             detail="ElevenLabs API key not configured on server"
@@ -46,7 +49,7 @@ async def generate_sound(request: SoundGenerationRequest):
 
     url = "https://api.elevenlabs.io/v1/sound-generation"
     headers = {
-        "xi-api-key": ELEVENLABS_API_KEY,
+        "xi-api-key": api_key,
         "Content-Type": "application/json",
     }
     payload = {
@@ -84,7 +87,8 @@ async def generate_sound(request: SoundGenerationRequest):
 @router.get("/status")
 async def check_status():
     """Check if ElevenLabs API key is configured."""
+    api_key = get_api_key()
     return {
-        "configured": bool(ELEVENLABS_API_KEY),
-        "key_preview": f"{ELEVENLABS_API_KEY[:8]}..." if ELEVENLABS_API_KEY else None,
+        "configured": bool(api_key),
+        "key_preview": f"{api_key[:8]}..." if api_key else None,
     }
