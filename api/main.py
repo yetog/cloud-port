@@ -22,6 +22,7 @@ from routes import (
     memory_router,
     notes_router,
 )
+from routes.elevenlabs import router as elevenlabs_router
 
 # Create FastAPI app
 app = FastAPI(
@@ -48,6 +49,7 @@ app.include_router(apps_router, prefix="/api/apps", tags=["Apps"])
 app.include_router(tasks_router, prefix="/api/tasks", tags=["Tasks"])
 app.include_router(memory_router, prefix="/api/memory", tags=["Memory"])
 app.include_router(notes_router, prefix="/api", tags=["Notes & Jobs"])
+app.include_router(elevenlabs_router, prefix="/api/elevenlabs", tags=["ElevenLabs"])
 
 
 # Prometheus metrics endpoint
@@ -81,6 +83,7 @@ async def root():
             "memory": "/api/memory/status",
             "jobs": "/api/jobs",
             "notes": "/api/notes",
+            "elevenlabs": "/api/elevenlabs",
             "docs": "/docs",
             "metrics": "/metrics",
         },

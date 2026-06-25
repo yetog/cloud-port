@@ -23,7 +23,7 @@ from pathlib import Path
 SMTP_HOST = "smtp.gmail.com"
 SMTP_PORT = 587
 SMTP_USER = "isayahy@gmail.com"
-SMTP_PASS = "wdzvscnewdsabhgd"
+SMTP_PASS = "uovttyvyakdlzgsu"
 
 
 def send_email(to_email, subject, body, html_body=None):

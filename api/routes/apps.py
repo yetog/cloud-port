@@ -48,6 +48,7 @@ APP_DIRS = {
     "sensei-ai-io": f"{PORTFOLIO_DIR}/apps/development/sensei-ai-io",
     "ask-hr-beta": f"{PORTFOLIO_DIR}/apps/development/ask-hr-beta",
     "sop-ai-beta": f"{PORTFOLIO_DIR}/apps/development/sop-ai-beta",
+    "vibe-creator": f"{PORTFOLIO_DIR}/apps/development/vibe-creator",
 
     # === MISC (research, experimental) ===
     "slam-og-studio": f"{PORTFOLIO_DIR}/apps/misc/slam-og-studio",
@@ -75,6 +76,7 @@ APPS = {
     "contentforge": {"port": 3009, "category": "finished", "container": "contentforge"},
 
     # === STAGING (testing) ===
+    "vibe-creator": {"port": None, "category": "testing", "container": None},  # Static via nginx
     "darkflow": {"port": 3010, "category": "testing", "container": "darkflow-mind-mapper"},
     "gmat": {"port": 3012, "category": "testing", "container": "gmat-mastery-suite"},
     "losk": {"port": 3013, "category": "testing", "container": "losk"},
