@@ -392,4 +392,13 @@ export const projects: Project[] = [
     category: 'design',
     demoUrl: 'https://zaylegend.com/green-empire',
   },
+  {
+    id: 'goat-landscaping',
+    title: 'GOAT Landscaping Website',
+    description: 'Client website for Massapequa Park, NY landscaping company. Features 7 service pages, 15 service area locations, blog content, and lead capture forms. Built with Python static site generator and nginx deployment.',
+    image: ASSETS.projects.greenEmpire, // TODO: Add GOAT-specific image
+    tags: ['Web Development', 'SEO', 'Static Site', 'Lead Generation'],
+    category: 'design',
+    demoUrl: 'https://goatlandscapeli.com',
+  },
 ];

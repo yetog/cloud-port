@@ -621,6 +621,21 @@ If I didn't bring my laptop + controller, I would've been stuck. Again.`,
 ];
 
 // =============================================================================
+// DJ STATS
+// =============================================================================
+
+export const djStats = {
+  totalEvents: 12,              // Count of all gigs
+  hoursPlayed: 40,              // Estimate total hours of live performance
+  songsInLibrary: 1500,         // Songs in collection
+  venuesPlayed: 5,              // Unique venues (SPiN, Queen, Frankie Bradley's, etc.)
+  yearsActive: 2,               // Years DJing
+  mixesRecorded: djMixes.length,
+  journeyPosts: journeyPosts.filter(p => p.published).length,
+  genres: ['House', 'Funk', 'Soul', 'Disco', 'Electronic'],
+};
+
+// =============================================================================
 // HELPERS
 // =============================================================================
 

@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { SendIcon } from 'lucide-react';
+import { SendIcon, Coffee } from 'lucide-react';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -141,6 +141,22 @@ const Contact = () => {
                 </div>
               </form>
             )}
+          </div>
+
+          {/* Support Section */}
+          <div className="mt-10 text-center">
+            <p className="text-muted-foreground mb-4">
+              Enjoying my work? Consider supporting my projects.
+            </p>
+            <a
+              href="https://www.buymeacoffee.com/zaylegend"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-black font-medium px-6 py-3 rounded-full transition-colors"
+            >
+              <Coffee className="w-5 h-5" />
+              Buy me a coffee
+            </a>
           </div>
         </div>
       </div>

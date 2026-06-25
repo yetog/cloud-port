@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Play, Calendar, MapPin, Headphones, Mail, ChevronRight, Camera } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { djProfile, djMixes, djEvents, journeyPosts, getFeaturedMix, vibeColors } from '../data/dj';
+import { djProfile, djMixes, djEvents, journeyPosts, getFeaturedMix, vibeColors, djStats } from '../data/dj';
 import SpinningVinyl from '../components/SpinningVinyl';
 
 // S3 paths for hero media - update these when you upload content
@@ -106,6 +106,26 @@ const DJ = () => {
                   Book Me
                 </Button>
               </Link>
+            </div>
+
+            {/* Stats Section */}
+            <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+              <div className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center hover:border-purple-500/30 transition-all">
+                <div className="text-3xl font-bold text-purple-400">{djStats.totalEvents}</div>
+                <div className="text-sm text-muted-foreground">Live Events</div>
+              </div>
+              <div className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center hover:border-purple-500/30 transition-all">
+                <div className="text-3xl font-bold text-pink-400">{djStats.hoursPlayed}+</div>
+                <div className="text-sm text-muted-foreground">Hours Played</div>
+              </div>
+              <div className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center hover:border-purple-500/30 transition-all">
+                <div className="text-3xl font-bold text-purple-400">{djStats.venuesPlayed}</div>
+                <div className="text-sm text-muted-foreground">Venues</div>
+              </div>
+              <div className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-xl p-4 text-center hover:border-purple-500/30 transition-all">
+                <div className="text-3xl font-bold text-pink-400">{djStats.songsInLibrary.toLocaleString()}</div>
+                <div className="text-sm text-muted-foreground">Tracks in Library</div>
+              </div>
             </div>
           </div>
         </section>

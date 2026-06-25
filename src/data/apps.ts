@@ -109,16 +109,7 @@ export const finishedApps: App[] = [
     appUrl: 'https://zaylegend.com/game-hub',
     githubUrl: 'https://github.com/yetog/playful-space-arcade',
   },
-  {
-    id: 'goat-landscaping',
-    title: 'GOAT Landscaping',
-    description: 'Client website for Massapequa Park, NY landscaping company. Features 7 service pages, 15 service area locations, blog content, and lead capture forms. Python static site generator with nginx deployment.',
-    image: ASSETS.apps.zenReset,
-    tags: ['Client Project', 'SEO', 'Static Site', 'Landscaping'],
-    status: 'finished',
-    appUrl: 'https://goatlandscapeli.com',
-    githubUrl: 'https://github.com/yetog/GOAT-Landscaping-main',
-  },
+  // Note: goat-landscaping moved to projects.ts on 2026-06-25
 ];
 
 // =============================================================================
@@ -255,16 +246,7 @@ export const testingApps: App[] = [
     appUrl: 'https://zaylegend.com/forge-fit',
     githubUrl: 'https://github.com/yetog/forge-fit',
   },
-  {
-    id: 'slam-og-studio',
-    title: 'Slam OG Studio',
-    description: 'Web-based Digital Audio Workstation (DAW) for music production. Create beats, mix tracks, and produce music directly in your browser.',
-    image: ASSETS.apps.zenReset,
-    tags: ['Music', 'DAW', 'Production', 'Audio'],
-    status: 'testing',
-    appUrl: 'https://zaylegend.com/slam-og',
-    githubUrl: 'https://github.com/yetog/slam-og-studio',
-  },
+  // Note: slam-og-studio was archived on 2026-06-25
   {
     id: 'green-empire',
     title: 'Green Empire Landscaping',
