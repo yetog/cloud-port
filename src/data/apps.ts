@@ -275,16 +275,7 @@ export const testingApps: App[] = [
     appUrl: 'https://zaylegend.com/green-empire',
     githubUrl: 'https://github.com/yetog/green-empire-landscaping',
   },
-  {
-    id: 'prompted-pixels',
-    title: 'Prompted Pixels (MemeForge)',
-    description: 'AI-powered creative studio for memes, GIFs, and icons. Generate content through prompts, edit images, and export in multiple formats. Built with React 19, TanStack Router, and Tailwind.',
-    image: ASSETS.apps.zenReset,
-    tags: ['AI', 'Creative', 'Memes', 'GIF', 'Icons'],
-    status: 'testing',
-    appUrl: 'https://zaylegend.com/prompted-pixels',
-    githubUrl: 'https://github.com/yetog/prompted-pixels',
-  },
+  // Note: prompted-pixels was archived on 2026-06-22
 ];
 
 // =============================================================================
