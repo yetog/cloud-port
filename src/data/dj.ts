@@ -1,6 +1,50 @@
 // DJ Zay Data - Mixes, Events, and Journey Posts
 
-const S3_DJ_URL = 'https://s3.us-central-1.ionoscloud.com/portfoliowebsite/dj';
+const S3_DJ_URL = 'https://s3.us-central-1.ionoscloud.com/portfoliowebsite/DJ';
+
+// =============================================================================
+// DJ IMAGES (Actual S3 files)
+// =============================================================================
+
+export const djImages = {
+  // Hero/Profile shots
+  hero: `${S3_DJ_URL}/884C5A78-4A68-4646-8284-12568789C3C7_1_102_o.jpeg`,
+  profile: `${S3_DJ_URL}/24CE3CCD-1D4F-4C9C-BBB9-51755F217ED4_1_102_o.jpeg`,
+
+  // SPiN / Art Battle
+  spinProfile: `${S3_DJ_URL}/51BBE407-A311-447B-90B3-C22B32A5FD14_1_102_o.jpeg`,
+  spinAction: `${S3_DJ_URL}/9B44FD29-602E-4220-A964-BDCCFB0C53C2_1_102_o.jpeg`,
+  artBattleSelfie: `${S3_DJ_URL}/8196EB44-0B7F-4CB3-97C1-850D68DA9A42_1_105_c.jpeg`,
+  artBattleDecks: `${S3_DJ_URL}/9792AC74-ED53-4486-8702-89EEC74F0B06_1_105_c.jpeg`,
+
+  // Frankie Bradley's
+  frankieBradleys: `${S3_DJ_URL}/0D6F68AE-92D0-4F44-8F14-F180E8D1EB36_1_105_c.jpeg`,
+
+  // Queen
+  queen: `${S3_DJ_URL}/045300CC-AD60-4544-87AA-666731F7E0F0_1_105_c.jpeg`,
+
+  // Private/House Party
+  houseParty: `${S3_DJ_URL}/E0D5C82B-1C1B-4E87-AAFF-266421C98BE8_1_105_c.jpeg`,
+
+  // Evil Genius venue
+  evilGenius: `${S3_DJ_URL}/91A4E670-7AFD-44B8-9D85-F09978CAD17A_1_105_c.jpeg`,
+
+  // Studio
+  studio: `${S3_DJ_URL}/FEBC3699-199E-4271-97B5-11BB5846A240_1_105_c.jpeg`,
+
+  // Additional shots
+  extra1: `${S3_DJ_URL}/39AE85D9-0E46-4AE0-9A05-A86D701A15D2_1_105_c.jpeg`,
+  extra2: `${S3_DJ_URL}/435BD88E-3D47-47BF-8530-ED8B54E8C87C_1_105_c.jpeg`,
+  extra3: `${S3_DJ_URL}/5454E002-41E7-47B2-B8A5-BCA326651732_1_105_c.jpeg`,
+  extra4: `${S3_DJ_URL}/7B16D92B-7FE4-411F-9146-12CBD4BAEF65_1_105_c.jpeg`,
+  extra5: `${S3_DJ_URL}/D0BE6B68-5956-4E49-A1C2-36E87D4A41AA_1_105_c.jpeg`,
+  extra6: `${S3_DJ_URL}/AE361FBD-9DC7-42BB-B41A-798CE5E87C0B_1_105_c.jpeg`,
+  extra7: `${S3_DJ_URL}/24D6D15F-E01B-493A-A21A-22105F1A61BF_1_105_c.jpeg`,
+  extra8: `${S3_DJ_URL}/100E557F-870D-4B7C-A6D5-CCA5A8ACBCCC_4_5005_c.jpeg`,
+  extra9: `${S3_DJ_URL}/28CD861E-12C9-4665-A832-E8D50E8FF3CE_4_5005_c.jpeg`,
+  extra10: `${S3_DJ_URL}/B3D7112B-5B8E-408C-803D-68CAC28828A7_4_5005_c.jpeg`,
+  extra11: `${S3_DJ_URL}/D29FFC3C-0903-4699-ADD0-8B7AC8260CD0_4_5005_c.jpeg`,
+};
 
 // =============================================================================
 // TYPES
@@ -128,10 +172,13 @@ export const djEvents: DJEvent[] = [
     location: 'Art Battle',
     type: 'Residency',
     description: 'Live crowd mixing, multi-genre transitions. Resident DJ for creative events.',
-    imageUrl: `${S3_DJ_URL}/events/spin.jpg`,
+    imageUrl: djImages.artBattleDecks,
     linkedMixId: 'art-battle-set',
     photos: [
-      // Add photos when ready: `${S3_DJ_URL}/events/spin/photo1.jpg`
+      djImages.spinProfile,
+      djImages.spinAction,
+      djImages.artBattleSelfie,
+      djImages.artBattleDecks,
     ],
     highlights: [
       'High-energy crowd interaction',
@@ -146,9 +193,9 @@ export const djEvents: DJEvent[] = [
     type: 'Live Set',
     description: 'Full setup performance, house + funk blend. First successful gig after the learning curve.',
     date: 'Late January 2026',
-    imageUrl: `${S3_DJ_URL}/events/queen.jpg`,
+    imageUrl: djImages.queen,
     photos: [
-      // Add photos when ready
+      djImages.queen,
     ],
     highlights: [
       'Full 2-hour set',
@@ -163,10 +210,9 @@ export const djEvents: DJEvent[] = [
     type: 'Live Set',
     description: 'Wine & Waffles event. Real venue, real crowd, high-energy set with great feedback.',
     date: 'Late March 2026',
-    imageUrl: `${S3_DJ_URL}/events/frankie-bradleys.jpg`,
-    videoUrl: `${S3_DJ_URL}/events/frankie-bradleys/clip.mp4`,
+    imageUrl: djImages.frankieBradleys,
     photos: [
-      // Add photos when ready
+      djImages.frankieBradleys,
     ],
     highlights: [
       'Booked off a practice video',
@@ -180,9 +226,10 @@ export const djEvents: DJEvent[] = [
     location: 'Various',
     type: 'Private',
     description: 'Adaptable sets for house parties and private gatherings. Collaborative DJ environment.',
-    imageUrl: `${S3_DJ_URL}/events/private.jpg`,
+    imageUrl: djImages.houseParty,
     photos: [
-      // Add photos when ready
+      djImages.houseParty,
+      djImages.studio,
     ],
     highlights: [
       'Adaptable vibes',

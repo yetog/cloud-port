@@ -1,13 +1,12 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Play, Calendar, MapPin, Headphones, Mail, ChevronRight, Camera } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { djProfile, djMixes, djEvents, journeyPosts, getFeaturedMix, vibeColors, djStats } from '../data/dj';
+import { djProfile, djMixes, djEvents, journeyPosts, getFeaturedMix, vibeColors, djStats, djImages } from '../data/dj';
 import SpinningVinyl from '../components/SpinningVinyl';
 
-// S3 paths for hero media - update these when you upload content
-const S3_DJ_URL = 'https://s3.us-central-1.ionoscloud.com/portfoliowebsite/dj';
-const heroVideo = ''; // `${S3_DJ_URL}/hero/dj-hero.mp4` when ready
-const heroImage = ''; // `${S3_DJ_URL}/hero/dj-hero.jpg` when ready
+// Hero media
+const heroVideo = ''; // Add video URL when ready
+const heroImage = djImages.hero; // Portrait shot with colorful mural
 
 const DJ = () => {
   const featuredMix = getFeaturedMix();
