@@ -73,11 +73,11 @@ const EventCard = ({ event, onOpenGallery }: { event: DJEvent; onOpenGallery: (p
     <div className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden hover:border-purple-500/30 transition-all group">
       {/* Main Image / Video Section */}
       <div className="relative">
-        <div className="w-full h-64 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center overflow-hidden">
+        <div className="w-full h-80 md:h-96 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center overflow-hidden">
           {hasVideo ? (
             <video
               src={event.videoUrl}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover object-top"
               muted
               loop
               playsInline
@@ -86,7 +86,7 @@ const EventCard = ({ event, onOpenGallery }: { event: DJEvent; onOpenGallery: (p
               poster={event.imageUrl}
             />
           ) : event.imageUrl ? (
-            <img src={event.imageUrl} alt={event.venue} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src={event.imageUrl} alt={event.venue} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
           ) : (
             <Calendar className="w-20 h-20 text-purple-400/50" />
           )}
@@ -121,21 +121,21 @@ const EventCard = ({ event, onOpenGallery }: { event: DJEvent; onOpenGallery: (p
 
         {/* Photo thumbnails strip */}
         {hasPhotos && event.photos!.length > 1 && (
-          <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
-            <div className="flex gap-2 overflow-x-auto">
+          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+            <div className="flex gap-3 overflow-x-auto">
               {event.photos!.slice(0, 4).map((photo, idx) => (
                 <button
                   key={idx}
                   onClick={() => onOpenGallery(event.photos!, idx, event.venue)}
-                  className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 ring-2 ring-white/20 hover:ring-purple-400 transition-all"
+                  className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 ring-2 ring-white/20 hover:ring-purple-400 transition-all"
                 >
-                  <img src={photo} alt="" className="w-full h-full object-cover" />
+                  <img src={photo} alt="" className="w-full h-full object-cover object-top" />
                 </button>
               ))}
               {event.photos!.length > 4 && (
                 <button
                   onClick={() => onOpenGallery(event.photos!, 4, event.venue)}
-                  className="w-12 h-12 rounded-lg bg-black/60 flex items-center justify-center flex-shrink-0 text-white text-xs font-medium"
+                  className="w-16 h-16 rounded-lg bg-black/60 flex items-center justify-center flex-shrink-0 text-white text-sm font-medium"
                 >
                   +{event.photos!.length - 4}
                 </button>
@@ -219,9 +219,9 @@ const PlaceholderEventCard = ({ event }: { event: DJEvent }) => {
     <div className="bg-background/50 backdrop-blur-sm border border-border/50 rounded-2xl overflow-hidden hover:border-purple-500/30 transition-all group">
       {/* Placeholder Image */}
       <div className="relative">
-        <div className="w-full h-64 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex flex-col items-center justify-center">
+        <div className="w-full h-80 md:h-96 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex flex-col items-center justify-center">
           {event.imageUrl ? (
-            <img src={event.imageUrl} alt={event.venue} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src={event.imageUrl} alt={event.venue} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
           ) : (
             <>
               <Camera className="w-16 h-16 text-purple-400/30 mb-3" />
